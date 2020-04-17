@@ -7,7 +7,7 @@ public class Token {
     private int linePosition;
     private int columnPosition;
 
-    Token(TokenType type, int linePosition, int columnPosition){
+    public Token(TokenType type, int linePosition, int columnPosition){
         this.type = type;
         this.linePosition = linePosition;
         this.columnPosition = columnPosition;

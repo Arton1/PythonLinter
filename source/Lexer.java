@@ -1,5 +1,4 @@
-import state.State;
-import state.BeginState;
+import state.*;
 import token.Token;
 import token.type.TokenType;
 
@@ -16,15 +15,17 @@ public class Lexer {
     public Token getToken(){
         TokenType tokenType;
         char c;
+        int tokenLinePosition = stream.getCurrentLinePosition();
+        int tokenColumnPosition = stream.getCurrentColumnPosition();
         do {
             c = stream.readCharacter();
             state = state.processCharacter(c);
             if(state == null) //state doesnt exist, bad token
                 ErrorHandler.handleBadTokenError();
             tokenType = state.getTokenType(); //get token if avaliable for collecting
-        } while(tokenType == null);
-        Token token = new Token(tokenType, );
-        state = BeginState.firstState; //reset of state machine
+        } while (tokenType == null);
+        Token token = new Token(tokenType, tokenLinePosition, tokenColumnPosition);
+        state = BeginState.firstState; //reset state machine
         return token;
     }
 }

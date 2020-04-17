@@ -24,15 +24,23 @@ public class StreamHandler {
 
     private void initialize(){
         scanner.useDelimiter("");
+        line = scanner.nextLine();
+        currentLinePosition = 1;
+        currentColumnPosition = 1;
     }
 
     public char readCharacter() { 
         if(line.length() == 0){
+            currentColumnPosition = 0;
+            if (!scanner.hasNextLine()){
+                return 0;
+            }
             line = scanner.nextLine();
-            currentColumnPosition++;
+            currentLinePosition++;
         }
         char c = line.charAt(0);
         line = line.substring(1, line.length());
+        currentColumnPosition++;
         return c;
     }
 
