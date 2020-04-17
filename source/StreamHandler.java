@@ -3,6 +3,9 @@ import java.util.Scanner;
 
 public class StreamHandler {
     private Scanner scanner;
+    private String line;
+    private int currentLinePosition;
+    private int currentColumnPosition;
 
     StreamHandler(){
         scanner = new Scanner(System.in);
@@ -24,6 +27,20 @@ public class StreamHandler {
     }
 
     public char readCharacter() { 
-        return scanner.next().charAt(0);
+        if(line.length() == 0){
+            line = scanner.nextLine();
+            currentColumnPosition++;
+        }
+        char c = line.charAt(0);
+        line = line.substring(1, line.length());
+        return c;
+    }
+
+    public int getCurrentLinePosition(){
+        return currentLinePosition;
+    }
+
+    public int getCurrentColumnPosition(){
+        return currentColumnPosition;
     }
 }

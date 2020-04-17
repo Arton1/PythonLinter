@@ -11,7 +11,10 @@ class Linter {
             System.out.println("Usage: java Linter.class [path to source file]");
             return;
         }
-        Lexer lexer = new Lexer(stream);
-        Token token = lexer.getToken();
+        System.out.println(stream.readCharacter());
+        System.out.println(stream.getCurrentLinePosition());
+        System.out.println(stream.getCurrentColumnPosition());
+        //Lexer lexer = new Lexer(stream);
+        //Token token = lexer.getToken();
     }
 }

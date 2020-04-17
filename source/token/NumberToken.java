@@ -1,9 +1,9 @@
 package token;
 
-public class NumberToken implements Token{
-    double number;
-
-    NumberToken(double number){
-        this.number = number;
+public class NumberToken extends Token {
+    double value;
+    
+    double getValue(){
+        return value;
     }
 }

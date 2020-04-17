@@ -1,28 +1,30 @@
-import state.StateSet;
-import state.BeginStateSet;
+import state.State;
+import state.BeginState;
 import token.Token;
+import token.type.TokenType;
 
 public class Lexer {
     private StreamHandler stream;
 
-    private StateSet stateSet;
+    private State state;
 
     Lexer(StreamHandler stream){
         this.stream = stream;
-        this.stateSet = new BeginStateSet();
+        this.state = BeginState.firstState;
     }
 
     public Token getToken(){
-        Token token;
+        TokenType tokenType;
         char c;
         do {
             c = stream.readCharacter();
-            stateSet = stateSet.processCharacter(c);
-            if(stateSet == null) //state doesnt exist, bad token
+            state = state.processCharacter(c);
+            if(state == null) //state doesnt exist, bad token
                 ErrorHandler.handleBadTokenError();
-            token = stateSet.getToken(); //get token if avaliable for collecting
-        } while(token == null);
-        stateSet = new BeginStateSet(); //reset of state machine
+            tokenType = state.getTokenType(); //get token if avaliable for collecting
+        } while(tokenType == null);
+        Token token = new Token(tokenType, );
+        state = BeginState.firstState; //reset of state machine
         return token;
     }
 }
