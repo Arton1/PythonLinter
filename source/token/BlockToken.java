@@ -1,13 +1,6 @@
 package token;
 
-public class BlockToken implements Token{
-    public enum BlockType {
+public enum BlockToken implements Token{
         NEWLINE, INDENT, DEINDENT, TWO_DOTTED
-    }
 
-    BlockType type;
-
-    BlockToken(BlockType type){
-        this.type = type;
-    }
 }

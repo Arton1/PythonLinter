@@ -1,13 +1,6 @@
 package token;
 
-public class LogicToken implements Token{
-    public enum LogicType{
-        AND, OR, NOT
-    }
+public enum LogicToken implements Token{
+    AND, OR, NOT
 
-    LogicType type;
-
-    LogicToken(LogicType type){
-        this.type = type;
-    }
 }
