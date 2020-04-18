@@ -10,7 +10,7 @@ public class IdentifierToken extends Token {
         this.identifier = identifier;
     }
 
-    String getIdentifier(){
+    public String getIdentifier(){
         return identifier;
     }
 }

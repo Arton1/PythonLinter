@@ -1,4 +1,4 @@
-import token.Token;
+import token.*;
 
 class Linter {
     public static void main(String args[]){
@@ -12,7 +12,14 @@ class Linter {
             return;
         }
         Lexer lexer = new Lexer(stream);
-        Token token = lexer.getToken();
-        System.out.println(token.getTokenType());
+        Token token;
+        while(!lexer.isEOF()){
+            token = lexer.getToken();
+            System.out.print(token.getTokenType());
+            System.out.print(" " + token.getLine() + " ");
+            System.out.print(token.getColumn() + " ");
+            if(token instanceof IdentifierToken)
+                System.out.println(((IdentifierToken)token).getIdentifier());
+        }
     }
 }

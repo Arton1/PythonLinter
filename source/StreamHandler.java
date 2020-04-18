@@ -6,6 +6,10 @@ public class StreamHandler {
     private String line;
     private int currentLinePosition;
     private int currentColumnPosition;
+    private boolean EOF;
+
+    static final char EOFCharacter = (char)-1;
+    static final char EOLCharacter = (char)10;
 
     StreamHandler(){
         scanner = new Scanner(System.in);
@@ -25,35 +29,57 @@ public class StreamHandler {
 
     private void initialize(){
         scanner.useDelimiter("");
-        line = scanner.nextLine();
         currentLinePosition = 1;
         currentColumnPosition = 1;
+        if(scanner.hasNextLine() == false){
+            EOF = true;
+            return;
+        }
+        else
+            EOF = false;
+        line = scanner.nextLine();
+        setCursorAtNextCharacter();
     }
 
     public char readCharacter() { 
-        if(line.length() == 0){
-            currentColumnPosition = 0;
-            if (!scanner.hasNextLine()){
-                return 0;
-            }
-            line = scanner.nextLine();
-            currentLinePosition++;
-        }
-        char c = line.charAt(0);
-        line = line.substring(1, line.length());
+        char c, statusCharacter;
+        statusCharacter = setCursorAtNextCharacter();
+        if(statusCharacter != 0) //if not fine
+            return statusCharacter; //space, EOL, EOF
+        c = line.charAt(0);
+        System.out.println(c);
+        line = line.substring(1);
         currentColumnPosition++;
         return c;
     }
 
-    public void returnCharacter(char c){
-        line = c + line;
-        currentColumnPosition--;
+    private char processEmptyLines(){
+        currentColumnPosition = 1;
+        do{
+            currentLinePosition++;
+            if (scanner.hasNextLine())
+                line = scanner.nextLine();
+            else {
+                EOF = true;
+                return EOFCharacter;
+            }
+        } while(line.length() == 0);
+        return EOLCharacter;
     }
 
-    public void ignoreSpaces(){
-        char c;
-        while((c = readCharacter()) == ' ');
-        returnCharacter(c);
+    public void returnCharacter(char c){
+        if (c != EOLCharacter && c != ' '){ 
+            line = c + line;
+            currentColumnPosition--;
+        }
+    }
+
+    private void passSpaces(){
+        do {
+            line = line.substring(1, line.length());
+            currentColumnPosition++;
+        } 
+        while (line.length() != 0 && line.charAt(0) == ' ');
     }
 
     public int getCurrentLinePosition(){
@@ -62,5 +88,30 @@ public class StreamHandler {
 
     public int getCurrentColumnPosition(){
         return currentColumnPosition;
+    }
+
+    public boolean getEOFStatus(){
+        return EOF;
+    }
+
+    private char setCursorAtNextCharacter(){
+        char specialCharacter = 0;
+        if(line.length() == 0){
+            specialCharacter = processEmptyLines(); //ignore empty lines
+            if(specialCharacter == EOFCharacter)
+                return specialCharacter;
+        }
+        if(line.charAt(0) == ' '){ 
+            passSpaces(); //ignore spaces
+            specialCharacter = ' ';
+        }
+        while(line.length() == 0){ //empty line
+            specialCharacter = processEmptyLines(); //ignore empty lines
+            if(specialCharacter == EOFCharacter) //check if EOF
+                return specialCharacter;
+            if(line.charAt(0) == ' ')
+                passSpaces(); //ignore spaces
+        }
+        return specialCharacter;
     }
 }
