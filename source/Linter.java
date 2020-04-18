@@ -11,7 +11,7 @@ class Linter {
             System.out.println("Usage: java Linter.class [path to source file]");
             return;
         }
-        //Lexer lexer = new Lexer(stream);
-        //Token token = lexer.getToken();
+        Lexer lexer = new Lexer(stream);
+        Token token = lexer.getToken();
     }
 }

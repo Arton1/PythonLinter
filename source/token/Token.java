@@ -4,24 +4,33 @@ import token.type.TokenType;
 
 public class Token {
     private TokenType type;
-    private int linePosition;
-    private int columnPosition;
+    private int line;
+    private int column;
 
-    public Token(TokenType type, int linePosition, int columnPosition){
+    public Token(TokenType type, int line, int column){
         this.type = type;
-        this.linePosition = linePosition;
-        this.columnPosition = columnPosition;
+        this.line = line;
+        this.column = column;
+    }
+
+    public Token(TokenType type){
+        this.type = type;
     }
 
     public TokenType getType() {
         return type;
     }
 
-    public int getLinePosition(){
-        return linePosition;
+    public int getLine(){
+        return line;
     }
 
-    public int getColumnPosition(){
-        return columnPosition;
+    public int getColumn(){
+        return column;
+    }
+
+    public void addPosition(int line, int column){
+        this.line = line;
+        this.column = column;
     }
 }

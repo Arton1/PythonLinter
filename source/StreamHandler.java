@@ -17,6 +17,7 @@ public class StreamHandler {
             scanner = new Scanner(new File(filePath));
         }
         catch(FileNotFoundException e){
+            scanner.close();
             ErrorHandler.handleException(e);
         }
         initialize();
