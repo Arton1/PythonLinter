@@ -5,8 +5,9 @@ import token.type.TokenType;
 public class IdentifierToken extends Token {
     String identifier;
 
-    IdentifierToken(TokenType tokenType, int line, int column){
-        super(tokenType, line, column);
+    public IdentifierToken(TokenType tokenType, String identifier){
+        super(tokenType);
+        this.identifier = identifier;
     }
 
     String getIdentifier(){

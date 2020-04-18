@@ -1,3 +1,5 @@
+import token.IdentifierToken;
+import token.NumberToken;
 import token.Token;
 import token.type.*;
 import java.util.HashMap;
@@ -6,12 +8,18 @@ public class Lexer {
     private StreamHandler stream;
     private HashMap<String, TokenType> tokenTable;
 
+    static final String smallLetters = "abcdefghijklmopqrstuvwxyz";
+    static final String largeLetters = "ABCDEFGHIJKLMNOPQRSTUVW";
+    static final String numbers = "0123456789";
+    static final String numbersWithoutZero = "123456789";
+
     Lexer(StreamHandler stream){
         this.stream = stream;
         createTokenTable();
     }
 
     void createTokenTable(){
+        tokenTable = new HashMap<String, TokenType>();
         tokenTable.put("return", SimpleStatementTokenType.RETURN);
         tokenTable.put("in", CompareTokenType.IN);
         tokenTable.put("pass", SimpleStatementTokenType.PASS);
@@ -19,8 +27,8 @@ public class Lexer {
         tokenTable.put("continue", SimpleStatementTokenType.CONTINUE);
         tokenTable.put("is", CompareTokenType.IS);
         tokenTable.put("import", SimpleStatementTokenType.IMPORT);
-        tokenTable.put("else", CompoundStatementTokenType.RETURN);
-        tokenTable.put("elif", CompoundStatementTokenType.RETURN);
+        tokenTable.put("else", CompoundStatementTokenType.ELSE);
+        tokenTable.put("elif", CompoundStatementTokenType.ELIF);
         tokenTable.put("and", LogicTokenType.AND);
         tokenTable.put("as", SimpleStatementTokenType.AS);
         tokenTable.put("or", LogicTokenType.OR);
@@ -67,18 +75,69 @@ public class Lexer {
         token = createToken();
         if(token == null) //token doesnt exist, bad token
             ErrorHandler.handleBadTokenError();
-        token.addPosition(tokenLinePosition, tokenColumnPosition);
+        token.setPosition(tokenLinePosition, tokenColumnPosition);
         return token;
     }
 
     private Token createToken(){
+        stream.ignoreSpaces();
         char c = stream.readCharacter();
-        if ("abcdefghijklmopqrstuvw".indexOf(c) != -1){
+        String text = "";
+        text += c;
+        if (c == -1)
+            return new Token(EOFTokenType.EOF);
+        if (smallLetters.indexOf(c) != -1)
+            return beginsWithSmallLetterToken(text);
+        if (largeLetters.indexOf(c) != -1)
+            return beginsWithLargeLetterToken(text);
+        if (numbers.indexOf(c) != -1)
+            return beginsWithNumberToken(text);
+        return beginsWithSpecialCharacterToken(text);
+    }
 
-        } 
-        if ("ABCDEFGHIJKLMNOPQRSTUVW".indexOf(c) != -1){
-
+    private Token beginsWithSmallLetterToken(String text){
+        boolean possibleKeyword = true;
+        char c;
+        while(true){
+            c = stream.readCharacter();
+            if(smallLetters.indexOf(c) == -1){
+                if ((largeLetters+numbers).indexOf(c) == -1)
+                    break;
+                possibleKeyword = false;
+            }
+            text += c;
         }
+        TokenType tokenType = null;
+        if (possibleKeyword)
+            tokenType = tokenTable.getOrDefault(text, null);
+        stream.returnCharacter(c);
+        if(tokenType == null)
+            return new IdentifierToken(IdentifierTokenType.NAME, text);
+        else
+            return new Token(tokenType);
+    }
+
+    private Token beginsWithLargeLetterToken(String text){
+        char c;
+        while((smallLetters+largeLetters+numbers).indexOf(c = stream.readCharacter()) != -1)
+            text += c;
+        stream.returnCharacter(c);
+        return new IdentifierToken(IdentifierTokenType.NAME, text);
+    }
+
+    private Token beginsWithNumberToken(String text){
+        return null;
+    }
+
+    private Token beginsWithSpecialCharacterToken(String text){
+        char c;
+        while((smallLetters+largeLetters+numbers+" ").indexOf(c = stream.readCharacter()) == -1)
+            text += c;
+        stream.returnCharacter(c);
+        TokenType tokenType = tokenTable.getOrDefault(text, null);
+        if(tokenType != null)
+            return new Token(tokenType);
+        else
+            return null;
     }
 }
-

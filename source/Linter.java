@@ -13,5 +13,6 @@ class Linter {
         }
         Lexer lexer = new Lexer(stream);
         Token token = lexer.getToken();
+        System.out.println(token.getTokenType());
     }
 }

@@ -5,8 +5,8 @@ import token.type.TokenType;
 public class NumberToken extends Token {
     double value;
     
-    NumberToken(TokenType tokenType, int line, int column, double value){
-        super(tokenType, line, column);
+    NumberToken(TokenType tokenType, double value){
+        super(tokenType);
         this.value = value;
     }
 

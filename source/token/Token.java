@@ -3,22 +3,12 @@ package token;
 import token.type.TokenType;
 
 public class Token {
-    private TokenType type;
-    private int line;
-    private int column;
+    TokenType tokenType;
+    int line;
+    int column;
 
-    public Token(TokenType type, int line, int column){
-        this.type = type;
-        this.line = line;
-        this.column = column;
-    }
-
-    public Token(TokenType type){
-        this.type = type;
-    }
-
-    public TokenType getType() {
-        return type;
+    public Token(TokenType tokenType){
+        this.tokenType = tokenType;
     }
 
     public int getLine(){
@@ -29,8 +19,12 @@ public class Token {
         return column;
     }
 
-    public void addPosition(int line, int column){
+    public void setPosition(int line, int column){
         this.line = line;
         this.column = column;
+    }
+
+    public TokenType getTokenType(){
+        return tokenType;
     }
 }

@@ -45,6 +45,17 @@ public class StreamHandler {
         return c;
     }
 
+    public void returnCharacter(char c){
+        line = c + line;
+        currentColumnPosition--;
+    }
+
+    public void ignoreSpaces(){
+        char c;
+        while((c = readCharacter()) == ' ');
+        returnCharacter(c);
+    }
+
     public int getCurrentLinePosition(){
         return currentLinePosition;
     }
