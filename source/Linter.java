@@ -19,7 +19,7 @@ class Linter {
             System.out.print(" " + token.getLine() + " ");
             System.out.print(token.getColumn() + " ");
             if(token instanceof IdentifierToken)
-                System.out.println(((IdentifierToken)token).getIdentifier());
+                System.out.print(((IdentifierToken)token).getIdentifier());
         }
     }
 }

@@ -1,7 +1,6 @@
 import token.DoubleNumberToken;
 import token.IdentifierToken;
 import token.IntegerNumberToken;
-import token.NumberToken;
 import token.Token;
 import token.type.*;
 import java.util.HashMap;
@@ -79,7 +78,7 @@ public class Lexer {
         int tokenColumnPosition = stream.getCurrentColumnPosition();
         token = createToken();
         if(token == null) //token doesnt exist, bad token
-            ErrorHandler.handleBadTokenError();
+            ErrorHandler.handleBadTokenError(tokenLinePosition, tokenColumnPosition);
         token.setPosition(tokenLinePosition, tokenColumnPosition);
         return token;
     }
@@ -93,8 +92,10 @@ public class Lexer {
             return beginsWithSmallLetterToken(text);
         if (largeLetters.indexOf(c) != -1)
             return beginsWithLargeLetterToken(text);
-        if (numbers.indexOf(c) != -1)
+        if (numbersWithoutZero.indexOf(c) != -1)
             return beginsWithNumberToken(text);
+        if (c == '0')
+            return beginsWithZeroToken(text);
         return beginsWithSpecialCharacterToken(text);
     }
 
@@ -132,17 +133,34 @@ public class Lexer {
         char c;
         while(numbers.indexOf(c = stream.readCharacter()) != -1) //integer
             text += c;
-        if((c = stream.readCharacter()) == '.'){ //if double
+        if(c == '.'){ //if double
             text += c;
-            while(numbers.indexOf(c = stream.readCharacter()) != -1)
-                text += c;
-            stream.returnCharacter(c);
-            return new DoubleNumberToken(Double.parseDouble(text));
+            return processDouble(text);
         }
         else {
             stream.returnCharacter(c);
             return new IntegerNumberToken(Integer.parseInt(text));
         }
+    }
+
+    private Token beginsWithZeroToken(String text){
+        char c = stream.readCharacter();
+        if(c == '.'){
+            text += c;
+            return processDouble(text);
+        }
+        if(numbers.indexOf(c) != -1) //c is a number
+            return null; //Bad token
+        stream.returnCharacter(c);
+        return new IntegerNumberToken(0);
+    }
+
+    private Token processDouble(String text){
+        char c;
+        while(numbers.indexOf(c = stream.readCharacter()) != -1)
+            text += c;
+        stream.returnCharacter(c);
+        return new DoubleNumberToken(Double.parseDouble(text));
     }
 
     private Token beginsWithSpecialCharacterToken(String text){
@@ -158,6 +176,6 @@ public class Lexer {
     }
 
     public boolean isEOF(){
-        return stream.getEOFStatus();
+        return stream.isEOF();
     }
 }

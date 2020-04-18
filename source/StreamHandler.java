@@ -7,6 +7,7 @@ public class StreamHandler {
     private int currentLinePosition;
     private int currentColumnPosition;
     private boolean EOF;
+    private boolean loadNextLine;
 
     static final char EOFCharacter = (char)-1;
     static final char EOLCharacter = (char)10;
@@ -31,23 +32,23 @@ public class StreamHandler {
         scanner.useDelimiter("");
         currentLinePosition = 1;
         currentColumnPosition = 1;
-        if(scanner.hasNextLine() == false){
-            EOF = true;
-            return;
-        }
-        else
-            EOF = false;
-        line = scanner.nextLine();
-        setCursorAtNextCharacter();
+        EOF = false;
+        loadNextLine = true;
     }
 
     public char readCharacter() { 
-        char c, statusCharacter;
-        statusCharacter = setCursorAtNextCharacter();
-        if(statusCharacter != 0) //if not fine
-            return statusCharacter; //space, EOL, EOF
+        char c;
+        if(loadNextLine){
+            setCursorAtNextCharacter();
+            if(isEOF())
+                return EOFCharacter;
+            loadNextLine = false;
+        }
+        else if(line.length() == 0){
+            loadNextLine = true;
+            return EOLCharacter;
+        }
         c = line.charAt(0);
-        System.out.println(c);
         line = line.substring(1);
         currentColumnPosition++;
         return c;
@@ -55,7 +56,7 @@ public class StreamHandler {
 
     private char processEmptyLines(){
         currentColumnPosition = 1;
-        do{
+        do {
             currentLinePosition++;
             if (scanner.hasNextLine())
                 line = scanner.nextLine();
@@ -90,7 +91,7 @@ public class StreamHandler {
         return currentColumnPosition;
     }
 
-    public boolean getEOFStatus(){
+    public boolean isEOF(){
         return EOF;
     }
 
