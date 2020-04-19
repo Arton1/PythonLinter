@@ -74,18 +74,21 @@ public class Lexer {
 
     public Token getToken(){
         Token token;
-        int tokenLinePosition = stream.getCurrentLinePosition();
-        int tokenColumnPosition = stream.getCurrentColumnPosition();
         token = createToken();
-        if(token == null) //token doesnt exist, bad token
-            ErrorHandler.handleBadTokenError(tokenLinePosition, tokenColumnPosition);
-        token.setPosition(tokenLinePosition, tokenColumnPosition);
+        if(token == null) //token doesnt exist
+            if(stream.isEOF()) //no more characters
+                return null;
+            else //bad token
+                ErrorHandler.handleBadTokenError(stream.getCurrentTokenLinePosition(), stream.getCurrentTokenColumnPosition());
+        token.setPosition(stream.getCurrentTokenLinePosition(), stream.getCurrentTokenColumnPosition());
         return token;
     }
 
     private Token createToken(){
         char c;
         c = stream.readCharacter();
+        if(c == StreamHandler.EOFCharacter) //no more stream
+            return null;
         String text = "";
         text += c;
         if (smallLetters.indexOf(c) != -1)

@@ -7,7 +7,10 @@ public class StreamHandler {
     private int currentLinePosition;
     private int currentColumnPosition;
     private boolean EOF;
-    private boolean loadNextLine;
+    private boolean EOL;
+    private int currentTokenLinePosition;
+    private int currentTokenColumnPosition;
+    private int nextTokenColumnPosition;
 
     static final char EOFCharacter = (char)-1;
     static final char EOLCharacter = (char)10;
@@ -32,21 +35,29 @@ public class StreamHandler {
         scanner.useDelimiter("");
         currentLinePosition = 1;
         currentColumnPosition = 1;
+        nextTokenColumnPosition = -1;
         EOF = false;
-        loadNextLine = true;
+        EOL = true;
     }
 
     public char readCharacter() { 
         char c;
-        if(loadNextLine){
-            setCursorAtNextCharacter();
-            if(isEOF())
+        if(EOL){
+            currentColumnPosition = 1;
+            EOF = setCursorAtNextCharacter();
+            if(EOF)
                 return EOFCharacter;
-            loadNextLine = false;
+            currentTokenLinePosition = currentLinePosition++;
+            currentTokenColumnPosition = currentColumnPosition;
+            EOL = false;
         }
         else if(line.length() == 0){
-            loadNextLine = true;
+            EOL = true;
             return EOLCharacter;
+        }
+        if(nextTokenColumnPosition != -1){ //next token on the same line started
+            currentTokenColumnPosition = nextTokenColumnPosition;
+            nextTokenColumnPosition = -1;
         }
         c = line.charAt(0);
         line = line.substring(1);
@@ -54,65 +65,68 @@ public class StreamHandler {
         return c;
     }
 
-    private char processEmptyLines(){
+    private boolean processEmptyLines(){ //returns EOF status
         currentColumnPosition = 1;
         do {
             currentLinePosition++;
             if (scanner.hasNextLine())
                 line = scanner.nextLine();
-            else {
-                EOF = true;
-                return EOFCharacter;
-            }
+            else
+                return true; //is EOF
         } while(line.length() == 0);
-        return EOLCharacter;
+        return false; //not EOF
     }
 
     public void returnCharacter(char c){
-        if (c != EOLCharacter && c != ' '){ 
-            line = c + line;
-            currentColumnPosition--;
+        if(c == ' ')
+            EOL = passSpaces();
+        else
+            if (!EOL){
+                line = c + line;
+                currentColumnPosition--;
         }
+        if(!EOL)
+            nextTokenColumnPosition = currentColumnPosition; //save for next token on the same line
     }
 
-    private void passSpaces(){
-        do {
+    private boolean passSpaces(){ //EOL status
+        while (line.length() != 0 && line.charAt(0) == ' '){
             line = line.substring(1, line.length());
             currentColumnPosition++;
-        } 
-        while (line.length() != 0 && line.charAt(0) == ' ');
+        }
+        if(line.length() == 0)
+            return true; //is EOL
+        return false; //not EOL
     }
 
-    public int getCurrentLinePosition(){
-        return currentLinePosition;
+    public int getCurrentTokenLinePosition(){
+        return currentTokenLinePosition;
     }
 
-    public int getCurrentColumnPosition(){
-        return currentColumnPosition;
+    public int getCurrentTokenColumnPosition(){
+        return currentTokenColumnPosition;
     }
 
     public boolean isEOF(){
         return EOF;
     }
 
-    private char setCursorAtNextCharacter(){
-        char specialCharacter = 0;
-        if(line.length() == 0){
-            specialCharacter = processEmptyLines(); //ignore empty lines
-            if(specialCharacter == EOFCharacter)
-                return specialCharacter;
-        }
-        if(line.charAt(0) == ' '){ 
+    private boolean setCursorAtNextCharacter(){ //returns EOF status
+        if(scanner.hasNextLine())
+            line = scanner.nextLine();
+        else //EOF status
+            return true;
+        if(line.length() == 0)
+            if(processEmptyLines())
+                return true;
+        if(line.charAt(0) == ' ')
             passSpaces(); //ignore spaces
-            specialCharacter = ' ';
-        }
         while(line.length() == 0){ //empty line
-            specialCharacter = processEmptyLines(); //ignore empty lines
-            if(specialCharacter == EOFCharacter) //check if EOF
-                return specialCharacter;
+            if(processEmptyLines()) //check if EOF
+                return true;
             if(line.charAt(0) == ' ')
                 passSpaces(); //ignore spaces
         }
-        return specialCharacter;
+        return false;
     }
 }

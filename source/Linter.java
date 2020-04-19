@@ -13,13 +13,13 @@ class Linter {
         }
         Lexer lexer = new Lexer(stream);
         Token token;
-        while(!lexer.isEOF()){
-            token = lexer.getToken();
+        while((token = lexer.getToken()) != null){ //until EOF
             System.out.print(token.getTokenType());
             System.out.print(" " + token.getLine() + " ");
             System.out.print(token.getColumn() + " ");
             if(token instanceof IdentifierToken)
                 System.out.print(((IdentifierToken)token).getIdentifier());
+            System.out.println();
         }
     }
 }
