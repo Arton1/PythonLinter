@@ -8,9 +8,6 @@ public class StreamHandler {
     private int currentColumnPosition;
     private boolean EOF;
     private boolean EOL;
-    private int currentTokenLinePosition;
-    private int currentTokenColumnPosition;
-    private int nextTokenColumnPosition;
 
     static final char EOF_CHARACTER = (char)-1;
     static final char EOL_CHARACTER = (char)10;
@@ -34,42 +31,36 @@ public class StreamHandler {
 
     private void initialize(){
         scanner.useDelimiter("");
-        currentLinePosition = 1;
-        currentColumnPosition = 1;
-        nextTokenColumnPosition = -1;
+        currentLinePosition = 0;
+        currentColumnPosition = 0;
         EOF = false;
-        EOL = true; //read next line at next character reading
+        line = null;
     }
 
     public char readCharacter() { 
-        if(EOL){ //no line, read next line
-            currentColumnPosition = 1;
+        if(line == null){ //no line, read next line
+            currentColumnPosition = 0;
             EOF = setCursorAtNextCharacter(); //set cursor at next true character
             if(EOF) //no more lines
                 return EOF_CHARACTER;
-            currentTokenLinePosition = currentLinePosition++;
-            currentTokenColumnPosition = currentColumnPosition;
-            EOL = false;
+            currentLinePosition++;
         }
-        else if(line.length() == 0){ //scanner doesnt contain new line characters in lines
-            currentColumnPosition++;
+        if(line.length() == 0){ //scanner doesnt contain any new line characters in lines
+            line = null;
             return EOL_CHARACTER; //simulate EOL in line
-        }
-        if(nextTokenColumnPosition != -1){ //next token on the same line started
-            currentTokenColumnPosition = nextTokenColumnPosition;
-            nextTokenColumnPosition = -1;
         }
         char c = line.charAt(0);
         if(c == SPACE_CHARACTER)
-            if(passSpaces()) { //check line contains only spaces
+            if(passSpaces()) { //check line contains only spaces and pass any mass spaces
                 currentColumnPosition++; //adding EOL character to line
                 return EOL_CHARACTER; //simulate EOL
             }
             else
                 return SPACE_CHARACTER;
         if(c == EOL_CHARACTER){
-            EOL = true; //no more characters, load next line at next query
-            return c;
+            line = null;
+            currentColumnPosition++;
+            return EOL_CHARACTER;
         }
         line = line.substring(1);
         currentColumnPosition++;
@@ -90,11 +81,13 @@ public class StreamHandler {
 
     public void returnCharacter(char c){
         if(c != SPACE_CHARACTER){
-            line = c + line;
-            currentColumnPosition--;
+            if(line != null){
+                line = c + line;
+                currentColumnPosition--;
+            }
+            else
+                line = Character.toString(c);
         }
-        if(!EOL)
-            nextTokenColumnPosition = currentColumnPosition; //save for next token on the same line
     }
 
     private boolean passSpaces(){ //EOL status
@@ -107,12 +100,12 @@ public class StreamHandler {
         return false; //not empty, probably EOL character in there
     }
 
-    public int getCurrentTokenLinePosition(){
-        return currentTokenLinePosition;
+    public int getCurrentLinePosition(){
+        return currentLinePosition;
     }
 
-    public int getCurrentTokenColumnPosition(){
-        return currentTokenColumnPosition;
+    public int getCurrentColumnPosition(){
+        return currentColumnPosition;
     }
 
     public boolean isEOF(){

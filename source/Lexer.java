@@ -11,6 +11,9 @@ public class Lexer {
     private HashMap<String, TokenType> singletonTokenTable; //special character tokens that have only one letters and can be instantly identified
     private HashMap<String, TokenType> ambiguousTokenTable; //special character tokens that are ambiguous, so need additional characters checking
 
+    private int currentTokenLinePosition;
+    private int currentTokenColumnPosition;
+
     static final String SMALL_LETTERS = "abcdefghijklmnopqrstuvwxyz";
     static final String LARGE_LETTERS = "ABCDEFGHIJKLMNOPQRSTUVW";
     static final String NUMBERS = "0123456789";
@@ -21,6 +24,7 @@ public class Lexer {
         this.stream = stream;
         createWordsTokenTable();
         createSingletonTokenTable();
+        createAmbiguousTokenTable();
     }
 
     void createWordsTokenTable(){
@@ -61,6 +65,7 @@ public class Lexer {
     }
 
     private void createAmbiguousTokenTable(){
+        ambiguousTokenTable = new HashMap<String, TokenType>();
         ambiguousTokenTable.put("+", SimpleStatementTokenType.RETURN);
         ambiguousTokenTable.put("+=", AssignmentTokenType.ADD_AS);
         ambiguousTokenTable.put("-=", AssignmentTokenType.SUBSTRACT_AS);
@@ -91,13 +96,15 @@ public class Lexer {
             if(stream.isEOF()) //no more characters
                 return null;
             else //bad token
-                ErrorHandler.handleBadTokenError(stream.getCurrentTokenLinePosition(), stream.getCurrentTokenColumnPosition());
-        token.setPosition(stream.getCurrentTokenLinePosition(), stream.getCurrentTokenColumnPosition());
+                ErrorHandler.handleBadTokenError(currentTokenLinePosition, currentTokenColumnPosition);
+        token.setPosition(currentTokenLinePosition, currentTokenColumnPosition);
         return token;
     }
 
     private Token createToken(){
         char c = stream.readCharacter();
+        currentTokenLinePosition = stream.getCurrentLinePosition();
+        currentTokenColumnPosition = stream.getCurrentColumnPosition();
         if(c == StreamHandler.EOF_CHARACTER) //no more stream
             return null;
         Token token;
@@ -116,11 +123,11 @@ public class Lexer {
             String text = Character.toString(c);
             while(true){
                 c = stream.readCharacter();
-                if(SMALL_LETTERS.indexOf(c) == -1){
-                    if ((LARGE_LETTERS+NUMBERS).indexOf(c) == -1)
-                       break;
-                    possibleKeyword = false;
-                }
+                if(SMALL_LETTERS.indexOf(c) == -1) //doesnt contain
+                    if ((LARGE_LETTERS+NUMBERS).indexOf(c) == -1) //doesnt contain
+                        break;
+                    else
+                        possibleKeyword = false;
                 text += c;
             }
             TokenType tokenType = null;
@@ -174,6 +181,7 @@ public class Lexer {
     private Token checkZeroToken(char c){
         if(c == '0'){
             String text = Character.toString(c);
+            c = stream.readCharacter();
             if(c == '.'){
                 text += c;
                 return processDouble(text);
