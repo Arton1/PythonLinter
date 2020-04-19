@@ -37,7 +37,7 @@ public class StreamHandler {
 
     public char readCharacter() { 
         if(line == null){ //no line, read next line
-            EOF = setCursorAtNextCharacter(); //set cursor at next true character
+            EOF = setNextLine(); //set cursor at next true character
             if(EOF) //no more lines
                 return EOF_CHARACTER;
             currentLinePosition++;
@@ -87,9 +87,31 @@ public class StreamHandler {
             line = line.substring(1, line.length());
         }
         if(line.length() == 0)
-            return true; //is EOL, no EOL character
+            return true; //is EOL, no EOL character in line
         return false; //not empty, probably EOL character in there
     }
+
+    private boolean setCursorAtNextCharacter(){
+        if(line.length() == 0) //empty line
+            if(processEmptyLines()) //pass empty lines
+                return true;
+        if(line.charAt(0) == SPACE_CHARACTER) //first character is space after getting next line
+            passSpaces(); //ignore spaces in this line
+        while(line.length() == 0){ //new line had only spaces. Pass all lines with the same cases.
+            if(processEmptyLines()) //check if EOF. Pass all empty spaces
+                return true;
+            if(line.charAt(0) == SPACE_CHARACTER) //pass spaces
+                passSpaces(); //ignore spaces
+        }
+        initialLineSize = line.length();
+        return false;
+    }
+
+    public void prepareForNextToken(){
+        if(passSpaces()) //EOL? 
+            line = Character.toString(EOL_CHARACTER);
+    }
+
 
     public int getCurrentLinePosition(){
         return currentLinePosition;
@@ -106,23 +128,12 @@ public class StreamHandler {
         return EOF;
     }
 
-    private boolean setCursorAtNextCharacter(){ //returns EOF status
+    private boolean setNextLine(){ //returns EOF status
         if(scanner.hasNextLine())
             line = scanner.nextLine(); //load line
         else //EOF status
             return true;
         initialLineSize = line.length();
-        if(line.length() == 0) //empty line
-            if(processEmptyLines()) //pass empty lines
-                return true;
-        if(line.charAt(0) == SPACE_CHARACTER) //first character is space after getting next line
-            passSpaces(); //ignore spaces in this line
-        while(line.length() == 0){ //new line had only spaces. Pass all lines with the same cases.
-            if(processEmptyLines()) //check if EOF. Pass all empty spaces
-                return true;
-            if(line.charAt(0) == SPACE_CHARACTER) //pass spaces
-                passSpaces(); //ignore spaces
-        }
-        return false;
+        return setCursorAtNextCharacter(); //EOF if cant find
     }
 }

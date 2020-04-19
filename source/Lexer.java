@@ -15,10 +15,11 @@ public class Lexer {
     private int currentTokenColumnPosition;
 
     static final String SMALL_LETTERS = "abcdefghijklmnopqrstuvwxyz";
-    static final String LARGE_LETTERS = "ABCDEFGHIJKLMNOPQRSTUVW";
+    static final String LARGE_LETTERS = "ABCDEFGHIJKLMNOPQRSTUVW_";
     static final String NUMBERS = "0123456789";
     static final String NUMBERS_WITHOUT_ZERO = "123456789";
-    static final String SPECIAL_CHARACTERS = "+-=*/<>!.,[](){}\"\'\t";
+    static final String SINGLETON_CHARACTERS = ":.,[](){}\"\'\t";
+    static final String CAN_HAVE_EQUALS_CHARACTERS = "+-%=!*/<>";
 
     Lexer(StreamHandler stream){
         this.stream = stream;
@@ -60,33 +61,33 @@ public class Lexer {
         singletonTokenTable.put("\'", StringTokenType.SINGLE_QUOTE);
         singletonTokenTable.put("\"", StringTokenType.DOUBLE_QUOTE);
         singletonTokenTable.put("\t", BlockTokenType.INDENT);
-        singletonTokenTable.put(":", BlockTokenType.TWO_DOTTED);
+        singletonTokenTable.put(":", BlockTokenType.TWO_DOTS);
         singletonTokenTable.put("\n", BlockTokenType.NEWLINE);
     }
 
     private void createAmbiguousTokenTable(){
         ambiguousTokenTable = new HashMap<String, TokenType>();
-        ambiguousTokenTable.put("+", SimpleStatementTokenType.RETURN);
+        ambiguousTokenTable.put("/", MultiplierTokenType.DIVIDE_OP);
+        ambiguousTokenTable.put("/=", AssignmentTokenType.DIVIDE_AS);
+        ambiguousTokenTable.put("+", SignTokenType.PLUS);
         ambiguousTokenTable.put("+=", AssignmentTokenType.ADD_AS);
+        ambiguousTokenTable.put("-", SignTokenType.MINUS);
         ambiguousTokenTable.put("-=", AssignmentTokenType.SUBSTRACT_AS);
         ambiguousTokenTable.put("*", MultiplierTokenType.MULTIPLY_OP);
         ambiguousTokenTable.put("*=", AssignmentTokenType.MULTIPLY_AS);
-        ambiguousTokenTable.put("**", SimpleStatementTokenType.RETURN);
-        ambiguousTokenTable.put("**=", AssignmentTokenType.POWER_AS);
-        ambiguousTokenTable.put("/", MultiplierTokenType.DIVIDE_OP);
-        ambiguousTokenTable.put("/=", AssignmentTokenType.DIVIDE_AS);
-        ambiguousTokenTable.put("//", SimpleStatementTokenType.RETURN);
-        ambiguousTokenTable.put("//=", AssignmentTokenType.REMINDER_AS);
-        ambiguousTokenTable.put("=", AssignmentTokenType.NORMAL_AS);
-        ambiguousTokenTable.put("%=", AssignmentTokenType.REMINDER_AS);
         ambiguousTokenTable.put("%", MultiplierTokenType.REMINDER_OP);
-        ambiguousTokenTable.put("//", MultiplierTokenType.INTEGER_DIV_OP);
+        ambiguousTokenTable.put("%=", AssignmentTokenType.REMINDER_AS);
         ambiguousTokenTable.put("==", CompareTokenType.EQUAL);
+        ambiguousTokenTable.put("=", AssignmentTokenType.NORMAL_AS);
+        ambiguousTokenTable.put("**", PowerTokenType.POWER);
+        ambiguousTokenTable.put("**=", AssignmentTokenType.POWER_AS);
+        ambiguousTokenTable.put("//=", AssignmentTokenType.REMINDER_AS);
+        ambiguousTokenTable.put("//", MultiplierTokenType.INTEGER_DIV_OP);
         ambiguousTokenTable.put("<", CompareTokenType.LESS);
         ambiguousTokenTable.put("<=", CompareTokenType.LESS_EQUAL);
-        ambiguousTokenTable.put("<>", CompareTokenType.OTHER_THAN);
         ambiguousTokenTable.put(">", CompareTokenType.MORE);
         ambiguousTokenTable.put(">=", CompareTokenType.MORE_EQUAL);
+        ambiguousTokenTable.put("!=", CompareTokenType.OTHER_THAN);
     }
 
     public Token getToken(){
@@ -108,12 +109,15 @@ public class Lexer {
         if(c == StreamHandler.EOF_CHARACTER) //no more stream
             return null;
         Token token;
-        if((token = checkSingletonToken(c)) == null)
-            if((token = checkSmallLetterToken(c)) == null)
-                if((token = checkLargeLetterToken(c)) == null)
-                    if((token = checkZeroToken(c)) == null)
-                        if((token = checkNumberToken(c)) == null)
-                            token = checkSpecialCharactersToken(c);
+        if(c == StreamHandler.EOL_CHARACTER) //explicit, because too important
+            token = new Token(BlockTokenType.NEWLINE);
+        else
+            if((token = checkSingletonToken(c)) == null)
+                if((token = checkSmallLetterToken(c)) == null)
+                    if((token = checkLargeLetterToken(c)) == null)
+                       if((token = checkZeroToken(c)) == null)
+                            if((token = checkNumberToken(c)) == null)
+                               token = checkSpecialCharactersToken(c);
         return token;
     }
 
@@ -156,8 +160,10 @@ public class Lexer {
 
     private Token checkSingletonToken(char c){
         TokenType tokenType;
-        if((tokenType = singletonTokenTable.getOrDefault(Character.toString(c), null)) != null)
+        if((tokenType = singletonTokenTable.getOrDefault(Character.toString(c), null)) != null){
+            stream.prepareForNextToken();
             return new Token(tokenType);
+        }
         return null;
     }
 
@@ -195,16 +201,23 @@ public class Lexer {
     }
 
     private Token checkSpecialCharactersToken(char c){
-        if(SPECIAL_CHARACTERS.indexOf(c) != -1){
+        if(CAN_HAVE_EQUALS_CHARACTERS.indexOf(c) != -1){
+            TokenType tokenType;
             String text = Character.toString(c);
-            while(SPECIAL_CHARACTERS.indexOf(c = stream.readCharacter()) != -1)
-                text += c;
-            stream.returnCharacter(c);
-            TokenType tokenType = ambiguousTokenTable.getOrDefault(text, null);
+            c = stream.readCharacter();
+            if(c == '*' || c == '/'){
+                text = text + c;
+                c = stream.readCharacter();
+            }
+            if(c == '=')
+                text = text + c;
+            else
+                stream.returnCharacter(c);
+            tokenType = ambiguousTokenTable.getOrDefault(text, null);
+            stream.prepareForNextToken();
             if(tokenType != null)
                 return new Token(tokenType);
-            else
-                return null;
+            
         }
         return null;
     }
