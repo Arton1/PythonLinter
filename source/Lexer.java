@@ -7,7 +7,9 @@ import java.util.HashMap;
 
 public class Lexer {
     private StreamHandler stream;
-    private HashMap<String, TokenType> tokenTable;
+    private HashMap<String, TokenType> wordsTokenTable; //tokens that only contain letters
+    private HashMap<String, TokenType> singletonTokenTable; //special character tokens that have only one letters and can be instantly identified
+    private HashMap<String, TokenType> ambiguousTokenTable; //special character tokens that are ambiguous, so need additional characters checking
 
     static final String SMALL_LETTERS = "abcdefghijklmnopqrstuvwxyz";
     static final String LARGE_LETTERS = "ABCDEFGHIJKLMNOPQRSTUVW";
@@ -17,61 +19,69 @@ public class Lexer {
 
     Lexer(StreamHandler stream){
         this.stream = stream;
-        createTokenTable();
+        createWordsTokenTable();
+        createSingletonTokenTable();
     }
 
-    void createTokenTable(){
-        tokenTable = new HashMap<String, TokenType>();
-        tokenTable.put("return", SimpleStatementTokenType.RETURN);
-        tokenTable.put("in", CompareTokenType.IN);
-        tokenTable.put("pass", SimpleStatementTokenType.PASS);
-        tokenTable.put("break", SimpleStatementTokenType.BREAK);
-        tokenTable.put("continue", SimpleStatementTokenType.CONTINUE);
-        tokenTable.put("is", CompareTokenType.IS);
-        tokenTable.put("import", SimpleStatementTokenType.IMPORT);
-        tokenTable.put("else", CompoundStatementTokenType.ELSE);
-        tokenTable.put("elif", CompoundStatementTokenType.ELIF);
-        tokenTable.put("and", LogicTokenType.AND);
-        tokenTable.put("as", SimpleStatementTokenType.AS);
-        tokenTable.put("or", LogicTokenType.OR);
-        tokenTable.put("def", CompoundStatementTokenType.FUN);
-        tokenTable.put("class", CompoundStatementTokenType.CLASS);
-        tokenTable.put("for", CompoundStatementTokenType.FOR);
-        tokenTable.put("not", LogicTokenType.NOT);
-        tokenTable.put("+", SimpleStatementTokenType.RETURN);
-        tokenTable.put("+=", AssignmentTokenType.ADD_AS);
-        tokenTable.put("-=", AssignmentTokenType.SUBSTRACT_AS);
-        tokenTable.put("*", MultiplierTokenType.MULTIPLY_OP);
-        tokenTable.put("*=", AssignmentTokenType.MULTIPLY_AS);
-        tokenTable.put("**", SimpleStatementTokenType.RETURN);
-        tokenTable.put("**=", AssignmentTokenType.POWER_AS);
-        tokenTable.put("/", MultiplierTokenType.DIVIDE_OP);
-        tokenTable.put("/=", AssignmentTokenType.DIVIDE_AS);
-        tokenTable.put("//", SimpleStatementTokenType.RETURN);
-        tokenTable.put("//=", AssignmentTokenType.REMINDER_AS);
-        tokenTable.put("=", AssignmentTokenType.NORMAL_AS);
-        tokenTable.put("%=", AssignmentTokenType.REMINDER_AS);
-        tokenTable.put("%", MultiplierTokenType.REMINDER_OP);
-        tokenTable.put("//", MultiplierTokenType.INTEGER_DIV_OP);
-        tokenTable.put("==", CompareTokenType.EQUAL);
-        tokenTable.put("<", CompareTokenType.LESS);
-        tokenTable.put("<=", CompareTokenType.LESS_EQUAL);
-        tokenTable.put("<>", CompareTokenType.OTHER_THAN);
-        tokenTable.put(">", CompareTokenType.MORE);
-        tokenTable.put(">=", CompareTokenType.MORE_EQUAL);
-        tokenTable.put(".", SimpleStatementTokenType.DOT);
-        tokenTable.put(",", SimpleStatementTokenType.COMMA);
-        tokenTable.put("{", BracketTokenType.CURLY_BEGIN);
-        tokenTable.put("}", BracketTokenType.CURLY_END);
-        tokenTable.put("[", BracketTokenType.SQUARED_BEGIN);
-        tokenTable.put("]", BracketTokenType.SQUARED_END);
-        tokenTable.put("(", BracketTokenType.ROUNDED_BEGIN);
-        tokenTable.put(")", BracketTokenType.ROUNDED_END);
-        tokenTable.put("\'", StringTokenType.DOUBLE_QUOTE);
-        tokenTable.put("\"", StringTokenType.SINGLE_QUOTE);
-        tokenTable.put("\t", BlockTokenType.INDENT);
-        tokenTable.put(":", BlockTokenType.TWO_DOTTED);
-        tokenTable.put("\n", BlockTokenType.NEWLINE);
+    void createWordsTokenTable(){
+        wordsTokenTable = new HashMap<String, TokenType>();
+        wordsTokenTable.put("return", SimpleStatementTokenType.RETURN);
+        wordsTokenTable.put("in", CompareTokenType.IN);
+        wordsTokenTable.put("pass", SimpleStatementTokenType.PASS);
+        wordsTokenTable.put("break", SimpleStatementTokenType.BREAK);
+        wordsTokenTable.put("continue", SimpleStatementTokenType.CONTINUE);
+        wordsTokenTable.put("is", CompareTokenType.IS);
+        wordsTokenTable.put("import", SimpleStatementTokenType.IMPORT);
+        wordsTokenTable.put("else", CompoundStatementTokenType.ELSE);
+        wordsTokenTable.put("elif", CompoundStatementTokenType.ELIF);
+        wordsTokenTable.put("and", LogicTokenType.AND);
+        wordsTokenTable.put("as", SimpleStatementTokenType.AS);
+        wordsTokenTable.put("or", LogicTokenType.OR);
+        wordsTokenTable.put("def", CompoundStatementTokenType.FUN);
+        wordsTokenTable.put("class", CompoundStatementTokenType.CLASS);
+        wordsTokenTable.put("for", CompoundStatementTokenType.FOR);
+        wordsTokenTable.put("not", LogicTokenType.NOT);
+    }
+
+    private void createSingletonTokenTable(){
+        singletonTokenTable = new HashMap<String, TokenType>();
+        singletonTokenTable.put(".", SimpleStatementTokenType.DOT);
+        singletonTokenTable.put(",", SimpleStatementTokenType.COMMA);
+        singletonTokenTable.put("{", BracketTokenType.CURLY_BEGIN);
+        singletonTokenTable.put("}", BracketTokenType.CURLY_END);
+        singletonTokenTable.put("[", BracketTokenType.SQUARED_BEGIN);
+        singletonTokenTable.put("]", BracketTokenType.SQUARED_END);
+        singletonTokenTable.put("(", BracketTokenType.ROUNDED_BEGIN);
+        singletonTokenTable.put(")", BracketTokenType.ROUNDED_END);
+        singletonTokenTable.put("\'", StringTokenType.SINGLE_QUOTE);
+        singletonTokenTable.put("\"", StringTokenType.DOUBLE_QUOTE);
+        singletonTokenTable.put("\t", BlockTokenType.INDENT);
+        singletonTokenTable.put(":", BlockTokenType.TWO_DOTTED);
+        singletonTokenTable.put("\n", BlockTokenType.NEWLINE);
+    }
+
+    private void createAmbiguousTokenTable(){
+        ambiguousTokenTable.put("+", SimpleStatementTokenType.RETURN);
+        ambiguousTokenTable.put("+=", AssignmentTokenType.ADD_AS);
+        ambiguousTokenTable.put("-=", AssignmentTokenType.SUBSTRACT_AS);
+        ambiguousTokenTable.put("*", MultiplierTokenType.MULTIPLY_OP);
+        ambiguousTokenTable.put("*=", AssignmentTokenType.MULTIPLY_AS);
+        ambiguousTokenTable.put("**", SimpleStatementTokenType.RETURN);
+        ambiguousTokenTable.put("**=", AssignmentTokenType.POWER_AS);
+        ambiguousTokenTable.put("/", MultiplierTokenType.DIVIDE_OP);
+        ambiguousTokenTable.put("/=", AssignmentTokenType.DIVIDE_AS);
+        ambiguousTokenTable.put("//", SimpleStatementTokenType.RETURN);
+        ambiguousTokenTable.put("//=", AssignmentTokenType.REMINDER_AS);
+        ambiguousTokenTable.put("=", AssignmentTokenType.NORMAL_AS);
+        ambiguousTokenTable.put("%=", AssignmentTokenType.REMINDER_AS);
+        ambiguousTokenTable.put("%", MultiplierTokenType.REMINDER_OP);
+        ambiguousTokenTable.put("//", MultiplierTokenType.INTEGER_DIV_OP);
+        ambiguousTokenTable.put("==", CompareTokenType.EQUAL);
+        ambiguousTokenTable.put("<", CompareTokenType.LESS);
+        ambiguousTokenTable.put("<=", CompareTokenType.LESS_EQUAL);
+        ambiguousTokenTable.put("<>", CompareTokenType.OTHER_THAN);
+        ambiguousTokenTable.put(">", CompareTokenType.MORE);
+        ambiguousTokenTable.put(">=", CompareTokenType.MORE_EQUAL);
     }
 
     public Token getToken(){
@@ -87,79 +97,108 @@ public class Lexer {
     }
 
     private Token createToken(){
-        char c;
-        c = stream.readCharacter();
+        char c = stream.readCharacter();
         if(c == StreamHandler.EOF_CHARACTER) //no more stream
             return null;
-        String text = "";
-        text += c;
-        if (SMALL_LETTERS.indexOf(c) != -1)
-            return beginsWithSmallLetterToken(text);
-        if (LARGE_LETTERS.indexOf(c) != -1)
-            return beginsWithLargeLetterToken(text);
-        if (NUMBERS_WITHOUT_ZERO.indexOf(c) != -1)
-            return beginsWithNumberToken(text);
-        if (c == '0')
-            return beginsWithZeroToken(text);
-        if (c == StreamHandler.EOL_CHARACTER)
-            return new Token(BlockTokenType.NEWLINE);
-        return beginsWithSpecialCharacterToken(text);
+        Token token;
+        if((token = checkSingletonToken(c)) == null)
+            if((token = checkSmallLetterToken(c)) == null)
+                if((token = checkLargeLetterToken(c)) == null)
+                    if((token = checkZeroToken(c)) == null)
+                        if((token = checkNumberToken(c)) == null)
+                            token = checkSpecialCharactersToken(c);
+        return token;
     }
 
-    private Token beginsWithSmallLetterToken(String text){
-        boolean possibleKeyword = true;
-        char c;
-        while(true){
-            c = stream.readCharacter();
-            if(SMALL_LETTERS.indexOf(c) == -1){
-                if ((LARGE_LETTERS+NUMBERS).indexOf(c) == -1)
-                    break;
-                possibleKeyword = false;
+    private Token checkSmallLetterToken(char c){
+        if (SMALL_LETTERS.indexOf(c) != -1){
+            boolean possibleKeyword = true;
+            String text = Character.toString(c);
+            while(true){
+                c = stream.readCharacter();
+                if(SMALL_LETTERS.indexOf(c) == -1){
+                    if ((LARGE_LETTERS+NUMBERS).indexOf(c) == -1)
+                       break;
+                    possibleKeyword = false;
+                }
+                text += c;
             }
-            text += c;
-        }
-        TokenType tokenType = null;
-        if (possibleKeyword)
-            tokenType = tokenTable.getOrDefault(text, null);
-        stream.returnCharacter(c);
-        if(tokenType == null)
-            return new IdentifierToken(IdentifierTokenType.NAME, text);
-        else
-            return new Token(tokenType);
-    }
-
-    private Token beginsWithLargeLetterToken(String text){
-        char c;
-        while((SMALL_LETTERS+LARGE_LETTERS+NUMBERS).indexOf(c = stream.readCharacter()) != -1)
-            text += c;
-        stream.returnCharacter(c);
-        return new IdentifierToken(IdentifierTokenType.NAME, text);
-    }
-
-    private Token beginsWithNumberToken(String text){
-        char c;
-        while(NUMBERS.indexOf(c = stream.readCharacter()) != -1) //integer
-            text += c;
-        if(c == '.'){ //if double
-            text += c;
-            return processDouble(text);
-        }
-        else {
+            TokenType tokenType = null;
+            if (possibleKeyword)
+                tokenType = wordsTokenTable.getOrDefault(text, null);
             stream.returnCharacter(c);
-            return new IntegerNumberToken(Integer.parseInt(text));
+            if(tokenType == null)
+                return new IdentifierToken(IdentifierTokenType.NAME, text);
+            else
+                return new Token(tokenType);
+
         }
+        return null;
     }
 
-    private Token beginsWithZeroToken(String text){
-        char c = stream.readCharacter();
-        if(c == '.'){
-            text += c;
-            return processDouble(text);
+    private Token checkLargeLetterToken(char c){
+        if(LARGE_LETTERS.indexOf(c) != -1){
+            String text = Character.toString(c);
+            while((SMALL_LETTERS+LARGE_LETTERS+NUMBERS).indexOf(c = stream.readCharacter()) != -1)
+                text += c;
+            stream.returnCharacter(c);
+            return new IdentifierToken(IdentifierTokenType.NAME, text);
         }
-        if(NUMBERS.indexOf(c) != -1) //c is a number
-            return null; //Bad token
-        stream.returnCharacter(c);
-        return new IntegerNumberToken(0);
+        return null;
+    }
+
+    private Token checkSingletonToken(char c){
+        TokenType tokenType;
+        if((tokenType = singletonTokenTable.getOrDefault(Character.toString(c), null)) != null)
+            return new Token(tokenType);
+        return null;
+    }
+
+    private Token checkNumberToken(char c){
+        if (NUMBERS_WITHOUT_ZERO.indexOf(c) != -1){
+            String text = Character.toString(c);
+            while(NUMBERS.indexOf(c = stream.readCharacter()) != -1) //integer
+                text += c;
+            if(c == '.'){ //if double
+                text += c;
+                return processDouble(text);
+            }
+            else {
+                stream.returnCharacter(c);
+                return new IntegerNumberToken(Integer.parseInt(text));
+            }
+        }
+        return null;
+    }
+
+    private Token checkZeroToken(char c){
+        if(c == '0'){
+            String text = Character.toString(c);
+            if(c == '.'){
+                text += c;
+                return processDouble(text);
+            }
+            if(NUMBERS.indexOf(c) != -1) //c is a number
+                return null; //Bad token
+            stream.returnCharacter(c);
+            return new IntegerNumberToken(0);
+        }
+        return null;
+    }
+
+    private Token checkSpecialCharactersToken(char c){
+        if(SPECIAL_CHARACTERS.indexOf(c) != -1){
+            String text = Character.toString(c);
+            while(SPECIAL_CHARACTERS.indexOf(c = stream.readCharacter()) != -1)
+                text += c;
+            stream.returnCharacter(c);
+            TokenType tokenType = ambiguousTokenTable.getOrDefault(text, null);
+            if(tokenType != null)
+                return new Token(tokenType);
+            else
+                return null;
+        }
+        return null;
     }
 
     private Token processDouble(String text){
@@ -168,18 +207,6 @@ public class Lexer {
             text += c;
         stream.returnCharacter(c);
         return new DoubleNumberToken(Double.parseDouble(text));
-    }
-
-    private Token beginsWithSpecialCharacterToken(String text){
-        char c;
-        while(SPECIAL_CHARACTERS.indexOf(c = stream.readCharacter()) != -1)
-            text += c;
-        stream.returnCharacter(c);
-        TokenType tokenType = tokenTable.getOrDefault(text, null);
-        if(tokenType != null)
-            return new Token(tokenType);
-        else
-            return null;
     }
 
     public boolean isEOF(){

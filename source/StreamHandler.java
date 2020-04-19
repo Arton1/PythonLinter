@@ -59,7 +59,7 @@ public class StreamHandler {
             currentTokenColumnPosition = nextTokenColumnPosition;
             nextTokenColumnPosition = -1;
         }
-        c = line.charAt(0);
+        char c = line.charAt(0);
         if(c == SPACE_CHARACTER)
             if(passSpaces()) { //check line contains only spaces
                 currentColumnPosition++; //adding EOL character to line
