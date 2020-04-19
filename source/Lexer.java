@@ -9,11 +9,11 @@ public class Lexer {
     private StreamHandler stream;
     private HashMap<String, TokenType> tokenTable;
 
-    static final String smallLetters = "abcdefghijklmnopqrstuvwxyz";
-    static final String largeLetters = "ABCDEFGHIJKLMNOPQRSTUVW";
-    static final String numbers = "0123456789";
-    static final String numbersWithoutZero = "123456789";
-    static final String acceptableSpecialCharacters = "+-=*/<>!.,[](){}\"\'";
+    static final String SMALL_LETTERS = "abcdefghijklmnopqrstuvwxyz";
+    static final String LARGE_LETTERS = "ABCDEFGHIJKLMNOPQRSTUVW";
+    static final String NUMBERS = "0123456789";
+    static final String NUMBERS_WITHOUT_ZERO = "123456789";
+    static final String SPECIAL_CHARACTERS = "+-=*/<>!.,[](){}\"\'\t";
 
     Lexer(StreamHandler stream){
         this.stream = stream;
@@ -69,7 +69,9 @@ public class Lexer {
         tokenTable.put(")", BracketTokenType.ROUNDED_END);
         tokenTable.put("\'", StringTokenType.DOUBLE_QUOTE);
         tokenTable.put("\"", StringTokenType.SINGLE_QUOTE);
-        //need to add more 
+        tokenTable.put("\t", BlockTokenType.INDENT);
+        tokenTable.put(":", BlockTokenType.TWO_DOTTED);
+        tokenTable.put("\n", BlockTokenType.NEWLINE);
     }
 
     public Token getToken(){
@@ -87,18 +89,20 @@ public class Lexer {
     private Token createToken(){
         char c;
         c = stream.readCharacter();
-        if(c == StreamHandler.EOFCharacter) //no more stream
+        if(c == StreamHandler.EOF_CHARACTER) //no more stream
             return null;
         String text = "";
         text += c;
-        if (smallLetters.indexOf(c) != -1)
+        if (SMALL_LETTERS.indexOf(c) != -1)
             return beginsWithSmallLetterToken(text);
-        if (largeLetters.indexOf(c) != -1)
+        if (LARGE_LETTERS.indexOf(c) != -1)
             return beginsWithLargeLetterToken(text);
-        if (numbersWithoutZero.indexOf(c) != -1)
+        if (NUMBERS_WITHOUT_ZERO.indexOf(c) != -1)
             return beginsWithNumberToken(text);
         if (c == '0')
             return beginsWithZeroToken(text);
+        if (c == StreamHandler.EOL_CHARACTER)
+            return new Token(BlockTokenType.NEWLINE);
         return beginsWithSpecialCharacterToken(text);
     }
 
@@ -107,8 +111,8 @@ public class Lexer {
         char c;
         while(true){
             c = stream.readCharacter();
-            if(smallLetters.indexOf(c) == -1){
-                if ((largeLetters+numbers).indexOf(c) == -1)
+            if(SMALL_LETTERS.indexOf(c) == -1){
+                if ((LARGE_LETTERS+NUMBERS).indexOf(c) == -1)
                     break;
                 possibleKeyword = false;
             }
@@ -126,7 +130,7 @@ public class Lexer {
 
     private Token beginsWithLargeLetterToken(String text){
         char c;
-        while((smallLetters+largeLetters+numbers).indexOf(c = stream.readCharacter()) != -1)
+        while((SMALL_LETTERS+LARGE_LETTERS+NUMBERS).indexOf(c = stream.readCharacter()) != -1)
             text += c;
         stream.returnCharacter(c);
         return new IdentifierToken(IdentifierTokenType.NAME, text);
@@ -134,7 +138,7 @@ public class Lexer {
 
     private Token beginsWithNumberToken(String text){
         char c;
-        while(numbers.indexOf(c = stream.readCharacter()) != -1) //integer
+        while(NUMBERS.indexOf(c = stream.readCharacter()) != -1) //integer
             text += c;
         if(c == '.'){ //if double
             text += c;
@@ -152,7 +156,7 @@ public class Lexer {
             text += c;
             return processDouble(text);
         }
-        if(numbers.indexOf(c) != -1) //c is a number
+        if(NUMBERS.indexOf(c) != -1) //c is a number
             return null; //Bad token
         stream.returnCharacter(c);
         return new IntegerNumberToken(0);
@@ -160,7 +164,7 @@ public class Lexer {
 
     private Token processDouble(String text){
         char c;
-        while(numbers.indexOf(c = stream.readCharacter()) != -1)
+        while(NUMBERS.indexOf(c = stream.readCharacter()) != -1)
             text += c;
         stream.returnCharacter(c);
         return new DoubleNumberToken(Double.parseDouble(text));
@@ -168,7 +172,7 @@ public class Lexer {
 
     private Token beginsWithSpecialCharacterToken(String text){
         char c;
-        while(acceptableSpecialCharacters.indexOf(c = stream.readCharacter()) != -1)
+        while(SPECIAL_CHARACTERS.indexOf(c = stream.readCharacter()) != -1)
             text += c;
         stream.returnCharacter(c);
         TokenType tokenType = tokenTable.getOrDefault(text, null);
