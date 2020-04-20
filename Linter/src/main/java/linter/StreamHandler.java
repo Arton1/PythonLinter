@@ -19,14 +19,12 @@ public class StreamHandler {
         initialize();
     }
 
-    StreamHandler(String filePath){
-        try{
-            scanner = new Scanner(new File(filePath));
-        }
-        catch(FileNotFoundException e){
-            scanner.close();
-            ErrorHandler.handleException(e);
-        }
+    StreamHandler(String filePath) throws FileNotFoundException{
+        File file = new File(filePath);
+        if(file.isFile())
+            scanner = new Scanner(file);
+        else
+            throw new FileNotFoundException("File doesn't exist");
         initialize();
     }
 

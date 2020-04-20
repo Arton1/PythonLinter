@@ -5,11 +5,11 @@ import java.io.IOException;
 
 final class ErrorHandler {
 
-    public static final void handleException(FileNotFoundException e){
+    public static final void handleException(FileNotFoundException e) throws FileNotFoundException {
         System.out.println();
         System.out.print("File not found: " + e.getMessage());
         //cleanup needed
-        System.exit(1);
+        throw new FileNotFoundException();
     }
 
     public static final void handleException(IOException e){

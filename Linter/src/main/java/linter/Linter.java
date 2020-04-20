@@ -1,16 +1,24 @@
 package linter;
 
+import java.io.FileNotFoundException;
+
 import linter.token.*;
 
 class Linter {
     public static void main(String args[]){
-        StreamHandler stream;
+        StreamHandler stream = null;
         if (args.length == 0)
             stream = new StreamHandler();
         else if(args.length == 1) 
-            stream = new StreamHandler(args[0]);
+            try {
+                stream = new StreamHandler(args[0]);
+            } 
+            catch (FileNotFoundException e) {
+                System.out.println("File not found");
+                System.exit(1);
+            }
         else{
-            System.out.println("Usage: java Linter.class [path to source file]");
+            System.out.println("Usage: java linter.Linter.class [path to source file]");
             return;
         }
         Lexer lexer = new Lexer(stream);
