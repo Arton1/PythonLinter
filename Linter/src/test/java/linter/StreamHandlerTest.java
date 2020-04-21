@@ -1,7 +1,5 @@
 package linter;
 
-import linter.StreamHandler;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.ByteArrayInputStream;
@@ -98,6 +96,113 @@ public class StreamHandlerTest
         StreamHandler stream = new StreamHandler();
         char c = stream.readCharacter();
         assertEquals(StreamHandler.EOF_CHARACTER, c);
+        revertConsole();
+    }
+
+    @Test
+    public void ReadCharacter_MultipleSpacesAndMultipleLines_ExpectedEOF(){
+        String lines = "  "+EOL+"     "+EOL+"     ";
+        simulateConsole(lines);
+        StreamHandler stream = new StreamHandler();
+        char c = stream.readCharacter();
+        assertEquals(StreamHandler.EOF_CHARACTER, c);
+        revertConsole();
+    }
+
+    @Test
+    public void ReadCharacter_CharacterInSecondLineAfterSpace_ExpectedCharacter(){
+        String lines = "  "+EOL+" a";
+        simulateConsole(lines);
+        StreamHandler stream = new StreamHandler();
+        char c = stream.readCharacter();
+        assertEquals('a', c);
+        revertConsole();
+    }
+
+    @Test
+    public void ReadCharacter_CharacterInSecondLineAfterSpace_ExpectedEOLAfterCharacter(){
+        String lines = "  "+EOL+" a";
+        simulateConsole(lines);
+        StreamHandler stream = new StreamHandler();
+        char c = stream.readCharacter();
+        c = stream.readCharacter();
+        assertEquals(StreamHandler.EOL_CHARACTER, c);
+        revertConsole();
+    }
+
+    @Test
+    public void ReadCharacter_CharactersDelimitedBySpaces_ExpectedSpaceAfterCharacter(){
+        String lines = "a    b";
+        simulateConsole(lines);
+        StreamHandler stream = new StreamHandler();
+        char c = stream.readCharacter();
+        c = stream.readCharacter();
+        assertEquals(StreamHandler.SPACE_CHARACTER, c);
+        revertConsole();
+    }
+
+    @Test
+    public void ReadCharacter_CharactersDelimitedBySpaces_ExpectedCharacterAsThirdOutput(){
+        String lines = "a    b";
+        simulateConsole(lines);
+        StreamHandler stream = new StreamHandler();
+        char c = stream.readCharacter();
+        c = stream.readCharacter();
+        c = stream.readCharacter();
+        assertEquals('b', c);
+        revertConsole();
+    }
+
+    @Test
+    public void ReadCharacter_CharactersDelimitedByEOL_ExpectedEOLAsSecond(){
+        String lines = "a"+EOL+"b";
+        simulateConsole(lines);
+        StreamHandler stream = new StreamHandler();
+        char c = stream.readCharacter();
+        c = stream.readCharacter();
+        assertEquals(StreamHandler.EOL_CHARACTER, c);
+        revertConsole();
+    }
+
+    @Test
+    public void ReadCharacter_CharactersDelimitedByEOL_ExpectedCharacterAsThirdOutput(){
+        String lines = "a"+EOL+"b";
+        simulateConsole(lines);
+        StreamHandler stream = new StreamHandler();
+        char c = stream.readCharacter();
+        c = stream.readCharacter();
+        c = stream.readCharacter();
+        assertEquals('b', c);
+        revertConsole();
+    }
+
+    @Test
+    public void ReturnCharacter_Space_ExpectedEOF(){
+        simulateConsole(""); //so console doesnt wait for input from user
+        StreamHandler stream = new StreamHandler();
+        char characterToReturn = ' ';
+        stream.returnCharacter(characterToReturn);
+        assertEquals(StreamHandler.EOF_CHARACTER, stream.readCharacter());
+        revertConsole();
+    }
+
+    @Test
+    public void ReturnCharacter_Character_ExpectedCharacter(){
+        simulateConsole(""); //so console doesnt wait for input from user
+        StreamHandler stream = new StreamHandler();
+        char characterToReturn = 'a';
+        stream.returnCharacter(characterToReturn);
+        assertEquals(characterToReturn, stream.readCharacter());
+        revertConsole();
+    }
+
+    @Test
+    public void ReturnCharacter_EOL_ExpectedEOL(){
+        simulateConsole(""); //so console doesnt wait for input from user
+        StreamHandler stream = new StreamHandler();
+        char characterToReturn = EOL.charAt(0);
+        stream.returnCharacter(characterToReturn);
+        assertEquals(characterToReturn, stream.readCharacter());
         revertConsole();
     }
 }

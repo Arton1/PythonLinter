@@ -14,8 +14,7 @@ class Linter {
                 stream = new StreamHandler(args[0]);
             } 
             catch (FileNotFoundException e) {
-                System.out.println("File not found");
-                System.exit(1);
+                ErrorHandler.handleFileNotFoundException(e);
             }
         else{
             System.out.println("Usage: java linter.Linter.class [path to source file]");
@@ -23,13 +22,18 @@ class Linter {
         }
         Lexer lexer = new Lexer(stream);
         Token token;
-        while((token = lexer.getToken()) != null){ //until EOF
-            System.out.print(token.getTokenType());
-            System.out.print(" " + token.getLine() + " ");
-            System.out.print(token.getColumn() + " ");
-            if(token instanceof IdentifierToken)
-                System.out.print(((IdentifierToken)token).getIdentifier());
-            System.out.println();
+        try{
+            while((token = lexer.getToken()) != null){ //until EOF
+                System.out.print(token.getTokenType());
+                System.out.print(" " + token.getLine() + " ");
+                System.out.print(token.getColumn() + " ");
+                if(token instanceof IdentifierToken)
+                    System.out.print(((IdentifierToken)token).getIdentifier());
+                System.out.println();
+            }
+        }
+        catch(BadTokenException e){
+            ErrorHandler.handleBadTokenException(e);
         }
     }
 }

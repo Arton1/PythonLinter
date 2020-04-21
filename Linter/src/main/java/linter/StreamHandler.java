@@ -69,6 +69,7 @@ public class StreamHandler {
             else
                 return true; //is EOF
         } while(line.length() == 0);
+        initialLineSize = line.length();
         return false; //not EOF
     }
 
@@ -103,7 +104,6 @@ public class StreamHandler {
             if(line.charAt(0) == SPACE_CHARACTER) //pass spaces
                 passSpaces(); //ignore spaces
         }
-        initialLineSize = line.length();
         return false;
     }
 

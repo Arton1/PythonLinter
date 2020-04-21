@@ -89,19 +89,15 @@ public class Lexer {
         ambiguousTokenTable.put("!=", CompareTokenType.OTHER_THAN);
     }
 
-    public Token getToken(){
-        Token token;
+    public Token getToken() throws BadTokenException{
+        Token token = null;
         token = createToken();
-        if(token == null) //token doesnt exist
-            if(stream.isEOF()) //no more characters
-                return null;
-            else //bad token
-                ErrorHandler.handleBadTokenError(currentTokenLinePosition, currentTokenColumnPosition);
-        token.setPosition(currentTokenLinePosition, currentTokenColumnPosition);
+        if(stream.isEOF()) //no more characters
+            return null;
         return token;
     }
 
-    private Token createToken(){
+    private Token createToken() throws BadTokenException {
         char c = stream.readCharacter();
         currentTokenLinePosition = stream.getCurrentLinePosition();
         currentTokenColumnPosition = stream.getCurrentColumnPosition();
@@ -116,7 +112,9 @@ public class Lexer {
                     if((token = checkLargeLetterToken(c)) == null)
                        if((token = checkZeroToken(c)) == null)
                             if((token = checkNumberToken(c)) == null)
-                               token = checkSpecialCharactersToken(c);
+                               if((token = checkSpecialCharactersToken(c)) == null)
+                                    throw new BadTokenException(currentTokenLinePosition, currentTokenColumnPosition); //cannot match token
+        token.setPosition(currentTokenLinePosition, currentTokenColumnPosition); //set here to reduce code
         return token;
     }
 
@@ -168,6 +166,7 @@ public class Lexer {
 
     private Token checkNumberToken(char c){
         if (NUMBERS_WITHOUT_ZERO.indexOf(c) != -1){
+            System.out.println("Hello");
             String text = Character.toString(c);
             while(NUMBERS.indexOf(c = stream.readCharacter()) != -1) //integer
                 text += c;
@@ -183,7 +182,7 @@ public class Lexer {
         return null;
     }
 
-    private Token checkZeroToken(char c){
+    private Token checkZeroToken(char c) throws BadTokenException {
         if(c == '0'){
             String text = Character.toString(c);
             c = stream.readCharacter();
@@ -192,7 +191,7 @@ public class Lexer {
                 return processDouble(text);
             }
             if(NUMBERS.indexOf(c) != -1) //c is a number
-                return null; //Bad token
+                throw new BadTokenException(currentTokenLinePosition, currentTokenColumnPosition);
             stream.returnCharacter(c);
             return new IntegerNumberToken(0);
         }
