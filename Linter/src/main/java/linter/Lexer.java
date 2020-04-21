@@ -166,7 +166,6 @@ public class Lexer {
 
     private Token checkNumberToken(char c){
         if (NUMBERS_WITHOUT_ZERO.indexOf(c) != -1){
-            System.out.println("Hello");
             String text = Character.toString(c);
             while(NUMBERS.indexOf(c = stream.readCharacter()) != -1) //integer
                 text += c;
