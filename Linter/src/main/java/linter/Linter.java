@@ -2,6 +2,7 @@ package linter;
 
 import java.io.FileNotFoundException;
 
+import linter.exception.BadTokenException;
 import linter.token.*;
 
 class Linter {

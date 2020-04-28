@@ -3,7 +3,7 @@ package linter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import linter.token.BadTokenException;
+import linter.exception.*;
 
 
 final class ErrorHandler {
@@ -26,5 +26,12 @@ final class ErrorHandler {
         System.out.print("Error : Bad token : "+e.getLine()+";"+e.getColumn());
         //cleanup needed
         System.exit(3);
+    }
+
+    public static final void handleBadSyntaxException(BadSyntaxException e){
+        System.out.println();
+        System.out.print("Error : Bad syntax : "+e.getLine()+";"+e.getColumn());
+        //cleanup needed
+        System.exit(4);
     }
 }

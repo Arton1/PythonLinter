@@ -2,6 +2,7 @@ package linter;
 
 import linter.token.*;
 import linter.token.type.*;
+import linter.exception.BadTokenException;
 import java.util.HashMap;
 
 public class Lexer {
@@ -89,6 +90,9 @@ public class Lexer {
         ambiguousTokenTable.put("!=", CompareTokenType.OTHER_THAN);
     }
 
+    """
+    Returns null if EOF
+    "
     public Token getToken() throws BadTokenException{
         Token token = null;
         token = createToken();
