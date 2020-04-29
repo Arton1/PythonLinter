@@ -27,6 +27,6 @@ public class ParserTest {
         String input = "pass";
         Parser parser = createParser(input);
         SyntaxTree tree = parser.getNextSyntaxTree();
-        assertEquals(tree.size(), 1); //All EOLs get ignored at the beginning, so tree is empty
+        assertEquals(tree.size(), 4); //All EOLs get ignored at the beginning, so tree is empty
     }
 }

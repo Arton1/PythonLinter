@@ -12,15 +12,20 @@ public class Parser {
     }
 
     SyntaxTree getNextSyntaxTree(){
-        SyntaxTree syntaxTree = new SyntaxTree();
-        Token token;
-        while((token = lexer.getToken()) != null && !syntaxTree.finished()){ 
-            try{
+        Token token = lexer.getToken();
+        if(token == null) //EOF?
+            return null;
+        SyntaxTree syntaxTree = new SyntaxTree(); //has one production
+        while(true){
+            try {
                 syntaxTree.improve(token);
             }
             catch(BadSyntaxException exception){
                 ErrorHandler.handleBadSyntaxException(exception);
             }
+            if(syntaxTree.finished())
+                break;
+            token = lexer.getToken();
         }
         syntaxTree.reduce();
         return syntaxTree;

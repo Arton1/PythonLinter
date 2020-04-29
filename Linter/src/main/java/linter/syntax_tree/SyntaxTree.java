@@ -17,15 +17,12 @@ public class SyntaxTree {
 
     public void improve(final Token token) throws BadSyntaxException {
         try {
-            while (true) {
-                while (currentNode.processToken(token))
-                    currentNode = currentNode.getNextNode();
-                if(token.getTokenType() == BlockTokenType.NEWLINE)
-                    finished = true;
-                else
-                    setNextProcessedNode();
-                break;
-            }
+            while (currentNode.processToken(token))
+                currentNode = currentNode.getNextNode();
+            if(token.getTokenType() == BlockTokenType.NEWLINE)
+                finished = true;
+            else
+                setNextProcessedNode();
         }
         catch(BadSyntaxException e){
             e.setLine(token.getLine());
