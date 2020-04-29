@@ -20,15 +20,11 @@ public class SyntaxTree {
             while (true) {
                 while (currentNode.processToken(token))
                     currentNode = currentNode.getNextNode();
-                if (currentNode.shouldRevert()) 
-                    revert();
-                else {
-                    if(token.getTokenType() == BlockTokenType.NEWLINE)
-                        finished = true;
-                    else
-                        setToNextNode();
-                    break;
-                }
+                if(token.getTokenType() == BlockTokenType.NEWLINE)
+                    finished = true;
+                else
+                    currentNode = getNextProcessedNode();
+                break;
             }
         }
         catch(BadSyntaxException e){
@@ -38,21 +34,14 @@ public class SyntaxTree {
         }
     }
 
-    private void revert() throws BadSyntaxException{
-        currentNode = currentNode.getParent();
-        while(!currentNode.changeState()){
-            currentNode = currentNode.getParent();
+    private Node getNextProcessedNode() throws BadSyntaxException {
+        Node node;
+        while((node = currentNode.getParent().getNextNode()) == null){
+            node = currentNode.getParent();
             if(currentNode == null)
                 throw new BadSyntaxException();
         }
-    }
-
-    private void setToNextNode() throws BadSyntaxException {
-        while((currentNode = currentNode.getParent().getNextNode()) == null){
-            currentNode = currentNode.getParent();
-            if(currentNode == null)
-                throw new BadSyntaxException();
-        }
+        return node;
     }
 
     public void reduce(){

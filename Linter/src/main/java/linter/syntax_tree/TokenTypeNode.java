@@ -4,16 +4,20 @@ import linter.exception.BadSyntaxException;
 import linter.token.Token;
 import linter.token.type.TokenType;
 
-public class TokenTypeNode implements Node {
+public class TokenTypeNode extends Node {
     TokenType tokenType;
 
-    public TokenTypeNode(TokenType tokenType){
+    public TokenTypeNode(ProductionNode parent, TokenType tokenType){
+        super(parent);
         this.tokenType = tokenType;
     }
 
     @Override
     public boolean processToken(Token token) throws BadSyntaxException {
-        // TODO Auto-generated method stub
+        if(token.getTokenType() != tokenType)
+            throw new BadSyntaxException();
+        TokenNode node = new TokenNode(parent, token);
+        parent.exchange(this, node);
         return false;
     }
 
@@ -25,8 +29,13 @@ public class TokenTypeNode implements Node {
 
     @Override
     public int getSubtreeSize() {
+        return 1;
+    }
+
+    @Override
+    boolean shouldRevert() {
         // TODO Auto-generated method stub
-        return 0;
+        return false;
     }
 
 }
