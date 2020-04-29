@@ -1,5 +1,6 @@
 package linter.syntax_tree;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -29,19 +30,21 @@ public class ProductionNode extends Node {
     public boolean processToken(Token token) throws BadSyntaxException {
         List<TreeElement> children;
         children = production.expand(token);
-        Visitor visitor = new NodeCreatorVisitor(this);
         if(children == null)
             throw new BadSyntaxException(); // couldn't match token
+        nodes = new ArrayList<Node>();
+        Visitor visitor = new NodeCreatorVisitor(this);
         for (TreeElement child : children){
             child.accept(visitor); //create node and add to list
         }
+        nodesIterator = nodes.listIterator();
         return true; //continue processing
     }
 
     public void exchange(Node removed, Node added){
         int removedIndex = nodes.indexOf(removed);
         if(removedIndex != -1)
-            nodes.add(removedIndex, added);
+            nodes.set(removedIndex, added);
         else
             throw new RuntimeException("Parent doesnt contain node to remove");
     }
@@ -52,22 +55,31 @@ public class ProductionNode extends Node {
 
     @Override
     public Node getNextNode() {
-        // TODO Auto-generated method stub
+        if(nodesIterator.hasNext())
+            return nodesIterator.next();
         return null;
     }
 
     @Override
     public int getSubtreeSize() {
         int size = 0;
-        for (Node node : nodes)
-            size += node.getSubtreeSize();
+        if(nodes != null)
+            for (Node node : nodes)
+                size += node.getSubtreeSize();
         return size+1;
     }
 
     @Override
-    public boolean shouldRevert() {
-        // TODO Auto-generated method stub
-        return false;
+    public String getInformation() {
+        return "Production node: " + production.toString();
+    }
+
+    @Override
+    public void printInformations() {
+        System.out.println(getInformation());
+        for (Node node: nodes){
+            node.printInformations();
+        }
     }
 
 }

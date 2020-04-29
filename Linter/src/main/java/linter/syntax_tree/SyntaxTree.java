@@ -23,7 +23,7 @@ public class SyntaxTree {
                 if(token.getTokenType() == BlockTokenType.NEWLINE)
                     finished = true;
                 else
-                    currentNode = getNextProcessedNode();
+                    setNextProcessedNode();
                 break;
             }
         }
@@ -34,14 +34,14 @@ public class SyntaxTree {
         }
     }
 
-    private Node getNextProcessedNode() throws BadSyntaxException {
-        Node node;
-        while((node = currentNode.getParent().getNextNode()) == null){
-            node = currentNode.getParent();
+    private void setNextProcessedNode() throws BadSyntaxException {
+        Node nextNode;
+        while((nextNode = currentNode.getParent().getNextNode()) == null){
+            currentNode = currentNode.getParent();
             if(currentNode == null)
                 throw new BadSyntaxException();
         }
-        return node;
+        currentNode = nextNode;
     }
 
     public void reduce(){
@@ -56,5 +56,9 @@ public class SyntaxTree {
 
     public boolean finished(){
         return finished;
+    }
+
+    public void printNodesInformations(){
+        root.printInformations();
     }
 }

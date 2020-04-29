@@ -33,9 +33,13 @@ public class TokenTypeNode extends Node {
     }
 
     @Override
-    boolean shouldRevert() {
-        // TODO Auto-generated method stub
-        return false;
+    public String getInformation() {
+        return "Token type node : " + tokenType;
+    }
+
+    @Override
+    public void printInformations() {
+        System.out.println(getInformation());
     }
 
 }

@@ -6,10 +6,11 @@ import linter.token.Token;
 public abstract class Node {
     ProductionNode parent;
 
-    abstract boolean processToken(Token token) throws BadSyntaxException; //returns true when processed token successfully
-    abstract Node getNextNode();
-    abstract int getSubtreeSize();
-    abstract boolean shouldRevert();
+    abstract public boolean processToken(Token token) throws BadSyntaxException; //returns true when processed token successfully
+    abstract public Node getNextNode();
+    abstract public int getSubtreeSize();
+    abstract public String getInformation();
+    abstract public void printInformations();
 
     /**
      * 

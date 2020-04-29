@@ -15,8 +15,8 @@ public class LexerTest {
     public static final String EOL = StreamSimulator.EOL;
 
     private Lexer createLexer(String input){
-        StreamSimulator stream = new StreamSimulator(input);
-        Lexer lexer = new Lexer(stream);
+        StreamSimulator.simulateInput(input);
+        Lexer lexer = new Lexer(new StreamHandler());
         return lexer;
     }
 

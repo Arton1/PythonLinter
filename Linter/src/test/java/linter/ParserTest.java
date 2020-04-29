@@ -9,8 +9,8 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ParserTest {
 
     private Parser createParser(String input){
-        StreamSimulator stream = new StreamSimulator(input);
-        Lexer lexer = new Lexer(stream);
+        StreamSimulator.simulateInput(input);
+        Lexer lexer = new Lexer(new StreamHandler());
         return new Parser(lexer);
     }
 
@@ -19,6 +19,14 @@ public class ParserTest {
         String input = StreamSimulator.EOL;
         Parser parser = createParser(input);
         SyntaxTree tree = parser.getNextSyntaxTree();
-        assertEquals(tree.size(), 1);
+        assertEquals(tree.size(), 1); //All EOLs get ignored at the beginning and file is empty, so tree is the same as create
+    }
+
+    @Test
+    public void getNextSyntaxTree_Pass_ExpectedTwoNodes(){
+        String input = "pass";
+        Parser parser = createParser(input);
+        SyntaxTree tree = parser.getNextSyntaxTree();
+        assertEquals(tree.size(), 1); //All EOLs get ignored at the beginning, so tree is empty
     }
 }
