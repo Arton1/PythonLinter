@@ -1,8 +1,9 @@
+package linter;
+
 import linter.exception.BadSyntaxException;
-import linter.production.Production;
+import linter.syntax_tree.SyntaxTree;
 import linter.token.Token;
 import linter.token.type.BlockTokenType;
-import linter.token.type.TokenType;
 
 public class Parser {
     private Lexer lexer;

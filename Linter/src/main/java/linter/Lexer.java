@@ -90,9 +90,8 @@ public class Lexer {
         ambiguousTokenTable.put("!=", CompareTokenType.OTHER_THAN);
     }
 
-    """
-    Returns null if EOF
-    "
+    
+    // Returns null if EOF
     public Token getToken() throws BadTokenException{
         Token token = null;
         token = createToken();
