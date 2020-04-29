@@ -1,5 +1,13 @@
 package linter.token.type;
 
-public enum PowerTokenType implements TokenType{
-    POWER
+import linter.visitor.Visitor;
+
+public enum PowerTokenType implements TokenType {
+    POWER;
+
+    @Override
+    public void accept(Visitor visitor){
+        visitor.visit(this);
+    }
+
 }

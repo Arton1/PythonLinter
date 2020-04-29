@@ -3,7 +3,6 @@ package linter;
 import linter.exception.BadSyntaxException;
 import linter.syntax_tree.SyntaxTree;
 import linter.token.Token;
-import linter.token.type.BlockTokenType;
 
 public class Parser {
     private Lexer lexer;
@@ -15,7 +14,7 @@ public class Parser {
     SyntaxTree getNextSyntaxTree(){
         SyntaxTree syntaxTree = new SyntaxTree();
         Token token;
-        while((token = lexer.getToken()) != null && token.getTokenType() != BlockTokenType.NEWLINE ){ 
+        while((token = lexer.getToken()) != null && !syntaxTree.finished()){ 
             try{
                 syntaxTree.improve(token);
             }

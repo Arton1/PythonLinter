@@ -1,5 +1,7 @@
 package linter.token.type;
 
-public interface TokenType {
+import linter.syntax_tree.TreeElement;
+
+public interface TokenType extends TreeElement {
 
 }

@@ -2,13 +2,17 @@ package linter.syntax_tree;
 
 import linter.exception.BadSyntaxException;
 import linter.token.Token;
+import linter.token.type.BlockTokenType;
 
 public class SyntaxTree {
     Node root;
     Node currentNode;
+    boolean finished;
 
     public SyntaxTree(){
+        root = new ProductionNode(null);
         currentNode = root;
+        finished = false;
     }
 
     public void improve(final Token token) throws BadSyntaxException {
@@ -18,8 +22,13 @@ public class SyntaxTree {
                     currentNode = currentNode.getNextNode();
                 if (currentNode.shouldRevert()) 
                     revert();
-                else 
-                    setToNextNode();
+                else {
+                    if(token.getTokenType() == BlockTokenType.NEWLINE)
+                        finished = true;
+                    else
+                        setToNextNode();
+                    break;
+                }
             }
         }
         catch(BadSyntaxException e){
@@ -54,5 +63,9 @@ public class SyntaxTree {
         if(root == null)
             return 0;
         return root.getSubtreeSize();
+    }
+
+    public boolean finished(){
+        return finished;
     }
 }
