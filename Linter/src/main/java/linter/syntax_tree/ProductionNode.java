@@ -32,6 +32,10 @@ public class ProductionNode extends Node {
         children = production.expand(token, peek);
         if(children == null)
             throw new BadSyntaxException(); // couldn't match token
+        if(children.size() == 0) {//Epsilon
+            parent.remove(this); //Production cant be a leaf
+            return true; //continue processing
+        }
         nodes = new ArrayList<Node>();
         Visitor visitor = new NodeCreatorVisitor(this);
         for (TreeElement child : children){
@@ -41,7 +45,11 @@ public class ProductionNode extends Node {
         return true; //continue processing
     }
 
-    public void exchange(Node removed, Node added){
+    private void remove(ProductionNode node) {
+        nodes.remove(node);
+    }
+
+    public void exchange(Node removed, Node added) {
         int removedIndex = nodes.indexOf(removed);
         if(removedIndex != -1)
             nodes.set(removedIndex, added);
