@@ -23,8 +23,7 @@ class Linter {
         stream = new StreamHandler();
         Lexer lexer = new Lexer(stream);
         Parser parser = new Parser(lexer);
-        
-        SyntaxTree tree ;
+        SyntaxTree tree;
         while((tree = parser.getNextSyntaxTree()) != null){
             System.out.println("Tree size: " + tree.size());
             tree.printNodesInformations();

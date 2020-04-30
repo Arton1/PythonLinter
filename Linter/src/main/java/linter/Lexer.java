@@ -14,6 +14,8 @@ public class Lexer {
     private int currentTokenLinePosition;
     private int currentTokenColumnPosition;
 
+    private Token buffer;
+
     static final String SMALL_LETTERS = "abcdefghijklmnopqrstuvwxyz";
     static final String LARGE_LETTERS = "ABCDEFGHIJKLMNOPQRSTUVW_";
     static final String NUMBERS = "0123456789";
@@ -23,6 +25,7 @@ public class Lexer {
 
     Lexer(StreamHandler stream){
         this.stream = stream;
+        buffer = null;
         createWordsTokenTable();
         createSingletonTokenTable();
         createAmbiguousTokenTable();
@@ -93,11 +96,17 @@ public class Lexer {
     
     // Returns null if EOF
     public Token getToken() throws BadTokenException{
-        Token token = null;
-        token = createToken();
-        if(stream.isEOF()) //no more characters
-            return null;
+        if(buffer == null)
+            return createToken(); //consume
+        Token token = buffer;
+        buffer = null; //got consumed
         return token;
+    }
+
+    public Token peek() throws BadTokenException{
+        if(buffer == null)
+            buffer = createToken();
+        return buffer;
     }
 
     private Token createToken() throws BadTokenException {

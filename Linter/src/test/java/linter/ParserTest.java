@@ -19,7 +19,7 @@ public class ParserTest {
         String input = StreamSimulator.EOL;
         Parser parser = createParser(input);
         SyntaxTree tree = parser.getNextSyntaxTree();
-        assertEquals(tree.size(), 1); //All EOLs get ignored at the beginning and file is empty, so tree is the same as create
+        assertNull(tree); //EOF, so no tree
     }
 
     @Test

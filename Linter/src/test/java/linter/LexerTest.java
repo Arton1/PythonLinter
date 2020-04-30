@@ -9,6 +9,7 @@ import linter.token.type.AssignmentTokenType;
 import linter.token.type.BlockTokenType;
 import linter.token.type.IdentifierTokenType;
 import linter.token.type.NumberTokenType;
+import linter.token.type.SimpleStatementTokenType;
 import linter.exception.BadTokenException;
 
 public class LexerTest {
@@ -144,5 +145,16 @@ public class LexerTest {
         Lexer lexer = createLexer(input);
         Token token = lexer.getToken();
         assertTrue(token.getLine() == 3 && token.getColumn() == 5, "Expected position: 3;4 Position: " + token.getLine() + ";" + token.getColumn());
+    }
+
+    @Test
+    public void peek_DotAfterIdentifier_ExpectedEOLAsThirdToken(){
+        String input ="__ident123,";
+        Lexer lexer = createLexer(input);
+        Token first = lexer.getToken();
+        Token second = lexer.getToken();
+        Token thirdPeeked = lexer.peek();
+        Token third = lexer.getToken();
+        assertTrue(third.getTokenType() == BlockTokenType.NEWLINE);
     }
 }
