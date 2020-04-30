@@ -8,7 +8,7 @@ import linter.token.Token;
 public class CompoundStatementProduction extends Production {
 
     @Override
-    public List<TreeElement> expand(Token token) {
+    public List<TreeElement> expand(Token token, Token peek) {
         // TODO Auto-generated method stub
         return null;
     }

@@ -13,13 +13,13 @@ import linter.token.type.SimpleStatementTokenType;
 public class SingleInputProduction extends Production {
 
     @Override
-    public List<TreeElement> expand(Token token) {
+    public List<TreeElement> expand(Token token, Token peek) {
         if(token.getTokenType() instanceof SimpleStatementTokenType || token.getTokenType() == IdentifierTokenType.NAME)
             return Arrays.asList(new SimpleStatementProduction(), BlockTokenType.NEWLINE);
         if(token.getTokenType() == BlockTokenType.NEWLINE)
             return Arrays.asList(token);
         if(token.getTokenType() instanceof CompoundStatementTokenType)
-            return Arrays.asList(new CompoundStatementProduction(), BlockTokenType.NEWLINE); //empty for now
+            return Arrays.asList(new CompoundStatementProduction(), BlockTokenType.NEWLINE);
         return null;
     }
 }

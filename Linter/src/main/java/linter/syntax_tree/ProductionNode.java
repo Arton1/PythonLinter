@@ -27,9 +27,9 @@ public class ProductionNode extends Node {
     }
 
     @Override
-    public boolean processToken(Token token) throws BadSyntaxException {
+    public boolean processToken(Token token, Token peek) throws BadSyntaxException {
         List<TreeElement> children;
-        children = production.expand(token);
+        children = production.expand(token, peek);
         if(children == null)
             throw new BadSyntaxException(); // couldn't match token
         nodes = new ArrayList<Node>();
