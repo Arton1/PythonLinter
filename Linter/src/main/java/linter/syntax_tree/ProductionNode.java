@@ -35,7 +35,7 @@ public class ProductionNode extends Node {
         nodes = new LinkedList<Node>();
         Visitor visitor = new NodeCreatorVisitor(this);
         for (TreeElement child : children)
-            child.accept(visitor); //create node and add to list
+            child.accept(visitor); //creates nodes and adds to list using addNodes
         nodesIterator = nodes.listIterator();
         return false; //didnt consume token
     }

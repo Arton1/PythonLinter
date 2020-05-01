@@ -18,7 +18,7 @@ public class SyntaxTree {
     public void improve(final Token token, final Token peek) throws BadSyntaxException {
         try {
             while (!currentNode.processToken(token, peek)){ //process token until consumed
-                if(currentNode.isEpsilon()){
+                while(currentNode.isEpsilon()){
                     ProductionNode parent = currentNode.getParent();
                     currentNode.detachFromParent();
                     currentNode = parent;
