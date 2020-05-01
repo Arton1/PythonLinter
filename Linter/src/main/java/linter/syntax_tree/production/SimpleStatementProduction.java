@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import linter.syntax_tree.TreeElement;
+import linter.syntax_tree.production.import_productions.ImportStatementProduction;
 import linter.token.Token;
 import linter.token.type.IdentifierTokenType;
 import linter.token.type.SimpleStatementTokenType;
@@ -20,7 +21,7 @@ public class SimpleStatementProduction extends Production {
         ){
             return Arrays.asList(token);
         }
-        if(token.getTokenType() == SimpleStatementTokenType.IMPORT)
+        if(token.getTokenType() == SimpleStatementTokenType.IMPORT || token.getTokenType() == SimpleStatementTokenType.FROM)
             return Arrays.asList(new ImportStatementProduction());
         if(token.getTokenType() == SimpleStatementTokenType.RETURN)
             return Arrays.asList(new ReturnStatementProduction());

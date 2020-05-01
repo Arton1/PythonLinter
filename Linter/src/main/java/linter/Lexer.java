@@ -49,6 +49,7 @@ public class Lexer {
         wordsTokenTable.put("class", CompoundStatementTokenType.CLASS);
         wordsTokenTable.put("for", CompoundStatementTokenType.FOR);
         wordsTokenTable.put("not", LogicTokenType.NOT);
+        wordsTokenTable.put("from", SimpleStatementTokenType.FROM);
     }
 
     private void createSingletonTokenTable(){

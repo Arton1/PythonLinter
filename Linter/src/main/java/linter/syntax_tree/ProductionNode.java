@@ -33,7 +33,7 @@ public class ProductionNode extends Node {
         if(children == null)
             throw new BadSyntaxException(); // couldn't match token
         if(children.size() == 0) {//Epsilon
-            parent.remove(this); //Production cant be a leaf
+            parent.remove(this); //Production node cant be a leaf
             return true; //continue processing
         }
         nodes = new ArrayList<Node>();
