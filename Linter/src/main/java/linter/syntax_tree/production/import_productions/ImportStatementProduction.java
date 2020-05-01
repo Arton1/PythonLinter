@@ -1,6 +1,5 @@
 package linter.syntax_tree.production.import_productions;
 
-import java.util.Arrays;
 import java.util.List;
 
 import linter.syntax_tree.TreeElement;
@@ -14,14 +13,14 @@ public class ImportStatementProduction extends Production {
     @Override
     public List<TreeElement> expand(Token token, Token peek) {
         if(token.getTokenType() == SimpleStatementTokenType.IMPORT)
-            return Arrays.asList(token, 
+            return createExpansion(token, 
                                  new ModuleProduction(), 
                                  new OptionalAsNameProduction(), 
                                  new RecursiveCommaModulesProduction());
         else if(token.getTokenType() == SimpleStatementTokenType.FROM) 
-            return Arrays.asList(token, 
+            return createExpansion(token, 
                                  new ModuleProduction(), 
-                                 SimpleStatementTokenType.RETURN, 
+                                 SimpleStatementTokenType.IMPORT, 
                                  IdentifierTokenType.NAME, 
                                  new OptionalAsNameProduction(), 
                                  new RecursiveCommaNamesProduction());

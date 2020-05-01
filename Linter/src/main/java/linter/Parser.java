@@ -13,12 +13,13 @@ public class Parser {
 
     SyntaxTree getNextSyntaxTree(){
         Token token = lexer.getToken();
+        Token peek = lexer.peek();
         if(token == null) //EOF?
             return null;
         SyntaxTree syntaxTree = new SyntaxTree(); //has one production
         while(true){
             try {
-                syntaxTree.improve(token);
+                syntaxTree.improve(token, peek);
             }
             catch(BadSyntaxException exception){
                 ErrorHandler.handleBadSyntaxException(exception);

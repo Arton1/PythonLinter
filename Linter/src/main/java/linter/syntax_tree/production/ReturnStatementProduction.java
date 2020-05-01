@@ -1,6 +1,5 @@
 package linter.syntax_tree.production;
 
-import java.util.Arrays;
 import java.util.List;
 
 import linter.syntax_tree.TreeElement;
@@ -14,9 +13,9 @@ public class ReturnStatementProduction extends Production {
     public List<TreeElement> expand(Token token, Token peek) {
         if(token.getTokenType() == SimpleStatementTokenType.RETURN){
             if(peek.getTokenType() == BlockTokenType.NEWLINE)
-                return Arrays.asList(token);
+                return createExpansion(token);
             else
-                return Arrays.asList(token, new TestProdution());
+                return createExpansion(token, new TestProdution());
         }
         return null;
     }

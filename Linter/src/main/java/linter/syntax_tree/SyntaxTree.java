@@ -17,8 +17,14 @@ public class SyntaxTree {
 
     public void improve(final Token token, final Token peek) throws BadSyntaxException {
         try {
-            while (currentNode.processToken(token, peek))
-                currentNode = currentNode.getNextNode();
+            while (!currentNode.processToken(token, peek)){ //process token until consumed
+                if(currentNode.isEpsilon()){
+                    ProductionNode parent = currentNode.getParent();
+                    currentNode.detachFromParent();
+                    currentNode = parent;
+                }
+                setNextProcessedNode();
+            }
             if(token.getTokenType() == BlockTokenType.NEWLINE)
                 finished = true;
             else
@@ -32,11 +38,13 @@ public class SyntaxTree {
     }
 
     private void setNextProcessedNode() throws BadSyntaxException {
-        Node nextNode;
-        while((nextNode = currentNode.getParent().getNextNode()) == null){
-            currentNode = currentNode.getParent();
-            if(currentNode == null)
-                throw new BadSyntaxException();
+        Node nextNode = currentNode.getNextNode();
+        if(nextNode == null){
+            while((nextNode = currentNode.getParent().getNextNode()) == null){
+                currentNode = currentNode.getParent();
+                if(currentNode == null)
+                    throw new BadSyntaxException();
+            }   
         }
         currentNode = nextNode;
     }

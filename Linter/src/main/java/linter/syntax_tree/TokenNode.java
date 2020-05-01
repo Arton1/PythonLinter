@@ -16,7 +16,7 @@ public class TokenNode extends Node {
     public boolean processToken(Token token, Token peek) throws BadSyntaxException {
         if(this.token.getTokenType() != token.getTokenType())
             throw new BadSyntaxException();
-        return false;
+        return true; //token already consumed
     }
 
     @Override
@@ -37,6 +37,11 @@ public class TokenNode extends Node {
     @Override
     public Node getNextNode() {
         return null; //no children in here
+    }
+
+    @Override
+    public boolean isEpsilon() {
+        return false;
     }
 
 }

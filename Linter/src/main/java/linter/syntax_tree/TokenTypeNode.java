@@ -18,7 +18,7 @@ public class TokenTypeNode extends Node {
             throw new BadSyntaxException();
         TokenNode node = new TokenNode(parent, token);
         parent.exchange(this, node);
-        return false;
+        return true; //token consumed
     }
 
     @Override
@@ -39,6 +39,11 @@ public class TokenTypeNode extends Node {
     @Override
     public void printInformations() {
         System.out.println(getInformation());
+    }
+
+    @Override
+    public boolean isEpsilon() {
+        return false;
     }
 
 }

@@ -1,6 +1,5 @@
 package linter.syntax_tree.production;
 
-import java.util.Arrays;
 import java.util.List;
 
 import linter.syntax_tree.TreeElement;
@@ -13,12 +12,11 @@ public class AssignmentStatementProduction extends Production {
     @Override
     public List<TreeElement> expand(Token token, Token peek) {
         if(token.getTokenType() == IdentifierTokenType.NAME)
-            if(peek.getTokenType() == AssignmentTokenType.NORMAL_AS){
-                return Arrays.asList(token, new AnnualAssignmentStatementProduction());
+            if(token.getTokenType() == AssignmentTokenType.NORMAL_AS){
+                return createExpansion(token, new AnnualAssignmentStatementProduction());
             }
             else 
-                return Arrays.asList(token, new AugmentedAssignmentStatementProduction());
+                return createExpansion(token, new AugmentedAssignmentStatementProduction());
         return null;
     }
-
 }

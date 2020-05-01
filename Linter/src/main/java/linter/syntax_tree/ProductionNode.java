@@ -1,6 +1,6 @@
 package linter.syntax_tree;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -32,21 +32,19 @@ public class ProductionNode extends Node {
         children = production.expand(token, peek);
         if(children == null)
             throw new BadSyntaxException(); // couldn't match token
-        if(children.size() == 0) {//Epsilon
-            parent.remove(this); //Production node cant be a leaf
-            return true; //continue processing
-        }
-        nodes = new ArrayList<Node>();
+        nodes = new LinkedList<Node>();
         Visitor visitor = new NodeCreatorVisitor(this);
-        for (TreeElement child : children){
+        for (TreeElement child : children)
             child.accept(visitor); //create node and add to list
-        }
         nodesIterator = nodes.listIterator();
-        return true; //continue processing
+        return false; //didnt consume token
     }
 
-    private void remove(ProductionNode node) {
-        nodes.remove(node);
+    /**
+     * Removes node that's currently being worked on
+     */
+    public void removeProcessedNode() {
+        nodesIterator.remove();
     }
 
     public void exchange(Node removed, Node added) {
@@ -88,6 +86,11 @@ public class ProductionNode extends Node {
         for (Node node: nodes){
             node.printInformations();
         }
+    }
+
+    @Override
+    public boolean isEpsilon() {
+        return nodes.size() == 0;
     }
 
 }
