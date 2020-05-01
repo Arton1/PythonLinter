@@ -17,7 +17,7 @@ public class AssignmentStatementProduction extends Production {
                 return Arrays.asList(token, new AnnualAssignmentStatementProduction());
             }
             else 
-                return Arrays.asList(token, new AugmentedAssignmentStatementProduction())
+                return Arrays.asList(token, new AugmentedAssignmentStatementProduction());
         return null;
     }
 

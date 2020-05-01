@@ -13,7 +13,7 @@ public class TokenTypeNode extends Node {
     }
 
     @Override
-    public boolean processToken(Token token) throws BadSyntaxException {
+    public boolean processToken(Token token, Token peek) throws BadSyntaxException {
         if(token.getTokenType() != tokenType)
             throw new BadSyntaxException();
         TokenNode node = new TokenNode(parent, token);
@@ -23,8 +23,7 @@ public class TokenTypeNode extends Node {
 
     @Override
     public Node getNextNode() {
-        // TODO Auto-generated method stub
-        return null;
+        return null; //no children in here
     }
 
     @Override

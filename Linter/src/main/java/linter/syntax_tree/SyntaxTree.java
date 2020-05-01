@@ -15,9 +15,9 @@ public class SyntaxTree {
         finished = false;
     }
 
-    public void improve(final Token token) throws BadSyntaxException {
+    public void improve(final Token token, final Token peek) throws BadSyntaxException {
         try {
-            while (currentNode.processToken(token))
+            while (currentNode.processToken(token, peek))
                 currentNode = currentNode.getNextNode();
             if(token.getTokenType() == BlockTokenType.NEWLINE)
                 finished = true;
