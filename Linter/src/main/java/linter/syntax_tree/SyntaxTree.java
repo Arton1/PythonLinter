@@ -9,22 +9,13 @@ import linter.token.type.IdentifierTokenType;
 import linter.ErrorHandler;
 
 public class SyntaxTree {
-    Node root;
-    Node currentNode;
-    int currentIndentLevel;
-    boolean beginingOfStatement;
-    boolean finished;
-    boolean isCompoundTree;
+    Node root = new ProductionNode(null);
+    Node currentNode = root;
+    int currentIndentLevel = 0;
+    boolean beginingOfStatement = false;
+    boolean finished = false;
+    boolean isCompoundTree = false;
     boolean shouldCheckOptional;
-
-    public SyntaxTree(){
-        root = new ProductionNode(null);
-        currentNode = root;
-        finished = false;
-        beginingOfStatement = true;
-        currentIndentLevel = 0;
-        isCompoundTree = false;
-    }
 
     public void improve(final Token token, final Token peek) throws BadSyntaxException, IndentationException {
         if(beginingOfStatement){
@@ -35,8 +26,7 @@ public class SyntaxTree {
             else 
                 beginingOfStatement = false;
         }
-        if(token.getTokenType() == BlockTokenType.TWO_DOTS)
-            isCompoundTree = true;
+        checkIfCompoundTree(token);
         try {
             if(shouldCheckOptional){
                 currentNode.processTokenWhenBacking(token, peek, currentIndentLevel); //add optional nodes
@@ -48,8 +38,7 @@ public class SyntaxTree {
                     processEpsilon();
                 setNextProcessedNodeOrGoBack(token, peek);
             }
-            if(token.getTokenType() == BlockTokenType.NEWLINE)
-                processEndOfLine(peek);
+            checkIfFinished(token, peek);
             prepareForNewToken();
         }
         catch(BadSyntaxException e){
@@ -98,16 +87,25 @@ public class SyntaxTree {
 
     }
 
-    public void processEndOfLine(Token peek){
-        if (peek.getTokenType() instanceof IdentifierTokenType)
-            System.out.println(((IdentifierToken)peek).getIdentifier());
-        System.out.println(peek.toString()+" !!!!!!");
-        if(isCompoundTree && peek.getTokenType() == BlockTokenType.INDENT){
-            currentIndentLevel = 0;
-            beginingOfStatement = true;
-        }
+    private void checkIfCompoundTree(Token token){
+        if(token.getTokenType() == BlockTokenType.TWO_DOTS)
+            isCompoundTree = true;
+    }
+
+    public void checkIfFinished(Token token, Token peek){
+        if(!isCompoundTree)
+            if(peek.getTokenType() == BlockTokenType.NEWLINE
+                || (token.getTokenType() == BlockTokenType.NEWLINE
+                    && peek.getTokenType() == BlockTokenType.EOF))
+                finished = true;
         else
-            finished = true;
+            if(token.getTokenType() == BlockTokenType.NEWLINE)
+                if(peek.getTokenType() == BlockTokenType.INDENT){
+                    currentIndentLevel = 0;
+                    beginingOfStatement = true;
+                }
+                else
+                    finished = true;
     }
 
     public void processEpsilon(){

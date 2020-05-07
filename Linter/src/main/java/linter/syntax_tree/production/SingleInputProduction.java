@@ -16,11 +16,11 @@ public class SingleInputProduction extends Production {
     @Override
     public List<TreeElement> expand(Token token, Token peek, int currentIndentLevel) {
         if(token.getTokenType() instanceof SimpleStatementTokenType || token.getTokenType() == IdentifierTokenType.NAME)
-            return createExpansion(new SimpleStatementProduction(), BlockTokenType.NEWLINE);
+            return createExpansion(new SimpleStatementProduction());
         if(token.getTokenType() == BlockTokenType.NEWLINE)
             return createExpansion(token);
         if(token.getTokenType() instanceof CompoundStatementTokenType){
-            return createExpansion(new CompoundStatementProduction(0), BlockTokenType.NEWLINE);
+            return createExpansion(new CompoundStatementProduction(0));
         }
         return null;
     }
