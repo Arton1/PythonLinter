@@ -50,6 +50,9 @@ public class Lexer {
         wordsTokenTable.put("for", CompoundStatementTokenType.FOR);
         wordsTokenTable.put("not", LogicTokenType.NOT);
         wordsTokenTable.put("from", SimpleStatementTokenType.FROM);
+        wordsTokenTable.put("True", LogicTokenType.TRUE);
+        wordsTokenTable.put("False", LogicTokenType.FALSE);
+        wordsTokenTable.put("None", NullTokenType.NULL);
     }
 
     private void createSingletonTokenTable(){
@@ -115,7 +118,7 @@ public class Lexer {
         currentTokenLinePosition = stream.getCurrentLinePosition();
         currentTokenColumnPosition = stream.getCurrentColumnPosition();
         if(c == StreamHandler.EOF_CHARACTER) //no more stream
-            return null;
+            return new Token(BlockTokenType.EOF);
         Token token;
         if(c == StreamHandler.EOL_CHARACTER) //explicit, because too important
             token = new Token(BlockTokenType.NEWLINE);

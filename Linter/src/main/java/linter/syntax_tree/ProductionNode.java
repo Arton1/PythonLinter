@@ -2,7 +2,6 @@ package linter.syntax_tree;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.ListIterator;
 
 import linter.exception.BadSyntaxException;
 import linter.syntax_tree.production.Production;
@@ -12,9 +11,9 @@ import linter.visitor.NodeCreatorVisitor;
 import linter.visitor.Visitor;
 
 public class ProductionNode extends Node {
-    List<Node> nodes;
-    ListIterator<Node> nodesIterator;
-    Production production;
+    List<Node> nodes = new LinkedList<Node>();
+    int currentPosition = -1; //doesnt point to anything
+    Production production = new SingleInputProduction();
 
     public ProductionNode(ProductionNode parent, Production production) {
         super(parent);
@@ -23,28 +22,36 @@ public class ProductionNode extends Node {
 
     public ProductionNode(ProductionNode parent){
         super(parent);
-        production = new SingleInputProduction();
     }
 
     @Override
-    public boolean processToken(Token token, Token peek) throws BadSyntaxException {
+    public boolean processToken(Token token, Token peek, int currentIndentLevel) throws BadSyntaxException {
         List<TreeElement> children;
-        children = production.expand(token, peek);
+        children = production.expand(token, peek, currentIndentLevel);
+        addNodes(children);
+        return false; //didnt consume token
+    }
+
+    private void addNodes(List<TreeElement> children) throws BadSyntaxException{
         if(children == null)
             throw new BadSyntaxException(); // couldn't match token
-        nodes = new LinkedList<Node>();
         Visitor visitor = new NodeCreatorVisitor(this);
         for (TreeElement child : children)
             child.accept(visitor); //creates nodes and adds to list using addNodes
-        nodesIterator = nodes.listIterator();
-        return false; //didnt consume token
+    }
+
+    @Override
+    public void processTokenWhenBacking(Token token, Token peek, int currentIndentLevel) throws BadSyntaxException {
+        List<TreeElement> children = production.expandOptional(token, peek, currentIndentLevel);
+        if(children != null)
+            addNodes(children);
     }
 
     /**
      * Removes node that's currently being worked on
      */
     public void removeProcessedNode() {
-        nodesIterator.remove();
+        nodes.remove(currentPosition);
     }
 
     public void exchange(Node removed, Node added) {
@@ -60,10 +67,14 @@ public class ProductionNode extends Node {
     }
 
     @Override
-    public Node getNextNode() {
-        if(nodesIterator.hasNext())
-            return nodesIterator.next();
+    public Node getNextChildNode() {
+        if(hasNextChildNode())
+            return nodes.get(++currentPosition);
         return null;
+    }
+
+    public boolean hasNextChildNode(){
+        return currentPosition+1 < nodes.size();
     }
 
     @Override
@@ -92,5 +103,4 @@ public class ProductionNode extends Node {
     public boolean isEpsilon() {
         return nodes.size() == 0;
     }
-
 }

@@ -13,7 +13,7 @@ public class TokenTypeNode extends Node {
     }
 
     @Override
-    public boolean processToken(Token token, Token peek) throws BadSyntaxException {
+    public boolean processToken(Token token, Token peek, int currentIndentLevel) throws BadSyntaxException {
         if(token.getTokenType() != tokenType)
             throw new BadSyntaxException();
         TokenNode node = new TokenNode(parent, token);
@@ -22,7 +22,7 @@ public class TokenTypeNode extends Node {
     }
 
     @Override
-    public Node getNextNode() {
+    public Node getNextChildNode() {
         return null; //no children in here
     }
 
@@ -44,6 +44,11 @@ public class TokenTypeNode extends Node {
     @Override
     public boolean isEpsilon() {
         return false;
+    }
+
+    @Override
+    public void processTokenWhenBacking(Token token, Token peek, int currentIndentLevel) throws BadSyntaxException {
+        //no processing
     }
 
 }

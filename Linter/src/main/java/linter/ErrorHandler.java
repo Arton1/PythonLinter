@@ -6,7 +6,7 @@ import java.io.IOException;
 import linter.exception.*;
 
 
-final class ErrorHandler {
+public final class ErrorHandler {
 
     public static final void handleFileNotFoundException(FileNotFoundException e){
         System.out.println();
@@ -34,4 +34,11 @@ final class ErrorHandler {
         //cleanup needed
         System.exit(4);
     }
+
+	public static void handleIndentationException(IndentationException e) {
+        System.out.println();
+        System.out.print("Error : Bad indentation : "+e.getLine()+";"+e.getColumn());
+        //cleanup needed
+        System.exit(5);
+	}
 }

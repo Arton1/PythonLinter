@@ -11,7 +11,7 @@ import linter.token.type.SimpleStatementTokenType;
 public class RecursiveCommaNamesProduction extends Production {
 
     @Override
-    public List<TreeElement> expand(Token token, Token peek) {
+    public List<TreeElement> expand(Token token, Token peek, int currentIndentLevel) {
         if(token.getTokenType() == SimpleStatementTokenType.COMMA)
             return createExpansion(token, IdentifierTokenType.NAME, new OptionalAsNameProduction(), this);
         else

@@ -8,8 +8,7 @@ import linter.token.Token;
 public class TestProdution extends Production {
 
     @Override
-    public List<TreeElement> expand(Token token, Token peek) {
-        // TODO Auto-generated method stub
+    public List<TreeElement> expand(Token token, Token peek, int currentIndentLevel) {
         return null;
     }
 

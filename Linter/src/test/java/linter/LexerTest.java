@@ -9,7 +9,6 @@ import linter.token.type.AssignmentTokenType;
 import linter.token.type.BlockTokenType;
 import linter.token.type.IdentifierTokenType;
 import linter.token.type.NumberTokenType;
-import linter.token.type.SimpleStatementTokenType;
 import linter.exception.BadTokenException;
 
 public class LexerTest {

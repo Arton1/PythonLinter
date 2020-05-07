@@ -11,7 +11,7 @@ import linter.token.type.SimpleStatementTokenType;
 public class SimpleStatementProduction extends Production {
 
     @Override
-    public List<TreeElement> expand(Token token, Token peek) {
+    public List<TreeElement> expand(Token token, Token peek, int currentIndentLevel) {
         if(token.getTokenType() == IdentifierTokenType.NAME)
             return createExpansion(new AssignmentStatementProduction());
         if(token.getTokenType() == SimpleStatementTokenType.PASS

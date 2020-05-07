@@ -9,7 +9,7 @@ import linter.visitor.Visitor;
 
 public abstract class Production implements TreeElement {
 
-    abstract public List<TreeElement> expand(Token token, Token peek); //LL(1), so it has to have a lookahead
+    abstract public List<TreeElement> expand(Token token, Token peek, int currentIndentLevel); //LL(1), so it has to have a lookahead
 
     @Override
     public void accept(Visitor visitor){
@@ -19,4 +19,9 @@ public abstract class Production implements TreeElement {
     protected static final List<TreeElement> createExpansion(TreeElement...treeElements){
         return new LinkedList<TreeElement>(List.of(treeElements));
     }
+
+	public List<TreeElement> expandOptional(Token token, Token peek, int currentIndentLevel) {
+		return null; //by default
+	}
+
 }
