@@ -11,9 +11,12 @@ public class AndTestProduction extends Production {
 
     @Override
     public List<TreeElement> expand(Token token, Token peek, int currentIndentLevel) {
-        if(peek.getTokenType() == LogicTokenType.AND)
-            return createExpansion(new NotTestProduction(), new AndTestProduction());
-        else
-            return createExpansion(new NotTestProduction());
+        return createExpansion(new NotTestProduction());
     }
+
+    public List<TreeElement> expandOptional(Token token, Token peek, int currentIndentLevel) {
+		if(token.getTokenType() == LogicTokenType.AND)
+            return createExpansion(token, new NotTestProduction());
+        return null;
+	}
 }

@@ -2,8 +2,10 @@ package linter.syntax_tree;
 
 import linter.exception.BadSyntaxException;
 import linter.exception.IndentationException;
+import linter.token.IdentifierToken;
 import linter.token.Token;
 import linter.token.type.BlockTokenType;
+import linter.token.type.IdentifierTokenType;
 import linter.ErrorHandler;
 
 public class SyntaxTree {
@@ -22,21 +24,6 @@ public class SyntaxTree {
         beginingOfStatement = true;
         currentIndentLevel = 0;
         isCompoundTree = false;
-    }
-
-    public void processEndOfLine(Token peek){
-        if(isCompoundTree && peek.getTokenType() == BlockTokenType.INDENT){
-            currentIndentLevel = 0;
-            beginingOfStatement = true;
-        }
-        else
-            finished = true;
-    }
-
-    public void processEpsilon(){
-        ProductionNode parent = currentNode.getParent();
-        currentNode.detachFromParent();
-        currentNode = parent;
     }
 
     public void improve(final Token token, final Token peek) throws BadSyntaxException, IndentationException {
@@ -61,14 +48,8 @@ public class SyntaxTree {
                     processEpsilon();
                 setNextProcessedNodeOrGoBack(token, peek);
             }
-            if(token.getTokenType() == BlockTokenType.NEWLINE){
-                if(peek == null){
-                    System.out.println("NULL");
-                    System.exit(1);
-                }
-                else
-                    processEndOfLine(peek);
-            }
+            if(token.getTokenType() == BlockTokenType.NEWLINE)
+                processEndOfLine(peek);
             prepareForNewToken();
         }
         catch(BadSyntaxException e){
@@ -115,6 +96,24 @@ public class SyntaxTree {
 
     public void reduce(){
 
+    }
+
+    public void processEndOfLine(Token peek){
+        if (peek.getTokenType() instanceof IdentifierTokenType)
+            System.out.println(((IdentifierToken)peek).getIdentifier());
+        System.out.println(peek.toString()+" !!!!!!");
+        if(isCompoundTree && peek.getTokenType() == BlockTokenType.INDENT){
+            currentIndentLevel = 0;
+            beginingOfStatement = true;
+        }
+        else
+            finished = true;
+    }
+
+    public void processEpsilon(){
+        ProductionNode parent = currentNode.getParent();
+        currentNode.detachFromParent();
+        currentNode = parent;
     }
 
     public int size(){

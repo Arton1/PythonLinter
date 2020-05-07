@@ -19,8 +19,9 @@ public class SingleInputProduction extends Production {
             return createExpansion(new SimpleStatementProduction(), BlockTokenType.NEWLINE);
         if(token.getTokenType() == BlockTokenType.NEWLINE)
             return createExpansion(token);
-        if(token.getTokenType() instanceof CompoundStatementTokenType)
+        if(token.getTokenType() instanceof CompoundStatementTokenType){
             return createExpansion(new CompoundStatementProduction(0), BlockTokenType.NEWLINE);
+        }
         return null;
     }
 }

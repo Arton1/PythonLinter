@@ -53,6 +53,8 @@ public class Lexer {
         wordsTokenTable.put("True", LogicTokenType.TRUE);
         wordsTokenTable.put("False", LogicTokenType.FALSE);
         wordsTokenTable.put("None", NullTokenType.NULL);
+        wordsTokenTable.put("while", CompoundStatementTokenType.WHILE);
+        wordsTokenTable.put("if", CompoundStatementTokenType.IF);
     }
 
     private void createSingletonTokenTable(){
@@ -124,18 +126,17 @@ public class Lexer {
             token = new Token(BlockTokenType.NEWLINE);
         else
             if((token = checkSingletonToken(c)) == null)
-                if((token = checkSmallLetterToken(c)) == null)
-                    if((token = checkLargeLetterToken(c)) == null)
-                       if((token = checkZeroToken(c)) == null)
-                            if((token = checkNumberToken(c)) == null)
-                               if((token = checkSpecialCharactersToken(c)) == null)
-                                    throw new BadTokenException(currentTokenLinePosition, currentTokenColumnPosition); //cannot match token
+                if((token = checkLetterToken(c)) == null)
+                    if((token = checkZeroToken(c)) == null)
+                        if((token = checkNumberToken(c)) == null)
+                            if((token = checkSpecialCharactersToken(c)) == null)
+                                throw new BadTokenException(currentTokenLinePosition, currentTokenColumnPosition); //cannot match token
         token.setPosition(currentTokenLinePosition, currentTokenColumnPosition); //set here to reduce code
         return token;
     }
 
-    private Token checkSmallLetterToken(char c){
-        if (SMALL_LETTERS.indexOf(c) != -1){
+    private Token checkLetterToken(char c){
+        if (SMALL_LETTERS.indexOf(c) != -1 || LARGE_LETTERS.indexOf(c) != -1){
             boolean possibleKeyword = true;
             String text = Character.toString(c);
             while(true){
@@ -156,17 +157,6 @@ public class Lexer {
             else
                 return new Token(tokenType);
 
-        }
-        return null;
-    }
-
-    private Token checkLargeLetterToken(char c){
-        if(LARGE_LETTERS.indexOf(c) != -1){
-            String text = Character.toString(c);
-            while((SMALL_LETTERS+LARGE_LETTERS+NUMBERS).indexOf(c = stream.readCharacter()) != -1)
-                text += c;
-            stream.returnCharacter(c);
-            return new IdentifierToken(IdentifierTokenType.NAME, text);
         }
         return null;
     }

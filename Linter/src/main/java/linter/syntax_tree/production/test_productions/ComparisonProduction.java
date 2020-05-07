@@ -11,10 +11,13 @@ public class ComparisonProduction extends Production {
 
     @Override
     public List<TreeElement> expand(Token token, Token peek, int currentIndentLevel) {
-        if(peek.getTokenType() instanceof CompareTokenType)
-            return createExpansion(new ExpressionProduction(), peek.getTokenType(), new ComparisonProduction());
-        else
-            return createExpansion(new ExpressionProduction());
-        }
+        return createExpansion(new ExpressionProduction());
+    }
+    
+    public List<TreeElement> expandOptional(Token token, Token peek, int currentIndentLevel) {
+		if(token.getTokenType() instanceof CompareTokenType)
+            return createExpansion(token, new ExpressionProduction());
+        return null;
+	}
     
 }
