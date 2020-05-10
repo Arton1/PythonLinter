@@ -1,5 +1,6 @@
 package linter;
 
+import linter.exception.BadTokenException;
 import linter.syntax_tree.SyntaxTree;
 import linter.token.Token;
 import linter.token.type.BlockTokenType;
@@ -12,8 +13,14 @@ public class Parser {
     }
 
     SyntaxTree getNextSyntaxTree(){
-        Token token = lexer.getToken();
-        Token peek = lexer.peek();
+        Token token = null, peek = null;
+        try{
+            token = lexer.getToken();
+            peek = lexer.peek();
+        }
+        catch (BadTokenException e){
+            ErrorHandler.handleBadTokenException(e);
+        }
         if(token.getTokenType() == BlockTokenType.EOF)
             return null;
         SyntaxTree syntaxTree = new SyntaxTree(); //has one production
@@ -21,10 +28,14 @@ public class Parser {
             syntaxTree.improve(token, peek);
             if(syntaxTree.finished())
                 break;
-            token = lexer.getToken();
-            peek = lexer.peek();
+            try{
+                token = lexer.getToken();
+                peek = lexer.peek();
+            }
+            catch (BadTokenException e){
+                ErrorHandler.handleBadTokenException(e);
+            }
         }
-        syntaxTree.reduce();
         return syntaxTree;
     }
 }

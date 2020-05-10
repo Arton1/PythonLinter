@@ -1,4 +1,4 @@
 #!/bin/bash
 rm -r Linter/target/classes/linter/*
-javac -d Linter/target/classes/ ./Linter/src/main/java/linter/*.java ./Linter/src/main/java/linter/token/*.java ./Linter/src/main/java/linter/token/type/*.java
+javac -d Linter/target/classes/ `find Linter/src/main -name '*.java'`
 java -cp Linter/target/classes/ linter.Linter $1

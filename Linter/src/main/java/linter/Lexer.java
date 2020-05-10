@@ -17,7 +17,7 @@ public class Lexer {
     private Token buffer;
 
     static final String SMALL_LETTERS = "abcdefghijklmnopqrstuvwxyz";
-    static final String LARGE_LETTERS = "ABCDEFGHIJKLMNOPQRSTUVW_";
+    static final String LARGE_LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ_";
     static final String NUMBERS = "0123456789";
     static final String NUMBERS_WITHOUT_ZERO = "123456789";
     static final String SINGLETON_CHARACTERS = ":.,[](){}\"\'\t";
