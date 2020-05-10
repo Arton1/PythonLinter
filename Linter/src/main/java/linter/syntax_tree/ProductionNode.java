@@ -52,6 +52,7 @@ public class ProductionNode extends Node {
      */
     public void removeProcessedNode() {
         nodes.remove(currentPosition);
+        currentPosition--;
     }
 
     public void exchange(Node removed, Node added) {

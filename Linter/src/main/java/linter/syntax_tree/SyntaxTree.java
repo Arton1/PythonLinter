@@ -2,6 +2,7 @@ package linter.syntax_tree;
 
 import linter.exception.BadSyntaxException;
 import linter.exception.IndentationException;
+import linter.syntax_tree.production.compound_productions.FunctionStatementProduction;
 import linter.token.Token;
 import linter.token.type.BlockTokenType;
 import linter.ErrorHandler;

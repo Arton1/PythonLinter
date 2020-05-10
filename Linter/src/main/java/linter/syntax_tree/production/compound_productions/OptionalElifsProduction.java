@@ -16,14 +16,16 @@ public class OptionalElifsProduction extends CompoundStatementProduction {
 
     @Override
     public List<TreeElement> expand(Token token, Token peek, int currentIndentLevel) {
-        if(token.getTokenType() == CompoundStatementTokenType.ELIF)
-            return createExpansion(token, new TestProduction(), BlockTokenType.TWO_DOTS, new SuiteProduction(level));
+        if (level == currentIndentLevel)
+            if(token.getTokenType() == CompoundStatementTokenType.ELIF)
+                return createExpansion(token, new TestProduction(), BlockTokenType.TWO_DOTS, new SuiteProduction(level));
         return createExpansion(); //Epsilon
     }
     
     public List<TreeElement> expandOptional(Token token, Token peek, int currentIndentLevel) {
-        if(token.getTokenType() == CompoundStatementTokenType.ELIF)
-            createExpansion(token, new TestProduction(), BlockTokenType.TWO_DOTS, new SuiteProduction(level));
+        if (level == currentIndentLevel)
+            if(token.getTokenType() == CompoundStatementTokenType.ELIF)
+                createExpansion(token, new TestProduction(), BlockTokenType.TWO_DOTS, new SuiteProduction(level));
         return null; //by default
 	}
 }
