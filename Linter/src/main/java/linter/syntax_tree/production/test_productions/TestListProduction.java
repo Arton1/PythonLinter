@@ -5,13 +5,19 @@ import java.util.List;
 import linter.syntax_tree.TreeElement;
 import linter.syntax_tree.production.Production;
 import linter.token.Token;
+import linter.token.type.SimpleStatementTokenType;
 
 public class TestListProduction extends Production {
 
     @Override
     public List<TreeElement> expand(Token token, Token peek, int currentIndentLevel) {
-        // TODO Auto-generated method stub
-        return null;
+        return createExpansion(new TestProduction());
     }
+
+    public List<TreeElement> expandOptional(Token token, Token peek, int currentIndentLevel) {
+        if(token.getTokenType() == SimpleStatementTokenType.COMMA)
+            return createExpansion(token, new TestProduction());
+        return null;
+	}
 
 }

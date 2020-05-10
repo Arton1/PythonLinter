@@ -14,7 +14,7 @@ public class AtomicExpressionProduction extends Production {
     }
 
     public List<TreeElement> expandOptional(Token token, Token peek, int currentIndentLevel) {
-        return createExpansion(new TrailerProduction());
+        return createExpansion(new OptionalTrailerProduction());
 	}
 
 }

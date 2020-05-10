@@ -4,6 +4,9 @@ import java.util.List;
 
 import linter.syntax_tree.TreeElement;
 import linter.token.Token;
+import linter.token.type.BlockTokenType;
+import linter.token.type.CompoundStatementTokenType;
+import linter.token.type.IdentifierTokenType;
 
 public class FunctionStatementProduction extends CompoundStatementProduction {
 
@@ -13,6 +16,13 @@ public class FunctionStatementProduction extends CompoundStatementProduction {
 
     @Override
     public List<TreeElement> expand(Token token, Token peek, int currentIndentLevel) {
+        if(token.getTokenType() == CompoundStatementTokenType.FUN)
+            return createExpansion(token, 
+                                    IdentifierTokenType.NAME, 
+                                    new FunctionParametersProduction(), 
+                                    new OptionalReturnHintProduction(), 
+                                    BlockTokenType.TWO_DOTS, 
+                                    new SuiteProduction(level));
         return null;
     }
 }

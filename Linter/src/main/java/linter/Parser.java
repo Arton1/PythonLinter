@@ -22,6 +22,7 @@ public class Parser {
             if(syntaxTree.finished())
                 break;
             token = lexer.getToken();
+            peek = lexer.peek();
         }
         syntaxTree.reduce();
         return syntaxTree;

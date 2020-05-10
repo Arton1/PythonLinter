@@ -2,10 +2,8 @@ package linter.syntax_tree;
 
 import linter.exception.BadSyntaxException;
 import linter.exception.IndentationException;
-import linter.token.IdentifierToken;
 import linter.token.Token;
 import linter.token.type.BlockTokenType;
-import linter.token.type.IdentifierTokenType;
 import linter.ErrorHandler;
 
 public class SyntaxTree {
@@ -18,14 +16,13 @@ public class SyntaxTree {
     boolean shouldCheckOptional;
 
     public void improve(final Token token, final Token peek) throws BadSyntaxException, IndentationException {
-        if(beginingOfStatement){
+        if(beginingOfStatement)
             if(token.getTokenType() == BlockTokenType.INDENT){
                 currentIndentLevel++;
                 return; // consume indent
             }
             else 
                 beginingOfStatement = false;
-        }
         checkIfCompoundTree(token);
         try {
             if(shouldCheckOptional){
@@ -93,19 +90,23 @@ public class SyntaxTree {
     }
 
     public void checkIfFinished(Token token, Token peek){
-        if(!isCompoundTree)
-            if(peek.getTokenType() == BlockTokenType.NEWLINE
-                || (token.getTokenType() == BlockTokenType.NEWLINE
-                    && peek.getTokenType() == BlockTokenType.EOF))
-                finished = true;
-        else
+        if(!isCompoundTree){
             if(token.getTokenType() == BlockTokenType.NEWLINE)
+               // || (token.getTokenType() == BlockTokenType.NEWLINE
+               //     && peek.getTokenType() == BlockTokenType.EOF))
+                finished = true;
+        }
+        else {
+            if(token.getTokenType() == BlockTokenType.NEWLINE){
                 if(peek.getTokenType() == BlockTokenType.INDENT){
                     currentIndentLevel = 0;
                     beginingOfStatement = true;
                 }
-                else
+                else {
                     finished = true;
+                }
+            }
+        }
     }
 
     public void processEpsilon(){

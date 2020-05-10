@@ -24,9 +24,9 @@ class Linter {
         Lexer lexer = new Lexer(stream);
         Parser parser = new Parser(lexer);
         SyntaxTree tree;
-        if((tree = parser.getNextSyntaxTree()) != null){
-            //System.out.println("Tree size: " + tree.size());
-            //tree.printNodesInformations();
+        while((tree = parser.getNextSyntaxTree()) != null){
+            System.out.println("Tree size: " + tree.size());
+            tree.printNodesInformations();
         }
     }
 }

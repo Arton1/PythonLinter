@@ -97,6 +97,7 @@ public class Lexer {
         ambiguousTokenTable.put(">", CompareTokenType.MORE);
         ambiguousTokenTable.put(">=", CompareTokenType.MORE_EQUAL);
         ambiguousTokenTable.put("!=", CompareTokenType.OTHER_THAN);
+        ambiguousTokenTable.put("->", SimpleStatementTokenType.RETURN_HINT);
     }
 
     
@@ -212,7 +213,7 @@ public class Lexer {
                 text = text + c;
                 c = stream.readCharacter();
             }
-            if(c == '=')
+            if(c == '=' || c == '>')
                 text = text + c;
             else
                 stream.returnCharacter(c);

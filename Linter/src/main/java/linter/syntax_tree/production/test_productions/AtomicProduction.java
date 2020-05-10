@@ -15,8 +15,6 @@ public class AtomicProduction extends Production {
 
     @Override
     public List<TreeElement> expand(Token token, Token peek, int currentIndentLevel) {
-        if(token.getTokenType() == BracketTokenType.CURLY_BEGIN)
-            return createExpansion(token, new DirectoryOrSetProduction(), BracketTokenType.CURLY_END);
         if(token.getTokenType() == BracketTokenType.ROUNDED_BEGIN)
             return createExpansion(token, new TestListProduction(), BracketTokenType.ROUNDED_END);
         if(token.getTokenType() == BracketTokenType.SQUARED_BEGIN)
