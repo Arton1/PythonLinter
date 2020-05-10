@@ -23,6 +23,6 @@ public class SuiteProduction extends CompoundStatementProduction {
     public List<TreeElement> expandOptional(Token token, Token peek, int currentIndentLevel) {
         if(token.getTokenType() == BlockTokenType.NEWLINE && peek.getTokenType() == BlockTokenType.INDENT)
             return createExpansion(BlockTokenType.NEWLINE, new IndentedStatementProduction(level));
-        return createExpansion(); //Epsilon
+        return null;
     }
 }

@@ -13,9 +13,8 @@ public class AssignmentStatementProduction extends Production {
     @Override
     public List<TreeElement> expand(Token token, Token peek, int currentIndentLevel) {
         if(token.getTokenType() == IdentifierTokenType.NAME)
-            if(peek.getTokenType() == AssignmentTokenType.NORMAL_AS){
-                return createExpansion(token, peek.getTokenType(), new AnnualAssignmentStatementProduction());
-            }
+            if(peek.getTokenType() == AssignmentTokenType.NORMAL_AS)
+                return createExpansion(new AnnualAssignmentStatementProduction());
             else 
                 if(peek.getTokenType() instanceof AssignmentTokenType)
                     return createExpansion(token, peek.getTokenType(), new ExpressionProduction());

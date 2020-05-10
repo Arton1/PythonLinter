@@ -2,7 +2,6 @@ from abc import ABC
 import math
 
 class Klasa(ABC):
-	True or False
 	def __init__(self):
 		xIsFive = self._hello(5)
 
