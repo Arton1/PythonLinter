@@ -19,7 +19,8 @@ public class IfStatementProduction extends CompoundStatementProduction{
         if(token.getTokenType() == CompoundStatementTokenType.IF)
             return createExpansion(token,
                                     new TestProduction(), 
-                                    BlockTokenType.TWO_DOTS, 
+                                    BlockTokenType.TWO_DOTS,
+                                    BlockTokenType.NEWLINE, 
                                     new SuiteProduction(level), 
                                     new OptionalElifsProduction(level), 
                                     new OptionalElseProduction(level));

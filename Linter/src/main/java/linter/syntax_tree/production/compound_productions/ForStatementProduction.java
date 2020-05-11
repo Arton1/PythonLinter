@@ -23,6 +23,7 @@ public class ForStatementProduction extends CompoundStatementProduction{
                                     CompareTokenType.IN, 
                                     new AtomicExpressionProduction(), 
                                     BlockTokenType.TWO_DOTS, 
+                                    BlockTokenType.NEWLINE, 
                                     new SuiteProduction(level));
         return null;
     }

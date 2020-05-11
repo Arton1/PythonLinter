@@ -4,6 +4,7 @@ import linter.exception.BadSyntaxException;
 import linter.exception.IndentationException;
 import linter.token.Token;
 import linter.token.type.BlockTokenType;
+import linter.token.type.CompoundStatementTokenType;
 import linter.ErrorHandler;
 
 public class SyntaxTree {
@@ -30,7 +31,11 @@ public class SyntaxTree {
                 setNextProcessedNodeOrGoBack(token, peek); //go to next node
                 shouldCheckOptional = false;
             }
+            if(token.getTokenType() == CompoundStatementTokenType.ELIF)
+                currentNode.printInformations();
             while (!currentNode.processToken(token, peek, currentIndentLevel)){ //process token until consumed
+                if(token.getTokenType() == CompoundStatementTokenType.ELIF)
+                    currentNode.printInformations();
                 while(currentNode.isEpsilon()) //while, because parent could be empty after detaching
                     processEpsilon();
                 setNextProcessedNodeOrGoBack(token, peek);

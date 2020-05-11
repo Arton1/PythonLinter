@@ -6,6 +6,7 @@ import linter.syntax_tree.TreeElement;
 import linter.syntax_tree.production.Production;
 import linter.token.Token;
 import linter.token.type.CompareTokenType;
+import linter.token.type.LogicTokenType;
 
 public class ComparisonProduction extends Production {
 
@@ -15,8 +16,11 @@ public class ComparisonProduction extends Production {
     }
     
     public List<TreeElement> expandOptional(Token token, Token peek, int currentIndentLevel) {
-		if(token.getTokenType() instanceof CompareTokenType)
-            return createExpansion(token, new ExpressionProduction());
+        if(token.getTokenType() instanceof CompareTokenType)
+            if(token.getTokenType() == CompareTokenType.IS && peek.getTokenType() == LogicTokenType.NOT)
+                return createExpansion(token, LogicTokenType.NOT, new ExpressionProduction());
+            else
+                return createExpansion(token, new ExpressionProduction());
         return null;
 	}
     

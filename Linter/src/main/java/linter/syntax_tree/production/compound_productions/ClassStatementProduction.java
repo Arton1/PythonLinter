@@ -21,6 +21,7 @@ public class ClassStatementProduction extends CompoundStatementProduction {
                                     IdentifierTokenType.NAME, 
                                     new OptionalClassParametersProduction(), 
                                     BlockTokenType.TWO_DOTS, 
+                                    BlockTokenType.NEWLINE, 
                                     new SuiteProduction(level));
         return null;
     }

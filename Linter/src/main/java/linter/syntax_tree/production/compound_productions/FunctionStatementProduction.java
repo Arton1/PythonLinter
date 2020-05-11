@@ -22,6 +22,7 @@ public class FunctionStatementProduction extends CompoundStatementProduction {
                                     new FunctionParametersProduction(), 
                                     new OptionalReturnHintProduction(), 
                                     BlockTokenType.TWO_DOTS, 
+                                    BlockTokenType.NEWLINE, 
                                     new SuiteProduction(level));
         return null;
     }

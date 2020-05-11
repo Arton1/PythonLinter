@@ -15,10 +15,9 @@ public class OptionalElseProduction extends CompoundStatementProduction {
 
     @Override
     public List<TreeElement> expand(Token token, Token peek, int currentIndentLevel) {
-        System.out.println("Hello");
         if(level == currentIndentLevel)
             if(token.getTokenType() == CompoundStatementTokenType.ELSE)
-                return createExpansion(token, BlockTokenType.TWO_DOTS, new SuiteProduction(level));
+                return createExpansion(token, BlockTokenType.TWO_DOTS, BlockTokenType.NEWLINE, new SuiteProduction(level));
         return createExpansion(); //Epsilon
     }
 
