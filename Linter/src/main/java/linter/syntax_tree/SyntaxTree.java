@@ -93,13 +93,14 @@ public class SyntaxTree {
     public void checkIfFinished(Token token, Token peek){
         if(!isCompoundTree){
             if(token.getTokenType() == BlockTokenType.NEWLINE)
-               // || (token.getTokenType() == BlockTokenType.NEWLINE
-               //     && peek.getTokenType() == BlockTokenType.EOF))
                 finished = true;
         }
         else {
             if(token.getTokenType() == BlockTokenType.NEWLINE){
-                if(peek.getTokenType() == BlockTokenType.INDENT){
+                if(peek.getTokenType() == BlockTokenType.INDENT || 
+                    peek.getTokenType() == CompoundStatementTokenType.ELSE ||
+                    peek.getTokenType() == CompoundStatementTokenType.ELIF)
+                {
                     currentIndentLevel = 0;
                     beginingOfStatement = true;
                 }
