@@ -17,3 +17,6 @@ class Klasa(ABC):
 		else:
 			return x == 1
 		return True
+
+	def wywolanie0123(self) -> float:
+		self.funkcja(1)
