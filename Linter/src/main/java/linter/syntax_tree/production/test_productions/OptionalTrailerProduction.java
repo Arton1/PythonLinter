@@ -26,7 +26,7 @@ public class OptionalTrailerProduction extends Production {
         if(token.getTokenType() == SimpleStatementTokenType.DOT)
             return createExpansion(token, IdentifierTokenType.NAME);
         else
-        return createExpansion();
+            return createExpansion();
     }
 
 }

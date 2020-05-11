@@ -7,12 +7,11 @@ class Klasa(ABC):
 
 	def __init__(self):
 		xIsFive = self._hello(5)
+		self.print(self.value)
 
-	def _hello(self, x: int) -> bool:
-		if x == 3:
-			return True
-		elif x == 3:
-			y **= 3
-		else:
-			print(x)
-		return False
+	def func(value1,value2):
+		value1-=-value2 
+		print(value1+value2)
+		return
+
+	pass

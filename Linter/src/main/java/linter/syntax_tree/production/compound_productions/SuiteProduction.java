@@ -37,7 +37,7 @@ public class SuiteProduction extends CompoundStatementProduction {
             if(token.getTokenType() instanceof CompoundStatementTokenType 
                 && token.getTokenType() != CompoundStatementTokenType.ELIF 
                 && token.getTokenType() != CompoundStatementTokenType.ELSE)
-                return createExpansion(new CompoundStatementProduction(level), BlockTokenType.NEWLINE);
+                return createExpansion(new CompoundStatementProduction(level));
             else
                 return createExpansion(new SimpleStatementProduction(), BlockTokenType.NEWLINE);
         }
