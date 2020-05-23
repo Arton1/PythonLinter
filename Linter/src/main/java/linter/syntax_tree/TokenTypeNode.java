@@ -1,5 +1,6 @@
 package linter.syntax_tree;
 
+import linter.SemanticsAnalizer;
 import linter.exception.BadSyntaxException;
 import linter.token.Token;
 import linter.token.type.TokenType;
@@ -7,23 +8,23 @@ import linter.token.type.TokenType;
 public class TokenTypeNode extends Node {
     TokenType tokenType;
 
-    public TokenTypeNode(ProductionNode parent, TokenType tokenType){
+    public TokenTypeNode(ProductionNode parent, TokenType tokenType) {
         super(parent);
         this.tokenType = tokenType;
     }
 
     @Override
     public boolean processToken(Token token, Token peek, int currentIndentLevel) throws BadSyntaxException {
-        if(token.getTokenType() != tokenType)
+        if (token.getTokenType() != tokenType)
             throw new BadSyntaxException();
         TokenNode node = new TokenNode(parent, token);
         parent.exchange(this, node);
-        return true; //token consumed
+        return true; // token consumed
     }
 
     @Override
     public Node getNextChildNode() {
-        return null; //no children in here
+        return null; // no children in here
     }
 
     @Override
@@ -48,12 +49,12 @@ public class TokenTypeNode extends Node {
 
     @Override
     public void processTokenWhenBacking(Token token, Token peek, int currentIndentLevel) throws BadSyntaxException {
-        //no processing
+        // no processing
     }
 
     @Override
-    public Token getToken(){
-        return null;  //TODO: Throw bad syntax tree error
+    public void accept(SemanticsAnalizer analizer) {
+        // TODO: Throw bad syntax tree error
     }
 
 }

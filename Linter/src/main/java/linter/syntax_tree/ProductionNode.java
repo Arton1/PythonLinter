@@ -3,6 +3,7 @@ package linter.syntax_tree;
 import java.util.LinkedList;
 import java.util.List;
 
+import linter.SemanticsAnalizer;
 import linter.exception.BadSyntaxException;
 import linter.syntax_tree.production.Production;
 import linter.syntax_tree.production.SingleInputProduction;
@@ -13,7 +14,7 @@ import linter.visitor.Visitor;
 
 public class ProductionNode extends Node {
     List<Node> nodes = new LinkedList<Node>();
-    int currentPosition = -1; //doesnt point to anything
+    int currentPosition = -1; // doesnt point to anything
     Production production = new SingleInputProduction();
 
     public ProductionNode(ProductionNode parent, Production production) {
@@ -21,8 +22,12 @@ public class ProductionNode extends Node {
         this.production = production;
     }
 
-    public ProductionNode(ProductionNode parent){
+    public ProductionNode(ProductionNode parent) {
         super(parent);
+    }
+
+    public Production getProduction() {
+        return production;
     }
 
     @Override
@@ -30,21 +35,21 @@ public class ProductionNode extends Node {
         List<TreeElement> children;
         children = production.expand(token, peek, currentIndentLevel);
         addNodes(children);
-        return false; //didnt consume token
+        return false; // didnt consume token
     }
 
-    private void addNodes(List<TreeElement> children) throws BadSyntaxException{
-        if(children == null)
+    private void addNodes(List<TreeElement> children) throws BadSyntaxException {
+        if (children == null)
             throw new BadSyntaxException(); // couldn't match token
         Visitor visitor = new NodeCreatorVisitor(this);
         for (TreeElement child : children)
-            child.accept(visitor); //creates nodes and adds to list using addNodes
+            child.accept(visitor); // creates nodes and adds to list using addNodes
     }
 
     @Override
     public void processTokenWhenBacking(Token token, Token peek, int currentIndentLevel) throws BadSyntaxException {
         List<TreeElement> children = production.expandOptional(token, peek, currentIndentLevel);
-        if(children != null)
+        if (children != null)
             addNodes(children);
     }
 
@@ -58,34 +63,34 @@ public class ProductionNode extends Node {
 
     public void exchange(Node removed, Node added) {
         int removedIndex = nodes.indexOf(removed);
-        if(removedIndex != -1)
+        if (removedIndex != -1)
             nodes.set(removedIndex, added);
         else
             throw new RuntimeException("Parent doesnt contain node to remove");
     }
 
-    public void addNode(Node node){
+    public void addNode(Node node) {
         nodes.add(node);
     }
 
     @Override
     public Node getNextChildNode() {
-        if(hasNextChildNode())
+        if (hasNextChildNode())
             return nodes.get(++currentPosition);
         return null;
     }
 
-    public boolean hasNextChildNode(){
-        return currentPosition+1 < nodes.size();
+    public boolean hasNextChildNode() {
+        return currentPosition + 1 < nodes.size();
     }
 
     @Override
     public int getSubtreeSize() {
         int size = 0;
-        if(nodes != null)
+        if (nodes != null)
             for (Node node : nodes)
                 size += node.getSubtreeSize();
-        return size+1;
+        return size + 1;
     }
 
     @Override
@@ -96,7 +101,7 @@ public class ProductionNode extends Node {
     @Override
     public void printInformations() {
         System.out.println(getInformation());
-        for (Node node: nodes){
+        for (Node node : nodes) {
             node.printInformations();
         }
     }
@@ -109,7 +114,7 @@ public class ProductionNode extends Node {
     @Override
     public void reset() {
         currentPosition = -1;
-        for(Node node : nodes)
+        for (Node node : nodes)
             node.reset();
     }
 
@@ -119,14 +124,19 @@ public class ProductionNode extends Node {
     }
 
     @Override
-    public boolean isSuiteProduction(){
-        if(production instanceof SuiteProduction)
+    public boolean isSuiteProduction() {
+        if (production instanceof SuiteProduction)
             return true;
         return false;
     }
 
     @Override
-    public int getLevel(){
+    public int getLevel() {
         return production.getLevel();
+    }
+
+    @Override
+    public void accept(SemanticsAnalizer analizer) {
+        analizer.visit(this);
     }
 }

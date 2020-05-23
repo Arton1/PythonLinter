@@ -1,5 +1,6 @@
 package linter.syntax_tree;
 
+import linter.SemanticsAnalizer;
 import linter.exception.BadSyntaxException;
 import linter.token.Token;
 
@@ -14,6 +15,7 @@ public abstract class Node {
     abstract public void printInformations();
     abstract public boolean isEpsilon();
     abstract public Token getToken();
+    abstract public void accept(SemanticsAnalizer analizer);
     
     public void reset(){ }
 

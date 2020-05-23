@@ -3,7 +3,13 @@ package linter;
 import java.util.List;
 
 import linter.identifier_tree.IdentifierTree;
+import linter.syntax_tree.Node;
+import linter.syntax_tree.ProductionNode;
 import linter.syntax_tree.SyntaxTree;
+import linter.syntax_tree.TokenNode;
+import linter.syntax_tree.production.AnnualAssignmentStatementProduction;
+import linter.syntax_tree.production.Production;
+import linter.syntax_tree.production.SimpleStatementProduction;
 import linter.token.Token;
 
 public class SemanticsAnalizer {
@@ -15,18 +21,24 @@ public class SemanticsAnalizer {
     
     IdentifierTree getNextIdentifierTree(){
         SyntaxTree syntaxTree = parser.getNextSyntaxTree();
-        while(true){
-            int level = syntaxTree.getCurrentIndentLevel();
-            List<Token> instruction = syntaxTree.getNextInstruction();
-            if(instruction == null)
-                break;
-            checkValidity(instruction);
-        }
+        IdentifierTree identifierTree = new IdentifierTree();
+        Node currentNode;
+        while((currentNode = syntaxTree.getNextNode()) != null)
+            currentNode.accept(this);
         return null;
     }
 
-    private void checkValidity(List<Token> instruction){
+    public void visit(ProductionNode node){
+        Production production = node.getProduction();
+        if(production instanceof SimpleStatementProduction)
+            checkForbiddenAssignment(node);
+    }
+
+    public void visit(TokenNode node){
 
     }
 
+    private void checkForbiddenAssignment(ProductionNode node){
+
+    }
 }
