@@ -5,12 +5,16 @@ import linter.exception.IndentationException;
 import linter.token.Token;
 import linter.token.type.BlockTokenType;
 import linter.token.type.CompoundStatementTokenType;
-import linter.token.type.SimpleStatementTokenType;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import linter.ErrorHandler;
 
 public class SyntaxTree {
     Node root = new ProductionNode(null);
     Node currentNode = root;
+    Node nextNodeToReturn = root;
     int currentIndentLevel = 0;
     boolean beginingOfStatement = false;
     boolean finished = false;
@@ -114,6 +118,28 @@ public class SyntaxTree {
         currentNode = parent;
     }
 
+    public List<Token> getNextInstruction(){
+        List<Token> tokens = new ArrayList<Token>();
+        while(currentNode != null && !currentNode.isSuiteProduction()){
+            Node nextNode = currentNode.getNextChildNode();
+            if(nextNode != null){
+                currentNode = nextNode;
+                Token token = currentNode.getToken();
+                if(token != null)
+                    tokens.add(token);
+            }
+            else
+                currentNode = currentNode.getParent();
+        }
+        return tokens;
+    }
+
+    public int getCurrentIndentLevel(){
+        if(currentNode.isSuiteProduction())
+            currentIndentLevel = currentNode.getLevel();
+        return currentIndentLevel;
+    }
+
     public int size(){
         if(root == null)
             return 0;
@@ -122,6 +148,11 @@ public class SyntaxTree {
 
     public boolean finished(){
         return finished;
+    }
+
+    public void resetTravel(){
+        root.reset();
+        currentNode = root;
     }
 
     public void printNodesInformations(){

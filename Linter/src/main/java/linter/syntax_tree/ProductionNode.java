@@ -6,6 +6,7 @@ import java.util.List;
 import linter.exception.BadSyntaxException;
 import linter.syntax_tree.production.Production;
 import linter.syntax_tree.production.SingleInputProduction;
+import linter.syntax_tree.production.compound_productions.SuiteProduction;
 import linter.token.Token;
 import linter.visitor.NodeCreatorVisitor;
 import linter.visitor.Visitor;
@@ -103,5 +104,29 @@ public class ProductionNode extends Node {
     @Override
     public boolean isEpsilon() {
         return nodes.size() == 0;
+    }
+
+    @Override
+    public void reset() {
+        currentPosition = -1;
+        for(Node node : nodes)
+            node.reset();
+    }
+
+    @Override
+    public Token getToken() {
+        return null;
+    }
+
+    @Override
+    public boolean isSuiteProduction(){
+        if(production instanceof SuiteProduction)
+            return true;
+        return false;
+    }
+
+    @Override
+    public int getLevel(){
+        return production.getLevel();
     }
 }

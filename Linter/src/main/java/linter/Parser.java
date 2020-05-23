@@ -28,7 +28,7 @@ public class Parser {
             syntaxTree.improve(token, peek);
             if(syntaxTree.finished())
                 break;
-            try{
+            try {
                 token = lexer.getToken();
                 peek = lexer.peek();
             }
@@ -36,6 +36,7 @@ public class Parser {
                 ErrorHandler.handleBadTokenException(e);
             }
         }
+        syntaxTree.resetTravel();
         return syntaxTree;
     }
 }

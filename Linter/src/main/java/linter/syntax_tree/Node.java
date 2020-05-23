@@ -13,9 +13,11 @@ public abstract class Node {
     abstract public String getInformation();
     abstract public void printInformations();
     abstract public boolean isEpsilon();
+    abstract public Token getToken();
+    
+    public void reset(){ }
 
     /**
-     * 
      * @param parent
      * It is ProductionNode, because all other types are leafs.
      */
@@ -33,5 +35,13 @@ public abstract class Node {
     public void detachFromParent(){
         parent.removeProcessedNode();
     }
+    
+	public boolean isSuiteProduction() {
+		return false;
+    }
+    
+	public int getLevel() {
+		return 0; //TODO: Should throw cannot get level error
+	}
     
 }

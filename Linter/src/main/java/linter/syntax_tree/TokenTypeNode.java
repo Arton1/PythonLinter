@@ -51,4 +51,9 @@ public class TokenTypeNode extends Node {
         //no processing
     }
 
+    @Override
+    public Token getToken(){
+        return null;  //TODO: Throw bad syntax tree error
+    }
+
 }

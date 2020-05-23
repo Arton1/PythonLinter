@@ -6,7 +6,7 @@ y = 3
 class Klasa(ABC):
 
 	def __init__(self):
-		xIsFive = self._hello(5)
+		xIsFive = 5
 		self.print(self.value)
 
 	def funkcja(self, x: int) -> bool:

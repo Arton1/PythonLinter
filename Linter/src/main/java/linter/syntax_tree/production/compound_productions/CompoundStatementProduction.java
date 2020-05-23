@@ -29,4 +29,8 @@ public class CompoundStatementProduction extends Production {
         return null;
     }
 
+    @Override
+    public int getLevel(){
+        return level;
+    }
 }

@@ -23,6 +23,10 @@ public abstract class Production implements TreeElement {
 
 	public List<TreeElement> expandOptional(Token token, Token peek, int currentIndentLevel) {
 		return null; //by default
-	}
+    }
+    
+    public int getLevel(){
+        return 0; //TODO: Should throw cannot get level error
+    }
 
 }

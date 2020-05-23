@@ -49,4 +49,9 @@ public class TokenNode extends Node {
         //no processing
     }
 
+    @Override
+    public Token getToken() {
+        return token;
+    }
+
 }
