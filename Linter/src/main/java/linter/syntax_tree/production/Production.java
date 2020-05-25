@@ -5,15 +5,15 @@ import java.util.List;
 
 import linter.exception.IndentationException;
 import linter.syntax_tree.TreeElement;
+import linter.syntax_tree.TreeElementVisitor;
 import linter.token.Token;
-import linter.visitor.Visitor;
 
 public abstract class Production implements TreeElement {
 
     abstract public List<TreeElement> expand(Token token, Token peek, int currentIndentLevel) throws IndentationException; //LL(1), so it has to have a lookahead
 
     @Override
-    public void accept(Visitor visitor){
+    public void accept(TreeElementVisitor visitor){
         visitor.visit(this);
     }
 

@@ -1,6 +1,6 @@
 package linter.token.type;
 
-import linter.visitor.Visitor;
+import linter.visitor.TreeElementVisitor;
 
 public enum CompoundStatementTokenType implements TokenType {
     IF, ELIF, ELSE, 
@@ -10,7 +10,7 @@ public enum CompoundStatementTokenType implements TokenType {
     CLASS;
 
     @Override
-    public void accept(Visitor visitor){
+    public void accept(TreeElementVisitor visitor){
         visitor.visit(this);
     }
 

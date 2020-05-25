@@ -1,16 +1,13 @@
-package linter.visitor;
+package linter.syntax_tree;
 
-import linter.syntax_tree.ProductionNode;
-import linter.syntax_tree.TokenNode;
-import linter.syntax_tree.TokenTypeNode;
 import linter.syntax_tree.production.Production;
 import linter.token.Token;
 import linter.token.type.TokenType;
 
-public class NodeCreatorVisitor implements Visitor {
+public class TreeElementVisitor {
     ProductionNode parent;
 
-    public NodeCreatorVisitor(ProductionNode parent){
+    public TreeElementVisitor(ProductionNode parent){
         this.parent = parent;
     }
 

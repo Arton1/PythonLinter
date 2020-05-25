@@ -16,6 +16,7 @@ public abstract class Node {
     abstract public boolean isEpsilon();
     abstract public Token getToken();
     abstract public void accept(SemanticsAnalizer analizer);
+    abstract public void accept(NodeVisitor visitor);
     
     public void reset(){ }
 

@@ -60,4 +60,8 @@ public class TokenNode extends Node {
         analizer.visit(this);
     }
 
+    @Override
+    public void accept(NodeVisitor visitor) {
+        visitor.visit(this);
+    }
 }

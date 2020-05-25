@@ -1,12 +1,12 @@
 package linter.token.type;
 
-import linter.visitor.Visitor;
+import linter.visitor.TreeElementVisitor;
 
 public enum StringTokenType implements TokenType {
     DOUBLE_QUOTE, SINGLE_QUOTE;
 
     @Override
-    public void accept(Visitor visitor){
+    public void accept(TreeElementVisitor visitor){
         visitor.visit(this);
     }
 }

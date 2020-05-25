@@ -57,4 +57,14 @@ public class TokenTypeNode extends Node {
         // TODO: Throw bad syntax tree error
     }
 
+    @Override
+    public Token getToken() {
+        // TODO: Throw bad syntax tree error
+        return null;
+    }
+
+    @Override
+    public void accept(NodeVisitor visitor) {
+        // TODO Auto-generated method stub
+    }
 }

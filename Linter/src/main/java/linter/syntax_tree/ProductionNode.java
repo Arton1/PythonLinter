@@ -9,8 +9,6 @@ import linter.syntax_tree.production.Production;
 import linter.syntax_tree.production.SingleInputProduction;
 import linter.syntax_tree.production.compound_productions.SuiteProduction;
 import linter.token.Token;
-import linter.visitor.NodeCreatorVisitor;
-import linter.visitor.Visitor;
 
 public class ProductionNode extends Node {
     List<Node> nodes = new LinkedList<Node>();
@@ -41,7 +39,7 @@ public class ProductionNode extends Node {
     private void addNodes(List<TreeElement> children) throws BadSyntaxException {
         if (children == null)
             throw new BadSyntaxException(); // couldn't match token
-        Visitor visitor = new NodeCreatorVisitor(this);
+        TreeElementVisitor visitor = new TreeElementVisitor(this);
         for (TreeElement child : children)
             child.accept(visitor); // creates nodes and adds to list using addNodes
     }
@@ -138,5 +136,13 @@ public class ProductionNode extends Node {
     @Override
     public void accept(SemanticsAnalizer analizer) {
         analizer.visit(this);
+    }
+
+    @Override
+    public void accept(NodeVisitor visitor) {
+        if(visitor.visit(this)) //should finish?
+            return;
+        for(Node node : nodes)
+            node.accept(visitor);
     }
 }

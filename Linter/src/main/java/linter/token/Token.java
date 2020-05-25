@@ -1,8 +1,8 @@
 package linter.token;
 
 import linter.syntax_tree.TreeElement;
+import linter.syntax_tree.TreeElementVisitor;
 import linter.token.type.TokenType;
-import linter.visitor.Visitor;
 
 public class Token implements TreeElement {
     TokenType tokenType;
@@ -31,7 +31,7 @@ public class Token implements TreeElement {
     }
 
     @Override
-    public void accept(Visitor visitor) {
+    public void accept(TreeElementVisitor visitor) {
         visitor.visit(this);
     }
 }
