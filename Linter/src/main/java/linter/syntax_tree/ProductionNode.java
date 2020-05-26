@@ -140,9 +140,22 @@ public class ProductionNode extends Node {
 
     @Override
     public void accept(NodeVisitor visitor) {
-        if(visitor.visit(this)) //should finish?
+        if(visitor.visit(this)) //should finish? If false, visitor wishes to go to children.
             return;
         for(Node node : nodes)
-            node.accept(visitor);
+            node.accept(visitor); //TODO: accept should be bool
+    }
+
+    @Override
+    public boolean isType(Class<? extends Production> className) {
+        if(className.isInstance(production))
+            return true;
+        return false;
+    }
+
+    public Node getChildAtPosition(int position){
+        if(position < nodes.size())
+            return nodes.get(position);
+        return null;
     }
 }

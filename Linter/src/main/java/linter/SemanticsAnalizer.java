@@ -13,6 +13,7 @@ import linter.syntax_tree.production.SimpleStatementProduction;
 import linter.type_analysis.Function;
 import linter.type_analysis.Table;
 import linter.type_analysis.Type;
+import linter.type_analysis.analiser.SimpleStatementAnalizer;
 
 public class SemanticsAnalizer {
     Parser parser;
@@ -56,11 +57,6 @@ public class SemanticsAnalizer {
     }
 
     private void checkSubtreeTyping(ProductionNode node) {
-        checkSubtreeAssignment(node);
-    }
-
-    private void checkSubtreeAssignment(ProductionNode node){
-        if(node.getProduction() instanceof SimpleStatementProduction == false)
-            return;
+        node.accept(new SimpleStatementAnalizer(variableTables, functionTables));
     }
 }

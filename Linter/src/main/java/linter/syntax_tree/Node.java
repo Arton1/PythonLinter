@@ -3,6 +3,7 @@ package linter.syntax_tree;
 import linter.SemanticsAnalizer;
 import linter.exception.BadSyntaxException;
 import linter.token.Token;
+import linter.syntax_tree.production.Production;
 
 public abstract class Node {
     protected ProductionNode parent;
@@ -17,6 +18,7 @@ public abstract class Node {
     abstract public Token getToken();
     abstract public void accept(SemanticsAnalizer analizer);
     abstract public void accept(NodeVisitor visitor);
+    abstract public boolean isType(Class<? extends Production> className);
     
     public void reset(){ }
 

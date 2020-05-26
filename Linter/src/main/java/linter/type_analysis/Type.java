@@ -3,7 +3,7 @@ package linter.type_analysis;
 import java.util.List;
 
 public enum Type implements TableElement<Type> {
-    INT("int"), FLOAT("float"), STR("str"), BYTES("bytes"), BOOL("bool"), CLASS_OBJECT(null);
+    INT("int"), FLOAT("float"), STR("str"), BYTES("bytes"), BOOL("bool"), NONE("None"), CLASS_OBJECT(null);
     
     private String typeLabel;
     

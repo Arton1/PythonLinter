@@ -2,6 +2,7 @@ package linter.syntax_tree;
 
 import linter.SemanticsAnalizer;
 import linter.exception.BadSyntaxException;
+import linter.syntax_tree.production.Production;
 import linter.token.Token;
 
 public class TokenNode extends Node {
@@ -63,5 +64,10 @@ public class TokenNode extends Node {
     @Override
     public void accept(NodeVisitor visitor) {
         visitor.visit(this);
+    }
+
+    @Override
+    public boolean isType(Class<? extends Production> className) {
+        return false;
     }
 }
