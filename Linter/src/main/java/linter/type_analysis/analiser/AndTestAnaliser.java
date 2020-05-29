@@ -25,7 +25,7 @@ public class AndTestAnaliser extends TypeAnaliser {
         Node child;
         while((child = node.getChildAtPosition(position++)) != null){
             if(child.isType(NotTestProduction.class))
-                processNotTestProduction(node);
+                processNotTestProduction(child);
         }
         return true;
     }
@@ -48,5 +48,6 @@ public class AndTestAnaliser extends TypeAnaliser {
             type = analiser.getType();
             return;
         }
+        throw new RuntimeException("Nothing received from analyzer");
     }
 }

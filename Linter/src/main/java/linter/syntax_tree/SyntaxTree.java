@@ -20,17 +20,19 @@ public class SyntaxTree {
         return root.getSubtreeSize();
     }
 
-    public Node getNextNode(){
+    public Node getNextNode(boolean enterChild){
         while(true){ //Pass all productions that were already processed
             Node nextNode = currentNode.getNextChildNode();
-            if(nextNode == null)
+            if(nextNode == null || !enterChild){
+                enterChild = true;
                 currentNode = currentNode.getParent();
                 if(currentNode == null)
                     return null;
                 else
                     if(currentNode.isSuiteProduction())
                         currentIndentLevel = currentNode.getLevel()-1; //Tree is quitting compound statement
-            else{
+            }
+            else {
                 if(currentNode.isSuiteProduction())
                     currentIndentLevel = currentNode.getLevel(); //Tree is entering compound statement
                 return currentNode = nextNode;

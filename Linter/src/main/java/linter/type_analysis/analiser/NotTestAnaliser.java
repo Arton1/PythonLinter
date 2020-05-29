@@ -35,6 +35,7 @@ public class NotTestAnaliser extends TypeAnaliser {
 
     private void processComparisonProduction(Node node){
         ComparisonAnaliser analiser = new ComparisonAnaliser(variableTables, functionTables);
+        node.accept(analiser);
         if(analiser.getType() != null){
             type = analiser.getType();
             return;
@@ -43,6 +44,7 @@ public class NotTestAnaliser extends TypeAnaliser {
             variable = analiser.getVariable();
             return;
         }
+        throw new RuntimeException("Nothing received from analyzer");
     }
 
     private void processNotTestProduction(Node node){

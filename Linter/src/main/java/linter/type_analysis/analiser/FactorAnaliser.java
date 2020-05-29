@@ -44,6 +44,7 @@ public class FactorAnaliser extends TypeAnaliser {
             variable = analiser.getVariable();
             return;
         }
+        throw new RuntimeException("Nothing received from analyzer");
     }
 
     private void processFactorProduction(Node node){

@@ -5,6 +5,7 @@ import java.util.List;
 public class Variable implements TableElement<Variable> {
     Type type = null;
     List<String> identifier;
+    int numberOfReferences = 0;
 
     public Variable(List<String> identifier){
         this.identifier = identifier;
@@ -12,9 +13,7 @@ public class Variable implements TableElement<Variable> {
 
     @Override
     public Variable getElement(List<String> identifier) throws RuntimeException {
-        if(this.identifier.get(identifier.size()-1).equals(identifier.get(0)))
-            return this;
-        throw new RuntimeException("Bad identifier"); //Programmer side error
+        return this;
     }
 
     @Override
@@ -28,6 +27,14 @@ public class Variable implements TableElement<Variable> {
 
     public void setType(Type type){
         this.type = type;
+    }
+
+    public void incrementNumberOfReferences(){
+        numberOfReferences++;
+    }
+
+    public int getNumberOfReferences(){
+        return numberOfReferences;
     }
 
     public List<String> getIdentifier(){

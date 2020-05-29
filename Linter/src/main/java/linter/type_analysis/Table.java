@@ -1,5 +1,6 @@
 package linter.type_analysis;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,8 +21,18 @@ public class Table<T extends TableElement<T>> implements TableElement<T> {
     }
 
     public T getElement(List<String> identifier){
-        TableElement<T> element = elementMap.get(identifier.get(0));
-        return element.getElement(identifier.subList(1, identifier.size()));
+        if(identifier.size() == 0)
+            throw new RuntimeException("Cannot process identifier");
+        TableElement<T> element;
+        element = elementMap.get(identifier.get(0));
+        if(element == null)
+            return null;
+        else {
+            if(identifier.size() < 2)
+                return element.getElement(new ArrayList<String>()); //pass empty list
+            else
+                return element.getElement(identifier.subList(1, identifier.size()));
+        }
     }
 
     public void addClassSpace(String identifier){

@@ -39,9 +39,11 @@ public class ComparisonAnaliser extends TypeAnaliser {
         node.accept(analiser);
         if(type == null && variable == null){
             if(analiser.getVariable() != null)
-                variable = getVariable();
+                variable = analiser.getVariable();
             else if(analiser.getType() != null)
-                type = getType();
+                type = analiser.getType();
+            else
+                throw new RuntimeException("Nothing received from analyzer");
             return;
         }
         else if(variable != null){

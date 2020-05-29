@@ -35,9 +35,11 @@ public class ExpressionAnaliser extends TypeAnaliser {
         node.accept(analiser);
         if(type == null && variable == null){
             if(analiser.getVariable() != null)
-                variable = getVariable();
+                variable = analiser.getVariable();
             else if(analiser.getType() != null)
-                type = getType();
+                type = analiser.getType();
+            else
+                throw new RuntimeException("Nothing received from analyzer");
             return;
         }
         else if(variable != null){
@@ -51,6 +53,8 @@ public class ExpressionAnaliser extends TypeAnaliser {
             typeToCompare = analiser.getVariable().getType();
         else if(analiser.getType() != null)
             typeToCompare = analiser.getType();
+        else
+            throw new RuntimeException("Nothing received from analyzer");
         if(type == Type.CLASS_OBJECT || typeToCompare == Type.CLASS_OBJECT)
             throw new RuntimeException("Cannot operate on class objects");
         if(type != typeToCompare)

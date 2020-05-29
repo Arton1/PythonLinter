@@ -43,6 +43,7 @@ public class SimpleStatementAnalizer extends TypeAnaliser {
             variable = analiser.getVariable();
             return;
         }
+        throw new RuntimeException("Nothing received from analyzer");
     }
 
     private void processAssignmentProduction(Node node){
@@ -51,9 +52,6 @@ public class SimpleStatementAnalizer extends TypeAnaliser {
         if(variable == null)
             throw new RuntimeException("No variable to assign to");
         variable.setType(analiser.getType());
-        for(String identifierPart : variable.getIdentifier())
-            System.out.println(identifierPart);
-        System.out.print(analiser.getType());
         saveVariable(variable);
     }
 

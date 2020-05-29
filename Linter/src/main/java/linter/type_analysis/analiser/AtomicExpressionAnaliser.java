@@ -33,17 +33,23 @@ public class AtomicExpressionAnaliser extends TypeAnaliser {
                 if(child.isType(OptionalTrailerProduction.class))
                     processTrailerProduction(child, identifier);
         }
-        if(type != null)
-            if(type.getLabel() != null) //is not a class object
+        if(type != null){
+            if(type.getLabel() != null){ //is not a class object
                 if(identifier.size() != 0)
                     throw new RuntimeException("Cannot get a variable from a type different from class");
+            }
             else{
                 throw new RuntimeException("Unimplemented!");
             }
-        else 
+        }
+        else {
             variable = findVariable(identifier);
             if(variable == null)
                 variable = new Variable(identifier);
+            else {
+                variable.incrementNumberOfReferences();
+            }
+        }
         return true;
     }
 
@@ -54,15 +60,23 @@ public class AtomicExpressionAnaliser extends TypeAnaliser {
             type = analiser.getType();
         else if(analiser.getIdentifier() != null)
             identifier.add(analiser.getIdentifier());
+        else
+            throw new RuntimeException("Nothing received from analyzer");
     }
 
     private void processTrailerProduction(Node node, List<String> identifier){
         TrailerAnaliser analiser = new TrailerAnaliser(variableTables, functionTables);
         node.accept(analiser);
-        if(analiser.getArguments() != null)
+        if(analiser.getArguments() != null){
            processFunctionCall(identifier, analiser.getArguments());
-        if(analiser.getIdentifier() != null)
+           return;
+        }
+        if(analiser.getIdentifier() != null){
             identifier.add(analiser.getIdentifier());
+            return;
+        }
+        throw new RuntimeException("Nothing received from analyzer");
+        
     }
 
     public void processFunctionCall(List<String> identifier, List<Type> arguments){

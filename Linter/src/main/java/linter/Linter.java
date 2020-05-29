@@ -2,8 +2,6 @@ package linter;
 
 import java.io.FileNotFoundException;
 
-import linter.syntax_tree.SyntaxTree;
-
 class Linter {
     public static void main(String args[]){
         StreamHandler stream = null;
@@ -23,11 +21,13 @@ class Linter {
         }
         Lexer lexer = new Lexer(stream);
         Parser parser = new Parser(lexer);
-        SyntaxTree tree;
-        while((tree = parser.getNextSyntaxTree()) != null){
-            System.out.println("-------------");
-            System.out.println("Tree size: " + tree.size());
-            tree.printNodesInformations();
-        }
+        SemanticsAnalizer analizer = new SemanticsAnalizer(parser);
+        while(analizer.getNextIdentifierTree() != null);
+        // SyntaxTree tree;
+        // while((tree = parser.getNextSyntaxTree()) != null){
+        //     System.out.println("-------------");
+        //     System.out.println("Tree size: " + tree.size());
+        //     tree.printNodesInformations();
+        // }
     }
 }

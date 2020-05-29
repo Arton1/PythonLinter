@@ -4,6 +4,7 @@ import java.util.List;
 
 import linter.syntax_tree.Node;
 import linter.syntax_tree.ProductionNode;
+import linter.syntax_tree.production.test_productions.FactorProduction;
 import linter.syntax_tree.production.test_productions.TermProduction;
 import linter.type_analysis.Function;
 import linter.type_analysis.Table;
@@ -23,7 +24,7 @@ public class TermAnaliser extends TypeAnaliser {
         int position = 0;
         Node child;
         while((child = node.getChildAtPosition(position++)) != null){
-            if(child.isType(TermProduction.class))
+            if(child.isType(FactorProduction.class))
                 processFactorProduction(child);
         }
         return true;
@@ -34,9 +35,11 @@ public class TermAnaliser extends TypeAnaliser {
         node.accept(analiser);
         if(type == null && variable == null){
             if(analiser.getVariable() != null)
-                variable = getVariable();
+                variable = analiser.getVariable();
             else if(analiser.getType() != null)
-                type = getType();
+                type = analiser.getType();
+            else
+                throw new RuntimeException("Nothing received from analyzer");
             return;
         }
         else if(variable != null){
@@ -50,6 +53,8 @@ public class TermAnaliser extends TypeAnaliser {
             typeToCompare = analiser.getVariable().getType();
         else if(analiser.getType() != null)
             typeToCompare = analiser.getType();
+        else
+            throw new RuntimeException("Nothing received from analyzer");
         if(type == Type.CLASS_OBJECT || typeToCompare == Type.CLASS_OBJECT)
             throw new RuntimeException("Cannot operate on class objects");
         if(type != typeToCompare)

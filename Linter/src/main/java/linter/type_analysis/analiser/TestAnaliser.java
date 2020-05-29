@@ -13,7 +13,7 @@ import linter.type_analysis.Variable;
 
 public class TestAnaliser extends TypeAnaliser {
 
-    protected TestAnaliser(List<Table<Variable>> variableTables, List<Table<Function>> functionTables) {
+    public TestAnaliser(List<Table<Variable>> variableTables, List<Table<Function>> functionTables) {
         super(variableTables, functionTables);
     }
 
@@ -48,6 +48,7 @@ public class TestAnaliser extends TypeAnaliser {
             type = analiser.getType();
             return;
         }
+        throw new RuntimeException("Nothing received from analyzer");
     }
     
 }

@@ -31,6 +31,12 @@ public class AnnualAssignmentAnaliser extends TypeAnaliser {
             if(child.isType(ExpressionProduction.class))
                 processExpressionProduction(child);
         }
+        if(typeToAssign == null){
+            Variable assignedVariable = variablesToAssignTo.get(variablesToAssignTo.size()-1);
+            if(assignedVariable.getType() == null)
+                throw new RuntimeException("Non initialized variable"); //TODO: Error Handler
+            typeToAssign = assignedVariable.getType();
+        }
         for(Variable variable : variablesToAssignTo){
             variable.setType(typeToAssign);
             saveVariable(variable);
@@ -49,7 +55,7 @@ public class AnnualAssignmentAnaliser extends TypeAnaliser {
             return;
         }
         if(analiser.getVariable() != null){
-            variablesToAssignTo.add(variable);
+            variablesToAssignTo.add(analiser.getVariable());
             return;
         }
     }

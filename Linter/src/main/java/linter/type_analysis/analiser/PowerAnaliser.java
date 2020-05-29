@@ -26,7 +26,7 @@ public class PowerAnaliser extends TypeAnaliser {
         Node child;
         while((child = node.getChildAtPosition(position++)) != null){
             if(child.isType(AtomicExpressionProduction.class))
-                processAtomicExpressionProduction(node);
+                processAtomicExpressionProduction(child);
             else
                 if(child.isType(FactorProduction.class))
                     processFactorProduction(child);
@@ -45,6 +45,7 @@ public class PowerAnaliser extends TypeAnaliser {
             variable = analiser.getVariable();
             return;
         }
+        throw new RuntimeException("Nothing received from analyzer");
     }
 
     public void processFactorProduction(Node node){
@@ -60,6 +61,8 @@ public class PowerAnaliser extends TypeAnaliser {
             typeToCompare = analiser.getVariable().getType();
         else if(analiser.getType() != null)
             typeToCompare = analiser.getType();
+        else
+            throw new RuntimeException("Nothing received from analyzer");
         if(type != Type.FLOAT && type != Type.INT && typeToCompare != Type.FLOAT && typeToCompare != Type.INT)
             throw new RuntimeException("Bad type for operation");
         if(typeToCompare == Type.INT && type == Type.INT)
