@@ -13,6 +13,8 @@ import linter.type_analysis.Variable;
 
 public class OptionalAssignmentAnaliser extends TypeAnaliser {
 
+    boolean shouldCheckVariableType = false;
+
     protected OptionalAssignmentAnaliser(List<Table<Variable>> variableTables, List<Table<Function>> functionTables) {
         super(variableTables, functionTables);
     }
@@ -46,7 +48,22 @@ public class OptionalAssignmentAnaliser extends TypeAnaliser {
     }
 
     private void processExpressionProduction(Node node){
-        throw new RuntimeException("Unimpelemnted");
+        ExpressionAnaliser analiser = new ExpressionAnaliser(variableTables, functionTables);
+        node.accept(analiser);
+        if(analiser.getType() != null){
+            type = analiser.getType();
+        }
+        if(analiser.getVariable() != null){
+            Variable variable = analiser.getVariable();
+            if(variable.getType() == null)
+                throw new RuntimeException("No variable type");
+            type = variable.getType();
+        }
+        shouldCheckVariableType = true;
+    }
+
+    public boolean shouldCheckVariableType(){
+        return shouldCheckVariableType;
     }
 
 }

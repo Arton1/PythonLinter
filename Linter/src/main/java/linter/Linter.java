@@ -23,11 +23,5 @@ class Linter {
         Parser parser = new Parser(lexer);
         SemanticsAnalizer analizer = new SemanticsAnalizer(parser);
         while(analizer.getNextIdentifierTree() != null);
-        // SyntaxTree tree;
-        // while((tree = parser.getNextSyntaxTree()) != null){
-        //     System.out.println("-------------");
-        //     System.out.println("Tree size: " + tree.size());
-        //     tree.printNodesInformations();
-        // }
     }
 }

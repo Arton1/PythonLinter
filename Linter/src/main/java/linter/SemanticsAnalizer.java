@@ -47,16 +47,16 @@ public class SemanticsAnalizer {
             currentIndentLevel = syntaxTree.getCurrentLevel();
             currentNode.accept(this);
         }
-        Table<Variable> vTable = variableTables.get(0);
-        List<String> ident = new ArrayList<String>();
-        ident.add("x");
-        Variable variable = vTable.getElement(ident);
-        System.out.println("x: " + variable.getNumberOfReferences());
-        ident = new ArrayList<String>();
-        ident.add("y");
-        variable = vTable.getElement(ident);
-        if(variable != null)
-            System.out.println("y: " + variable.getNumberOfReferences());
+        // Table<Variable> vTable = variableTables.get(0);
+        // List<String> ident = new ArrayList<String>();
+        // ident.add("x");
+        // Variable variable = vTable.getElement(ident);
+        // System.out.println("x: " + variable.getNumberOfReferences());
+        // ident = new ArrayList<String>();
+        // ident.add("y");
+        // variable = vTable.getElement(ident);
+        // if(variable != null)
+        //     System.out.println("y: " + variable.getNumberOfReferences());
         return identifierTree;
     }
 

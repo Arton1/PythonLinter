@@ -57,8 +57,14 @@ public class ComparisonAnaliser extends TypeAnaliser {
             typeToCompare = analiser.getVariable().getType();
         else if(analiser.getType() != null)
             typeToCompare = analiser.getType();
-        if(type != typeToCompare || !type.getLabel().equals(typeToCompare.getLabel()))
-            throw new RuntimeException("Types dont match");
+        if(type != typeToCompare || !type.getLabel().equals(typeToCompare.getLabel())){
+            if(typeToCompare == Type.FLOAT || typeToCompare == Type.INT || typeToCompare == Type.BOOL){
+                if(!(type == Type.FLOAT || type == Type.INT || type == Type.BOOL))
+                    throw new RuntimeException("Impossible to compare");
+            }
+            else
+                throw new RuntimeException("Impossible to compare");
+        }
         comparisonAppeared = true;
     }
 }
