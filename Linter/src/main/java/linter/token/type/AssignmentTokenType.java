@@ -1,6 +1,6 @@
 package linter.token.type;
 
-import linter.visitor.TreeElementVisitor;
+import linter.syntax_tree.TreeElementVisitor;
 
 public enum AssignmentTokenType implements TokenType{
     NORMAL_AS, MULTIPLY_AS, DIVIDE_AS, REMINDER_AS,

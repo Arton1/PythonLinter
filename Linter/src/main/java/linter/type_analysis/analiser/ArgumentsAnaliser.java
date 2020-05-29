@@ -10,12 +10,13 @@ import linter.syntax_tree.production.test_productions.TestProduction;
 import linter.type_analysis.Function;
 import linter.type_analysis.Table;
 import linter.type_analysis.Type;
+import linter.type_analysis.Variable;
 
 public class ArgumentsAnaliser extends TypeAnaliser {
     
     List<Type> argumentTypes = new ArrayList<Type>();
 
-    protected ArgumentsAnaliser(List<Table<Type>> variableTables, List<Table<Function>> functionTables) {
+    protected ArgumentsAnaliser(List<Table<Variable>> variableTables, List<Table<Function>> functionTables) {
         super(variableTables, functionTables);
     }
 
@@ -31,13 +32,13 @@ public class ArgumentsAnaliser extends TypeAnaliser {
                 child.accept(analiser);
                 if(analiser.getType() != null)
                     argumentTypes.add(analiser.getType());
-                else if(analiser.hasFunction()){ //a function
-                    List<String> identifier = analiser.getIdentifier();
-                    //TODO: FIND A FUNCTION AND GET ITS TYPE
+                else if(analiser.getFunction() != null){ //a function
+                    Function receivedFunction = analiser.getFunction();
+                    argumentTypes.add(receivedFunction.getReturnType());
                 }
-                else { //a variable
-                    List<String> identifier = analiser.getIdentifier();
-                    //TODO: FIND A VARIABLE AND GET ITS TYPE
+                else if(analiser.getVariable() != null){ //a variable
+                    Variable receivedVariable = analiser.getVariable();
+                    argumentTypes.add(receivedVariable.getType());
                 }
             }
         }

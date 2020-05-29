@@ -9,10 +9,11 @@ import linter.syntax_tree.production.test_productions.NotTestProduction;
 import linter.type_analysis.Function;
 import linter.type_analysis.Table;
 import linter.type_analysis.Type;
+import linter.type_analysis.Variable;
 
 public class NotTestAnaliser extends TypeAnaliser {
 
-    protected NotTestAnaliser(List<Table<Type>> variableTables, List<Table<Function>> functionTables) {
+    protected NotTestAnaliser(List<Table<Variable>> variableTables, List<Table<Function>> functionTables) {
         super(variableTables, functionTables);
     }
 
@@ -23,14 +24,32 @@ public class NotTestAnaliser extends TypeAnaliser {
         int position = 0;
         Node child;
         while((child = node.getChildAtPosition(position++)) != null){
-            if(child.isType(ComparisonProduction.class)){
-                ComparisonAnaliser analiser = new ComparisonAnaliser(variableTables, functionTables);
-            }
+            if(child.isType(ComparisonProduction.class))
+                processComparisonProduction(child);
             else
-                if(child.isType(NotTestProduction.class)){
-                    child.accept(this);
-                }
+                if(child.isType(NotTestProduction.class))
+                    processNotTestProduction(child);
         }
         return true;
+    }
+
+    private void processComparisonProduction(Node node){
+        ComparisonAnaliser analiser = new ComparisonAnaliser(variableTables, functionTables);
+        if(analiser.getType() != null){
+            type = analiser.getType();
+            return;
+        }
+        if(analiser.getVariable() != null){
+            variable = analiser.getVariable();
+            return;
+        }
+    }
+
+    private void processNotTestProduction(Node node){
+        node.accept(this);
+        if(variable != null && variable.getType() == null)
+            throw new RuntimeException("No variable type");
+        variable = null;
+        type = Type.BOOL;
     }
 }

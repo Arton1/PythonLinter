@@ -1,6 +1,6 @@
 package linter.token.type;
 
-import linter.visitor.TreeElementVisitor;
+import linter.syntax_tree.TreeElementVisitor;
 
 public enum CompareTokenType implements TokenType {
     LESS, MORE, LESS_EQUAL, MORE_EQUAL, EQUAL, 

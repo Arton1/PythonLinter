@@ -1,6 +1,6 @@
 package linter.token.type;
 
-import linter.visitor.TreeElementVisitor;
+import linter.syntax_tree.TreeElementVisitor;;
 
 public enum BracketTokenType implements TokenType{
     CURLY_BEGIN, CURLY_END, SQUARED_BEGIN, 

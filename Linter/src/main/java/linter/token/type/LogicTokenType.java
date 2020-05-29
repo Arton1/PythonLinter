@@ -1,6 +1,6 @@
 package linter.token.type;
 
-import linter.visitor.TreeElementVisitor;
+import linter.syntax_tree.TreeElementVisitor;;
 
 public enum LogicTokenType implements TokenType {
     AND, OR, NOT, TRUE, FALSE;

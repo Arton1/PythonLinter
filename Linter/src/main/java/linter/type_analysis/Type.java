@@ -1,8 +1,7 @@
 package linter.type_analysis;
 
-import java.util.List;
 
-public enum Type implements TableElement<Type> {
+public enum Type {
     INT("int"), FLOAT("float"), STR("str"), BYTES("bytes"), BOOL("bool"), NONE("None"), CLASS_OBJECT(null);
     
     private String typeLabel;
@@ -24,17 +23,5 @@ public enum Type implements TableElement<Type> {
 
     public String getLabel(){
         return typeLabel;
-    }
-
-    @Override
-    public Type getElement(List<String> identifier) throws RuntimeException {
-        if(identifier.size() == 0)
-            return this;
-        throw new RuntimeException("Bad identifier"); //Programmer side error
-    }
-
-    @Override
-    public void addElement(List<String> subList, Type element) {
-        throw new RuntimeException("Cannot add variable to variable"); //Programmer side error
     }
 }

@@ -9,26 +9,25 @@ import linter.syntax_tree.Node;
 import linter.syntax_tree.ProductionNode;
 import linter.syntax_tree.SyntaxTree;
 import linter.syntax_tree.TokenNode;
-import linter.syntax_tree.production.SimpleStatementProduction;
 import linter.type_analysis.Function;
 import linter.type_analysis.Table;
-import linter.type_analysis.Type;
+import linter.type_analysis.Variable;
 import linter.type_analysis.analiser.SimpleStatementAnalizer;
 
 public class SemanticsAnalizer {
     Parser parser;
 
-    List<Table<Type>> variableTables;
+    List<Table<Variable>> variableTables;
     List<Table<Function>> functionTables;
 
     int currentIndentLevel;
 
     SemanticsAnalizer(Parser parser){
         this.parser = parser;
-        variableTables = new LinkedList<Table<Type>>();
-        variableTables.add(new Table<Type>()); //Global variable table
+        variableTables = new LinkedList<Table<Variable>>();
+        variableTables.add(new Table<Variable>()); //Global variable table
         functionTables = new LinkedList<Table<Function>>();
-        functionTables.add(new Table<Function>()); //Global variable table
+        functionTables.add(new Table<Function>()); //Global function table
     }
     
     IdentifierTree getNextIdentifierTree(){
@@ -43,7 +42,7 @@ public class SemanticsAnalizer {
     }
 
     public void visit(ProductionNode node){
-        checkSubtreeAcceptability(node);
+        //checkSubtreeAcceptability(node);
         checkSubtreeTyping(node);
     }
 

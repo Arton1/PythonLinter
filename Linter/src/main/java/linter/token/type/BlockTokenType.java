@@ -1,6 +1,6 @@
 package linter.token.type;
 
-import linter.visitor.TreeElementVisitor;
+import linter.syntax_tree.TreeElementVisitor;;
 
 public enum BlockTokenType implements TokenType{
     NEWLINE, INDENT, TWO_DOTS, EOF;

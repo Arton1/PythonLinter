@@ -20,6 +20,20 @@ public class Function implements TableElement<Function> {
         return arguments;
     }
 
+    public boolean compareArgumentTypes(List<Type> arguments){
+        int index = 0;
+        Type argumentToCompare;
+        for(Type argument : this.arguments){
+            if(index < arguments.size())
+                argumentToCompare = arguments.get(index++);
+            else
+                return false;
+            if(!argument.equals(argumentToCompare))
+                return false;
+        }
+        return true;
+    }
+
     @Override
     public Function getElement(List<String> identifier) {
         if(identifier.size() == 0)

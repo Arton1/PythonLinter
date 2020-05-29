@@ -11,12 +11,14 @@ import linter.token.IdentifierToken;
 import linter.type_analysis.Function;
 import linter.type_analysis.Table;
 import linter.type_analysis.Type;
+import linter.type_analysis.Variable;
 
 public class TrailerAnaliser extends TypeAnaliser {
 
     List<Type> arguments = null;
+    String identifier = null;
 
-    protected TrailerAnaliser(List<Table<Type>> variableTables, List<Table<Function>> functionTables) {
+    protected TrailerAnaliser(List<Table<Variable>> variableTables, List<Table<Function>> functionTables) {
         super(variableTables, functionTables);
     }
 
@@ -40,7 +42,11 @@ public class TrailerAnaliser extends TypeAnaliser {
     @Override
     public void visit(TokenNode node) {
         if(node.getToken() instanceof IdentifierToken)
-            addIdentifier(((IdentifierToken)node.getToken()).getIdentifier());
+           identifier = ((IdentifierToken)node.getToken()).getIdentifier();
+    }
+
+    public String getIdentifier(){
+        return identifier;
     }
 
 	public List<Type> getArguments() {

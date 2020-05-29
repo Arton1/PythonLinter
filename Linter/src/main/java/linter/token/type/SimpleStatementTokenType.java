@@ -1,6 +1,6 @@
 package linter.token.type;
 
-import linter.visitor.TreeElementVisitor;
+import linter.syntax_tree.TreeElementVisitor;
 
 public enum SimpleStatementTokenType implements TokenType {
     PASS, BREAK, CONTINUE, RETURN, IMPORT, AS, DOT, COMMA, FROM, RETURN_HINT;

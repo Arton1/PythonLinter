@@ -9,10 +9,11 @@ import linter.syntax_tree.production.test_productions.PowerProduction;
 import linter.type_analysis.Function;
 import linter.type_analysis.Table;
 import linter.type_analysis.Type;
+import linter.type_analysis.Variable;
 
 public class FactorAnaliser extends TypeAnaliser {
 
-    protected FactorAnaliser(List<Table<Type>> variableTables, List<Table<Function>> functionTables) {
+    protected FactorAnaliser(List<Table<Variable>> variableTables, List<Table<Function>> functionTables) {
         super(variableTables, functionTables);
     }
 
@@ -23,15 +24,36 @@ public class FactorAnaliser extends TypeAnaliser {
         int position = 0;
         Node child;
         while((child = node.getChildAtPosition(position++)) != null){
-            if(child.isType(PowerProduction.class)){
-                PowerAnaliser analiser = new PowerAnaliser(variableTables, functionTables);
-            }
+            if(child.isType(PowerProduction.class))
+                processPowerProduction(child);
             else
-                if(child.isType(FactorProduction.class)){
-                    child.accept(this);
-                }
+                if(child.isType(FactorProduction.class))
+                    processFactorProduction(child);
         }
         return true;
     }
 
+    private void processPowerProduction(Node node){
+        PowerAnaliser analiser = new PowerAnaliser(variableTables, functionTables);
+        node.accept(analiser);
+        if(analiser.getType() != null){
+            type = analiser.getType();
+            return;
+        }
+        if(analiser.getVariable() != null){
+            variable = analiser.getVariable();
+            return;
+        }
+    }
+
+    private void processFactorProduction(Node node){
+        node.accept(this);
+        if(variable != null){
+            if(variable.getType() == null)
+                throw new RuntimeException("No variable type");
+            type = variable.getType();
+        }
+        if(type != Type.FLOAT && type != Type.INT)
+            throw new RuntimeException("Bad type for unary operation");
+    }
 }

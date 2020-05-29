@@ -1,6 +1,5 @@
 package linter.type_analysis.analiser;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import linter.syntax_tree.NodeVisitor;
@@ -9,19 +8,20 @@ import linter.syntax_tree.TokenNode;
 import linter.type_analysis.Function;
 import linter.type_analysis.Table;
 import linter.type_analysis.Type;
+import linter.type_analysis.Variable;
 
 public abstract class TypeAnaliser implements NodeVisitor {
 
-    List<Table<Type>> variableTables;
-    List<Table<Function>> functionTables;
+    protected List<Table<Variable>> variableTables;
+    protected List<Table<Function>> functionTables;
 
-    boolean hasFunction = false;
-    List<String> identifier = null;
-    Type type = null;
+    protected Function function = null;
+    protected Variable variable = null;
+    protected Type type = null;
 
     public abstract boolean visit(ProductionNode node);
 
-    protected TypeAnaliser(List<Table<Type>> variableTables, List<Table<Function>> functionTables){
+    protected TypeAnaliser(List<Table<Variable>> variableTables, List<Table<Function>> functionTables){
         this.variableTables = variableTables;
         this.functionTables = functionTables;
     }
@@ -30,30 +30,39 @@ public abstract class TypeAnaliser implements NodeVisitor {
         return type;
     }
 
-    public List<String> getIdentifier() {
-        return identifier;
+    public Function getFunction(){
+        return function;
     }
 
-    protected void addIdentifier(String identifier){
-        if(this.identifier == null)
-            this.identifier = new ArrayList<String>();
-        this.identifier.add(identifier);
-    }
-
-    protected void addIdentifier(List<String> identifier) {
-        if(this.identifier == null)
-            this.identifier = identifier;
-        else
-            this.identifier.addAll(identifier);
-    }
-
-    public boolean hasFunction(){
-        return hasFunction;
+    public Variable getVariable(){
+        return variable;
     }
 
     @Override
     public void visit(TokenNode node) {
         throw new RuntimeException("Token instead of production"); //Programmer error
+    }
+
+    protected Function findFunction(List<String> identifier){
+        Function function = null;
+        for(Table<Function> functionTable : functionTables){
+            function = functionTable.getElement(identifier);
+            if(function != null)
+                break;
+        }
+        if(function == null)
+            throw new RuntimeException("No function found");
+        return function;
+    }
+
+    protected Variable findVariable(List<String> identifier){
+        Variable variable = null;
+        for(Table<Variable> variableTable : variableTables){
+            variable = variableTable.getElement(identifier);
+            if(variable != null)
+                break;
+        }
+        return variable;
     }
     
 }

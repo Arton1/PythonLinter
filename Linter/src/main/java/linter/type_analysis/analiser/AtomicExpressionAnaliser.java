@@ -11,11 +11,11 @@ import linter.syntax_tree.production.test_productions.OptionalTrailerProduction;
 import linter.type_analysis.Function;
 import linter.type_analysis.Table;
 import linter.type_analysis.Type;
+import linter.type_analysis.Variable;
 
 public class AtomicExpressionAnaliser extends TypeAnaliser {
-    boolean trailerForbidden = false;
 
-    protected AtomicExpressionAnaliser(List<Table<Type>> variableTables, List<Table<Function>> functionTables) {
+    protected AtomicExpressionAnaliser(List<Table<Variable>> variableTables, List<Table<Function>> functionTables) {
         super(variableTables, functionTables);
     }
 
@@ -25,34 +25,51 @@ public class AtomicExpressionAnaliser extends TypeAnaliser {
             return true;
         int position = 0;
         Node child;
+        List<String> identifier = new ArrayList<String>();
         while((child = node.getChildAtPosition(position++)) != null){
-            if(child.isType(AtomicProduction.class)){
-                AtomicAnaliser analiser = new AtomicAnaliser(variableTables, functionTables);
-                child.accept(analiser);
-                if(analiser.getType() != null){
-                    trailerForbidden = true;
-                    type = analiser.getType();
-                }
-                else if(analiser.getIdentifier() != null)
-                    addIdentifier(analiser.getIdentifier());
-            }
+            if(child.isType(AtomicProduction.class))
+                processAtomicProduction(child, identifier);
             else
-                if(child.isType(OptionalTrailerProduction.class)){
-                    if(trailerForbidden)
-                        throw new RuntimeException("Trailer forbidden"); //TODO: Should be thrown by error handler
-                    TrailerAnaliser analiser = new TrailerAnaliser(variableTables, functionTables);
-                    child.accept(analiser);
-                    if(analiser.getIdentifier() != null)
-                        addIdentifier(analiser.getIdentifier());
-                    else
-                        if(analiser.hasFunction()){
-                            List<Type> argumentNames = analiser.getArguments();
-                            //TODO: CHECK FUNCTION CALL AND CLEAR IDENTIFIER LIST, ANALISER RETURNS TYPE
-                        }
-                }
+                if(child.isType(OptionalTrailerProduction.class))
+                    processTrailerProduction(child, identifier);
         }
-        //TODO: CHECK IF IDENTIFIER LIST IS NULL IF THERE IS A TYPE
+        if(type != null)
+            if(type.getLabel() != null) //is not a class object
+                if(identifier.size() != 0)
+                    throw new RuntimeException("Cannot get a variable from a type different from class");
+            else{
+                throw new RuntimeException("Unimplemented!");
+            }
+        else 
+            variable = findVariable(identifier);
+            if(variable == null)
+                variable = new Variable(identifier);
         return true;
+    }
+
+    private void processAtomicProduction(Node node, List<String> identifier){
+        AtomicAnaliser analiser = new AtomicAnaliser(variableTables, functionTables);
+        node.accept(analiser);
+        if(analiser.getType() != null)
+            type = analiser.getType();
+        else if(analiser.getIdentifier() != null)
+            identifier.add(analiser.getIdentifier());
+    }
+
+    private void processTrailerProduction(Node node, List<String> identifier){
+        TrailerAnaliser analiser = new TrailerAnaliser(variableTables, functionTables);
+        node.accept(analiser);
+        if(analiser.getArguments() != null)
+           processFunctionCall(identifier, analiser.getArguments());
+        if(analiser.getIdentifier() != null)
+            identifier.add(analiser.getIdentifier());
+    }
+
+    public void processFunctionCall(List<String> identifier, List<Type> arguments){
+        Function function = findFunction(identifier);
+        if(!function.compareArgumentTypes(arguments))
+            throw new RuntimeException("Bad argument types for function call"); //TODO: Should be thrown by error handler
+        type = function.getReturnType();
     }
 
 }

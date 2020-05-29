@@ -14,10 +14,12 @@ import linter.token.type.NullTokenType;
 import linter.type_analysis.Function;
 import linter.type_analysis.Table;
 import linter.type_analysis.Type;
+import linter.type_analysis.Variable;
 
 public class AtomicAnaliser extends TypeAnaliser {
+    private String identifier;
 
-    protected AtomicAnaliser(List<Table<Type>> variableTables, List<Table<Function>> functionTables) {
+    protected AtomicAnaliser(List<Table<Variable>> variableTables, List<Table<Function>> functionTables) {
         super(variableTables, functionTables);
     }
 
@@ -27,16 +29,20 @@ public class AtomicAnaliser extends TypeAnaliser {
             return true;
         int position = 0;
         Node child;
-        while((child = node.getChildAtPosition(position++)) != null){
-            child.accept(this); //change this
-        }
+        while((child = node.getChildAtPosition(position++)) != null)
+            if (child instanceof TokenNode)
+                child.accept(this);
         return true;
+    }
+
+    public String getIdentifier(){
+        return identifier;
     }
 
     @Override
     public void visit(TokenNode node) {
         if(node.getToken() instanceof IdentifierToken)
-            addIdentifier(((IdentifierToken)node.getToken()).getIdentifier());
+            identifier = ((IdentifierToken)node.getToken()).getIdentifier();
         else if(node.getToken().getTokenType() instanceof LogicTokenType)
             type = Type.BOOL;
         else if(node.getToken().getTokenType() instanceof NullTokenType)
