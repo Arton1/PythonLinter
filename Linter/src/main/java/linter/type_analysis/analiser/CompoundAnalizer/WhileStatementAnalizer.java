@@ -58,7 +58,8 @@ public class WhileStatementAnalizer extends CompoundAnalizer {
     }
 
     private void processElseProduction(Node node) {
-        throw new RuntimeException("Unimplemented");
+        ElseAnalizer analizer = new ElseAnalizer(variableTables, functionTables, retiredVariableTables, retiredFunctionTables);
+        node.accept(analizer);
     }
     
 }

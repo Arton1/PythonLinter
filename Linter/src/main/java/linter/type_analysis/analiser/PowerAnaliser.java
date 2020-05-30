@@ -54,14 +54,14 @@ public class PowerAnaliser extends TypeAnaliser {
         node.accept(analiser);
          if(variable != null){
             if(variable.getType() == null)
-                throw new SemanticsException("Uninitialized variable", node.getParent().getSubtreeFirstToken());;
+                throw new SemanticsException("Uninitialized variable", node.getSubtreeFirstToken());;
             type = variable.getType();
         }
         Type typeToCompare = null;
         if(analiser.getVariable() != null){
             typeToCompare = analiser.getVariable().getType();
             if(typeToCompare == null)
-                throw new SemanticsException("Uninitialized variable", node.getParent().getSubtreeFirstToken());
+                throw new SemanticsException("Uninitialized variable", node.getSubtreeFirstToken());
         }
         else if(analiser.getType() != null)
             typeToCompare = analiser.getType();

@@ -36,7 +36,7 @@ public class TestAnaliser extends TypeAnaliser {
         node.accept(analiser);
         if(variable != null || type != null){
             if(variable != null && variable.getType() == null)
-                throw new SemanticsException("Uninitialized variable", node.getParent().getSubtreeFirstToken());
+                throw new SemanticsException("Uninitialized variable", node.getSubtreeFirstToken());
             variable = null;
             type = Type.BOOL;
             return;

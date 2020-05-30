@@ -51,7 +51,7 @@ public class NotTestAnaliser extends TypeAnaliser {
     private void processNotTestProduction(Node node){
         node.accept(this);
         if(variable != null && variable.getType() == null)
-            throw new SemanticsException("Uninitialized variable", node.getParent().getSubtreeFirstToken());
+            throw new SemanticsException("Uninitialized variable", node.getSubtreeFirstToken());
         variable = null;
         type = Type.BOOL;
     }

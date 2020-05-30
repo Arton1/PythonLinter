@@ -45,7 +45,7 @@ public class TermAnaliser extends TypeAnaliser {
         }
         else if(variable != null){
             if(variable.getType() == null)
-                throw new SemanticsException("Uninitialized variable", node.getParent().getSubtreeFirstToken());
+                throw new SemanticsException("Uninitialized variable", node.getSubtreeFirstToken());
             type = variable.getType();
             variable = null;
         }
@@ -53,7 +53,7 @@ public class TermAnaliser extends TypeAnaliser {
         if(analiser.getVariable() != null){
             typeToCompare = analiser.getVariable().getType();
             if(typeToCompare == null)
-                throw new SemanticsException("Uninitialized variable", node.getParent().getSubtreeFirstToken());
+                throw new SemanticsException("Uninitialized variable", node.getSubtreeFirstToken());
         }
         else if(analiser.getType() != null)
             typeToCompare = analiser.getType();

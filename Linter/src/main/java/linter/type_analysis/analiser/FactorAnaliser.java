@@ -52,10 +52,10 @@ public class FactorAnaliser extends TypeAnaliser {
         node.accept(this);
         if(variable != null){
             if(variable.getType() == null)
-                throw new SemanticsException("Uninitialized variable", node.getParent().getSubtreeFirstToken());
+                throw new SemanticsException("Uninitialized variable", node.getSubtreeFirstToken());
             type = variable.getType();
         }
         if(type != Type.UNSPECIFIED && type != Type.FLOAT && type != Type.INT)
-            throw new SemanticsException("Bad type for unary operation, " + type, node.getParent().getSubtreeFirstToken());
+            throw new SemanticsException("Bad type for unary operation, " + type, node.getSubtreeFirstToken());
     }
 }

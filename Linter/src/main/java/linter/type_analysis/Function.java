@@ -4,12 +4,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Function implements TableElement<Function> {
+    List<String> identifier;
     private Type returnType;
     private List<Type> arguments = new ArrayList<Type>();
 
-    public Function(Type returnType, List<Type> arguments){
+    public Function(List<String> identifier, Type returnType, List<Type> arguments){
+        this.identifier = identifier;
         this.returnType = returnType;
         this.arguments = arguments;
+    }
+
+    public Function(String identifier, Type returnType, List<Type> arguments){
+        List<String> identifierList = new ArrayList<String>();
+        identifierList.add(identifier);
+        this.identifier = identifierList;
+        this.returnType = returnType;
+        this.arguments = arguments;
+    }
+
+    public List<String> getIdentifier(){
+        return identifier;
     }
 
     public Type getReturnType(){

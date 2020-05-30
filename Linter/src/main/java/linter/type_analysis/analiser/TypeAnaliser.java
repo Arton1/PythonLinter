@@ -69,4 +69,19 @@ public abstract class TypeAnaliser implements NodeVisitor {
         Table<Variable> variableTable = variableTables.get(variableTables.size()-1);
         variableTable.addElement(variable.getIdentifier(), variable);
     }
+
+    protected Function findFuntion(List<String> identifier){
+        Function function = null;
+        for(int i=variableTables.size()-1; i>=0; i--){
+            function = functionTables.get(i).getElement(identifier);
+            if(function != null)
+                break;
+        }
+        return function;
+    }
+    
+    protected void saveFunction(Function function){
+        Table<Function> functionTable = functionTables.get(functionTables.size()-1);
+        functionTable.addElement(function.getIdentifier(), function);
+    }
 }
