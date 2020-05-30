@@ -44,13 +44,12 @@ public class Function implements TableElement<Function> {
     }
 
     public boolean compareArgumentTypes(List<Type> arguments){
+        if(arguments.size() != this.arguments.size())
+            return false;
         int index = 0;
         Type argumentToCompare;
         for(Type argument : this.arguments){
-            if(index < arguments.size())
-                argumentToCompare = arguments.get(index++);
-            else
-                return false;
+            argumentToCompare = arguments.get(index++);
             if(argument != Type.UNSPECIFIED && argumentToCompare != Type.UNSPECIFIED && argument != argumentToCompare)
                 if(!(argument == Type.INT && argumentToCompare == Type.FLOAT))
                     if(!(argument == Type.FLOAT && argumentToCompare == Type.INT))

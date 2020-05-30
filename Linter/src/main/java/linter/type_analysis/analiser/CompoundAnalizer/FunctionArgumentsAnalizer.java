@@ -3,6 +3,7 @@ package linter.type_analysis.analiser.CompoundAnalizer;
 import java.util.ArrayList;
 import java.util.List;
 
+import linter.exception.SemanticsException;
 import linter.syntax_tree.Node;
 import linter.syntax_tree.ProductionNode;
 import linter.syntax_tree.production.compound_productions.FunctionArgumentProduction;
@@ -36,6 +37,10 @@ public class FunctionArgumentsAnalizer extends TypeAnaliser {
     private void processFunctionArgument(Node child) {
         FunctionArgumentAnalizer analizer = new FunctionArgumentAnalizer(variableTables, functionTables);
         child.accept(analizer);
+        Variable variable = analizer.getVariable();
+        for(Variable argument : arguments)
+            if(variable.compareIdentifier(argument.getIdentifier()))
+                throw new SemanticsException("Function already has an argument of the same name", child.getSubtreeFirstToken());
         arguments.add(analizer.getVariable());
     }
 

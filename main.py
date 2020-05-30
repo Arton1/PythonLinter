@@ -1,3 +1,4 @@
-def fun(x: str, y: float, z):
-	pass
 x = 2
+def f() -> bool:
+	pass
+f(x, x)

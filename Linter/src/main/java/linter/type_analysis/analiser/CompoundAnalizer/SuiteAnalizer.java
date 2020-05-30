@@ -31,7 +31,6 @@ public class SuiteAnalizer extends CompoundAnalizer {
             else if (child.isType(CompoundStatementProduction.class))
                 processCompoundProduction(child);
         }
-        System.out.println(variableTables.get(1).getElement("x"));
         retiredVariableTables.add(variableTables.remove(variableTables.size()-1));
         retiredFunctionTables.add(functionTables.remove(functionTables.size()-1));
         return true;

@@ -35,8 +35,8 @@ public class AtomicExpressionAnaliser extends TypeAnaliser {
                     processTrailerProduction(child, identifier);
         }
         if(type != null){
-            if(type.getLabel() != null){ //is not a class object
-                if(identifier.size() != 0)
+            if(type != Type.CLASS_OBJECT){ //is not a class object
+                if(identifier.size() > 1)
                     throw new SemanticsException("Cannot get a variable from a type different than class, " + type , node.getParent().getSubtreeFirstToken());
             }
             else{
@@ -85,7 +85,7 @@ public class AtomicExpressionAnaliser extends TypeAnaliser {
         if(function == null)
             throw new SemanticsException("Function undefined", node.getParent().getSubtreeFirstToken());
         if(!function.compareArgumentTypes(arguments))
-            throw new SemanticsException("Arguments dont match for function call", node.getParent().getSubtreeFirstToken());
+            throw new SemanticsException("Arguments dont match function call", node.getParent().getSubtreeFirstToken());
         function.incrementNumberOfReferences();
         type = function.getReturnType();
     }

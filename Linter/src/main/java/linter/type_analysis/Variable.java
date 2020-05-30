@@ -47,4 +47,17 @@ public class Variable implements TableElement<Variable> {
     public List<String> getIdentifier(){
         return identifier;
     }
+
+    public boolean compareIdentifier(List<String> identifier){
+        if(identifier.size() != this.identifier.size())
+            return false;
+        int index = 0;
+        String identifierPartToCompare;
+        for(String identifierPart : this.identifier){
+            identifierPartToCompare = identifier.get(index++);
+            if(!identifierPart.equals(identifierPartToCompare))
+                return false;
+        }
+        return true;
+    }
 }
