@@ -53,7 +53,10 @@ public class SyntaxTreeBuilder extends SyntaxTree {
                 }
             }
             setPositionForNewToken();
-            if(token.getTokenType() == BlockTokenType.NEWLINE && peek.getTokenType() != BlockTokenType.INDENT)
+            if(token.getTokenType() == BlockTokenType.NEWLINE 
+                && peek.getTokenType() != BlockTokenType.INDENT 
+                && peek.getTokenType() != CompoundStatementTokenType.ELIF 
+                && peek.getTokenType() != CompoundStatementTokenType.ELSE)
                 finished = true;
             if(finished){
                 checkTreeIntegrity();

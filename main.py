@@ -1,4 +1,6 @@
 x = 2
-def f() -> bool:
+if x:
+	pass
+else:
 	pass
 f()
