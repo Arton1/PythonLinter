@@ -1,9 +1,2 @@
-x = 1
-y = 2
-z = 2
-if x == y:
-	pass
-elif y == t:
-	pass
-else:
+def fun(x: int, y: float):
 	pass
