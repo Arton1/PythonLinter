@@ -2,10 +2,11 @@ package linter.syntax_tree;
 
 import linter.exception.BadSyntaxException;
 import linter.exception.IndentationException;
-import linter.syntax_tree.production.SingleInputProduction;
 import linter.token.Token;
 import linter.token.type.BlockTokenType;
 import linter.token.type.CompoundStatementTokenType;
+import linter.token.type.IdentifierTokenType;
+import linter.token.type.TokenType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,6 +53,8 @@ public class SyntaxTreeBuilder extends SyntaxTree {
                 }
             }
             setPositionForNewToken();
+            if(token.getTokenType() == BlockTokenType.NEWLINE && peek.getTokenType() != BlockTokenType.INDENT)
+                finished = true;
             if(finished){
                 checkTreeIntegrity();
                 return;
@@ -97,6 +100,7 @@ public class SyntaxTreeBuilder extends SyntaxTree {
         while(nextNode == null){
             nextNode = currentNode.getParent();
             if(nextNode == null){
+                //HERE
                 finished = true; //Went back to root
                 return; //stay on the current node
             }

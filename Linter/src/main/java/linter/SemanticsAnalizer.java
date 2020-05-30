@@ -28,9 +28,9 @@ public class SemanticsAnalizer {
     List<Table<Variable>> retiredVariableTables = new LinkedList<Table<Variable>>();
     List<Table<Function>> retiredFunctionTables = new LinkedList<Table<Function>>();
 
-    int currentIndentLevel;
+    private int currentIndentLevel;
 
-    boolean enterChild = true;
+    public boolean enterChild = true;
 
     SemanticsAnalizer(Parser parser){
         this.parser = parser;
@@ -38,7 +38,7 @@ public class SemanticsAnalizer {
         functionTables.add(new Table<Function>()); //Global function table
     }
     
-    IdentifierTree getNextIdentifierTree(){
+    SyntaxTree getNextIdentifierTree(){
         SyntaxTree syntaxTree = null;
         try{
             syntaxTree = parser.getNextSyntaxTree();
@@ -52,6 +52,7 @@ public class SemanticsAnalizer {
         if(syntaxTree == null)
             return null;
         // syntaxTree.printNodesInformations();
+        // System.out.println("!!!!!!");
         IdentifierTree identifierTree = new IdentifierTree();
         Node currentNode;
         while((currentNode = syntaxTree.getNextNode(enterChild)) != null){
@@ -66,7 +67,17 @@ public class SemanticsAnalizer {
         //     Variable variable = vTable.getElement(ident);
         //     System.out.println("x: " + variable.getNumberOfReferences());
         // }
-        return identifierTree;
+        // if(retiredVariableTables.size() > 0){
+            // Table<Function> fTable = functionTables.get(0);
+            // List<String> ident = new ArrayList<String>();
+            // ident.add("fun");
+            // Function function = fTable.getElement(ident);
+            // List<Type> argumentTypes = function.getArguments();
+            // for(Type argument: argumentTypes)
+            //     System.out.println(argument);
+        // }
+        enterChild = true;
+        return syntaxTree;
     }
 
     public void visit(ProductionNode node){

@@ -7,6 +7,7 @@ public class Function implements TableElement<Function> {
     List<String> identifier;
     private Type returnType;
     private List<Type> arguments = new ArrayList<Type>();
+    int numberOfReferences = 0;
 
     public Function(List<String> identifier, Type returnType, List<Type> arguments){
         this.identifier = identifier;
@@ -34,6 +35,14 @@ public class Function implements TableElement<Function> {
         return arguments;
     }
 
+    public int getNumberOfReferences(){
+        return numberOfReferences;
+    }
+
+    public void incrementNumberOfReferences(){
+        numberOfReferences++;
+    }
+
     public boolean compareArgumentTypes(List<Type> arguments){
         int index = 0;
         Type argumentToCompare;
@@ -42,8 +51,10 @@ public class Function implements TableElement<Function> {
                 argumentToCompare = arguments.get(index++);
             else
                 return false;
-            if(!argument.equals(argumentToCompare))
-                return false;
+            if(argument != Type.UNSPECIFIED && argumentToCompare != Type.UNSPECIFIED && argument != argumentToCompare)
+                if(!(argument == Type.INT && argumentToCompare == Type.FLOAT))
+                    if(!(argument == Type.FLOAT && argumentToCompare == Type.INT))
+                        return false;
         }
         return true;
     }

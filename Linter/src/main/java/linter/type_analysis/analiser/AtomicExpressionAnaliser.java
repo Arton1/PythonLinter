@@ -82,8 +82,11 @@ public class AtomicExpressionAnaliser extends TypeAnaliser {
 
     public void processFunctionCall(Node node, List<String> identifier, List<Type> arguments){
         Function function = findFunction(identifier);
+        if(function == null)
+            throw new SemanticsException("Function undefined", node.getParent().getSubtreeFirstToken());
         if(!function.compareArgumentTypes(arguments))
             throw new SemanticsException("Arguments dont match for function call", node.getParent().getSubtreeFirstToken());
+        function.incrementNumberOfReferences();
         type = function.getReturnType();
     }
 

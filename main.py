@@ -1,2 +1,3 @@
-def fun(x: int, y: float):
+def fun(x: str, y: float, z):
 	pass
+x = 2

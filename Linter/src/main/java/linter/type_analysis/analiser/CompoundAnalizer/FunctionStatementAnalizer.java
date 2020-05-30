@@ -32,8 +32,6 @@ public class FunctionStatementAnalizer extends CompoundAnalizer {
             return true;
         int position = 0;
         Node child;
-        variableTables.add(new Table<Variable>());
-        functionTables.add(new Table<Function>());
         while((child = node.getChildAtPosition(position++)) != null){
             if(child.isType(FunctionParametersProduction.class))
                 processFunctionParameters(child);
@@ -66,7 +64,9 @@ public class FunctionStatementAnalizer extends CompoundAnalizer {
     }
 
     private void processSuiteProduction(Node node) {
-        createFunctionObject();
+        variableTables.add(new Table<Variable>());
+        createFunctionObject(); //add function to previous space, add variables to new space
+        functionTables.add(new Table<Function>());
         SuiteAnalizer analizer = new SuiteAnalizer(variableTables, functionTables, retiredVariableTables, retiredFunctionTables);
         node.accept(analizer);
     }
@@ -77,6 +77,8 @@ public class FunctionStatementAnalizer extends CompoundAnalizer {
             saveVariable(argument);
             argumentTypes.add(argument.getType());
         }
+        if(returnType == null)
+            returnType = Type.UNSPECIFIED;
         Function function = new Function(functionIdentifier, returnType, argumentTypes);
         saveFunction(function);
     }

@@ -49,7 +49,7 @@ public class ComparisonAnaliser extends TypeAnaliser {
         }
         else if(variable != null){
             if(variable.getType() == null)
-                throw new SemanticsException("Uninitialized variable", node.getSubtreeFirstToken());
+                throw new SemanticsException("Uninitialized variable", node.getParent().getSubtreeFirstToken());
             type = variable.getType();
             variable = null;
         }

@@ -20,6 +20,11 @@ public class Table<T extends TableElement<T>> implements TableElement<T> {
             elementMap.put(identifier.get(0), element);
     }
 
+    public T getElement(String identifier){
+        List<String> identifierList = new ArrayList<String>();
+        identifierList.add(identifier);
+        return getElement(identifierList);
+    }
     public T getElement(List<String> identifier){
         if(identifier.size() == 0)
             throw new RuntimeException("Cannot process identifier");

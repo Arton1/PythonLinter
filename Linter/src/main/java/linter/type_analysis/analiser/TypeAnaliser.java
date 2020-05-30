@@ -43,18 +43,6 @@ public abstract class TypeAnaliser implements NodeVisitor {
         throw new RuntimeException("Token instead of production"); //Programmer error
     }
 
-    protected Function findFunction(List<String> identifier){
-        Function function = null;
-        for(Table<Function> functionTable : functionTables){
-            function = functionTable.getElement(identifier);
-            if(function != null)
-                break;
-        }
-        if(function == null)
-            throw new RuntimeException("No function found");
-        return function;
-    }
-
     protected Variable findVariable(List<String> identifier){
         Variable variable = null;
         for(int i=variableTables.size()-1; i>=0; i--){
@@ -70,7 +58,7 @@ public abstract class TypeAnaliser implements NodeVisitor {
         variableTable.addElement(variable.getIdentifier(), variable);
     }
 
-    protected Function findFuntion(List<String> identifier){
+    protected Function findFunction(List<String> identifier){
         Function function = null;
         for(int i=variableTables.size()-1; i>=0; i--){
             function = functionTables.get(i).getElement(identifier);

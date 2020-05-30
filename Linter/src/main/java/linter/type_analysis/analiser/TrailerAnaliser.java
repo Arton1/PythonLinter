@@ -29,14 +29,18 @@ public class TrailerAnaliser extends TypeAnaliser {
         int position = 0;
         Node child;
         while((child = node.getChildAtPosition(position++)) != null){
-            if(child.isType(PassedArgumentsProduction.class)){
-                ArgumentsAnaliser analiser = new ArgumentsAnaliser(variableTables, functionTables);
-                child.accept(analiser);
-            }
+            if(child.isType(PassedArgumentsProduction.class))
+                processPassedArguments(child);
             else if(child instanceof TokenNode)
                 child.accept(this);
         }
         return true;
+    }
+
+    private void processPassedArguments(Node node){
+        ArgumentsAnaliser analiser = new ArgumentsAnaliser(variableTables, functionTables);
+        node.accept(analiser);
+        arguments = analiser.getArguments();
     }
 
     @Override
