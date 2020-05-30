@@ -1,5 +1,6 @@
 package linter.type_analysis.analiser;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import linter.syntax_tree.Node;
@@ -8,6 +9,7 @@ import linter.syntax_tree.TokenNode;
 import linter.syntax_tree.production.test_productions.OptionalTrailerProduction;
 import linter.syntax_tree.production.test_productions.PassedArgumentsProduction;
 import linter.token.IdentifierToken;
+import linter.token.type.BracketTokenType;
 import linter.type_analysis.Function;
 import linter.type_analysis.Table;
 import linter.type_analysis.Type;
@@ -47,6 +49,8 @@ public class TrailerAnaliser extends TypeAnaliser {
     public void visit(TokenNode node) {
         if(node.getToken() instanceof IdentifierToken)
            identifier = ((IdentifierToken)node.getToken()).getIdentifier();
+        else if(node.getToken().getTokenType() == BracketTokenType.ROUNDED_END && arguments == null)
+            arguments = new ArrayList<Type>(); //empty list of arguments
     }
 
     public String getIdentifier(){
