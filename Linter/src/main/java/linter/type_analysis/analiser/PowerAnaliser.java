@@ -67,7 +67,7 @@ public class PowerAnaliser extends TypeAnaliser {
             typeToCompare = analiser.getType();
         else
             throw new RuntimeException("Nothing received from analyzer"); //Programmer side error
-        if(type != Type.FLOAT && type != Type.INT && typeToCompare != Type.FLOAT && typeToCompare != Type.INT)
+        if(type != Type.UNSPECIFIED && typeToCompare != Type.UNSPECIFIED && type != Type.FLOAT && type != Type.INT && typeToCompare != Type.FLOAT && typeToCompare != Type.INT)
             throw new SemanticsException("Cannot operate on incompatible types. " + type + ", " + typeToCompare, node.getParent().getSubtreeFirstToken());;
         if(typeToCompare == Type.INT && type == Type.INT)
             type = Type.INT;

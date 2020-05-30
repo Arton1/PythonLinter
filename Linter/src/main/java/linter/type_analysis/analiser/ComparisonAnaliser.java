@@ -61,7 +61,7 @@ public class ComparisonAnaliser extends TypeAnaliser {
         }
         else if(analiser.getType() != null)
             typeToCompare = analiser.getType();
-        if(type != typeToCompare || !type.getLabel().equals(typeToCompare.getLabel())){
+        if((type != Type.UNSPECIFIED && typeToCompare != Type.UNSPECIFIED) && (type != typeToCompare || !type.getLabel().equals(typeToCompare.getLabel()))){
             if(typeToCompare == Type.FLOAT || typeToCompare == Type.INT || typeToCompare == Type.BOOL){
                 if(!(type == Type.FLOAT || type == Type.INT || type == Type.BOOL))
                     throw new SemanticsException("Impossible to compare, incompatible types. " + type + ", " + typeToCompare, node.getParent().getSubtreeFirstToken());

@@ -55,7 +55,7 @@ public class FactorAnaliser extends TypeAnaliser {
                 throw new SemanticsException("Uninitialized variable", node.getParent().getSubtreeFirstToken());
             type = variable.getType();
         }
-        if(type != Type.FLOAT && type != Type.INT)
+        if(type != Type.UNSPECIFIED && type != Type.FLOAT && type != Type.INT)
             throw new SemanticsException("Bad type for unary operation, " + type, node.getParent().getSubtreeFirstToken());
     }
 }

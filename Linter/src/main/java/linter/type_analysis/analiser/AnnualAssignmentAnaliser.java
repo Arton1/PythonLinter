@@ -60,10 +60,5 @@ public class AnnualAssignmentAnaliser extends TypeAnaliser {
             return;
         }
     }
-
-    private void saveVariable(Variable variable){
-        Table<Variable> variableTable = variableTables.get(variableTables.size()-1);
-        variableTable.addElement(variable.getIdentifier(), variable);
-    }
     
 }

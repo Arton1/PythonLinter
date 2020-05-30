@@ -48,22 +48,22 @@ public class CompoundStatementAnalizer extends CompoundAnalizer {
     }
 
     private void processWhileStatementProduction(Node node){
-        WhileStatementAnalizer analizer = new WhileStatementAnalizer(variableTables, functionTables);
+        WhileStatementAnalizer analizer = new WhileStatementAnalizer(variableTables, functionTables, retiredVariableTables, retiredFunctionTables);
         node.accept(analizer);
     }
 
     private void processForStatementProduction(Node node){
-        ForStatementAnalizer analizer = new ForStatementAnalizer(variableTables, functionTables);
+        ForStatementAnalizer analizer = new ForStatementAnalizer(variableTables, functionTables, retiredVariableTables, retiredFunctionTables);
         node.accept(analizer);
     }
 
     private void processClassStatementProduction(Node node){
-        ClassStatementAnalizer analizer = new ClassStatementAnalizer(variableTables, functionTables);
+        ClassStatementAnalizer analizer = new ClassStatementAnalizer(variableTables, functionTables, retiredVariableTables, retiredFunctionTables);
         node.accept(analizer);
     }
 
     private void processFunctionStatementProduction(Node node){
-        FunctionStatementAnalizer analizer = new FunctionStatementAnalizer(variableTables, functionTables);
+        FunctionStatementAnalizer analizer = new FunctionStatementAnalizer(variableTables, functionTables, retiredVariableTables, retiredFunctionTables);
         node.accept(analizer);
     }
 

@@ -17,7 +17,12 @@ public class WhileStatementProduction extends CompoundStatementProduction{
     @Override
     public List<TreeElement> expand(Token token, Token peek, int currentIndentLevel) {
         if(token.getTokenType() == CompoundStatementTokenType.WHILE)
-            return createExpansion(token, new TestProduction(), BlockTokenType.TWO_DOTS, new SuiteProduction(level), new OptionalElseProduction(level));
+            return createExpansion(token, 
+                                    new TestProduction(), 
+                                    BlockTokenType.TWO_DOTS, 
+                                    BlockTokenType.NEWLINE, 
+                                    new SuiteProduction(level), 
+                                    new OptionalElseProduction(level));
         return null;
     }
 

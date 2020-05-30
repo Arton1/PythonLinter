@@ -4,6 +4,7 @@ import java.util.List;
 
 import linter.syntax_tree.Node;
 import linter.syntax_tree.ProductionNode;
+import linter.syntax_tree.production.compound_productions.FunctionStatementProduction;
 import linter.type_analysis.Function;
 import linter.type_analysis.Table;
 import linter.type_analysis.Variable;
@@ -17,7 +18,7 @@ public class FunctionStatementAnalizer extends CompoundAnalizer {
 
     @Override
     public boolean visit(ProductionNode node) {
-        if(!node.isType(CompoundStatementProduction.class))
+        if(!node.isType(FunctionStatementProduction.class))
             return true;
         int position = 0;
         Node child;

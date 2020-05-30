@@ -8,6 +8,7 @@ import linter.token.Token;
 import linter.token.type.BlockTokenType;
 import linter.token.type.CompareTokenType;
 import linter.token.type.CompoundStatementTokenType;
+import linter.token.type.IdentifierTokenType;
 
 public class ForStatementProduction extends CompoundStatementProduction{
 
@@ -19,7 +20,7 @@ public class ForStatementProduction extends CompoundStatementProduction{
     public List<TreeElement> expand(Token token, Token peek, int currentIndentLevel) {
         if (token.getTokenType() == CompoundStatementTokenType.FOR)
             return createExpansion(token, 
-                                    new NamesListProduction(), 
+                                    IdentifierTokenType.NAME, 
                                     CompareTokenType.IN, 
                                     new AtomicExpressionProduction(), 
                                     BlockTokenType.TWO_DOTS, 

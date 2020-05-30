@@ -25,8 +25,6 @@ public class SuiteAnalizer extends CompoundAnalizer {
             return true;
         int position = 0;
         Node child;
-        variableTables.add(new Table<Variable>());
-        functionTables.add(new Table<Function>());
         while((child = node.getChildAtPosition(position++)) != null){
             if(child.isType(SimpleStatementProduction.class))
                 processSimpleProduction(child);

@@ -2,6 +2,7 @@ package linter.type_analysis.analiser;
 
 import java.util.List;
 
+import linter.exception.SemanticsException;
 import linter.syntax_tree.Node;
 import linter.syntax_tree.ProductionNode;
 import linter.type_analysis.Function;
@@ -51,20 +52,23 @@ public class SimpleStatementAnalizer extends TypeAnaliser {
         OptionalAssignmentAnaliser analiser = new OptionalAssignmentAnaliser(variableTables, functionTables);
         node.accept(analiser);
         if(variable == null)
-            throw new RuntimeException("No variable to assign to");
+            throw new SemanticsException("No variable to assign to", node.getParent().getSubtreeFirstToken());
         Type type = analiser.getType();
         if(analiser.shouldCheckVariableType()){ 
             if(variable.getType() == null)
-                throw new RuntimeException("Unassigned variable");
-            if(variable.getType() != Type.FLOAT && 
+                throw new SemanticsException("Uninitialized variable", node.getParent().getSubtreeFirstToken());
+            if(variable.getType() != Type.UNSPECIFIED &&
+                variable.getType() != Type.FLOAT && 
                 variable.getType() != Type.INT && 
                 variable.getType() != Type.STR && 
                 variable.getType() != Type.BOOL )
-                throw new RuntimeException("Bad variable type to assign to");
+                throw new SemanticsException("Bad variable type to assign to, " + variable.getType(), node.getParent().getSubtreeFirstToken());
             if(variable.getType() != analiser.getType()){
-                if(variable.getType() == Type.FLOAT || variable.getType() == Type.INT || variable.getType() == Type.BOOL){
-                    if(type == Type.FLOAT || type == Type.INT || type == Type.BOOL){
-                        if(variable.getType() == Type.FLOAT || type == Type.FLOAT)
+                if(variable.getType() == Type.UNSPECIFIED || getType() == Type.FLOAT || variable.getType() == Type.INT || variable.getType() == Type.BOOL){
+                    if(type == Type.UNSPECIFIED || type == Type.FLOAT || type == Type.INT || type == Type.BOOL){
+                        if(variable.getType() == Type.UNSPECIFIED || type == Type.UNSPECIFIED)
+                            variable.setType(Type.UNSPECIFIED);
+                        else if(variable.getType() == Type.FLOAT || type == Type.FLOAT)
                             variable.setType(Type.FLOAT);
                         else 
                             variable.setType(Type.INT);
@@ -72,17 +76,12 @@ public class SimpleStatementAnalizer extends TypeAnaliser {
                         return;
                     }
                 }
-                throw new RuntimeException("Incompatible variable types");
+                throw new SemanticsException("Incompatible variable types", node.getParent().getSubtreeFirstToken());
             }
         }
         else {
             variable.setType(type);
             saveVariable(variable);
         }
-    }
-
-    private void saveVariable(Variable variable){
-        Table<Variable> variableTable = variableTables.get(variableTables.size()-1);
-        variableTable.addElement(variable.getIdentifier(), variable);
     }
 }

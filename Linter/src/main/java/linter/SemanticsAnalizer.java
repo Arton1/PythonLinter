@@ -1,5 +1,6 @@
 package linter;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -50,7 +51,7 @@ public class SemanticsAnalizer {
         }
         if(syntaxTree == null)
             return null;
-        syntaxTree.printNodesInformations();
+        // syntaxTree.printNodesInformations();
         IdentifierTree identifierTree = new IdentifierTree();
         Node currentNode;
         while((currentNode = syntaxTree.getNextNode(enterChild)) != null){
@@ -58,16 +59,13 @@ public class SemanticsAnalizer {
             currentIndentLevel = syntaxTree.getCurrentLevel();
             currentNode.accept(this);
         }
-        // Table<Variable> vTable = variableTables.get(0);
-        // List<String> ident = new ArrayList<String>();
-        // ident.add("x");
-        // Variable variable = vTable.getElement(ident);
-        // System.out.println("x: " + variable.getNumberOfReferences());
-        // ident = new ArrayList<String>();
-        // ident.add("y");
-        // variable = vTable.getElement(ident);
-        // if(variable != null)
-        //     System.out.println("y: " + variable.getNumberOfReferences());
+        // if(retiredVariableTables.size() > 0){
+        //     Table<Variable> vTable = retiredVariableTables.get(0);
+        //     List<String> ident = new ArrayList<String>();
+        //     ident.add("x");
+        //     Variable variable = vTable.getElement(ident);
+        //     System.out.println("x: " + variable.getNumberOfReferences());
+        // }
         return identifierTree;
     }
 

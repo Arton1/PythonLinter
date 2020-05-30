@@ -57,12 +57,16 @@ public abstract class TypeAnaliser implements NodeVisitor {
 
     protected Variable findVariable(List<String> identifier){
         Variable variable = null;
-        for(Table<Variable> variableTable : variableTables){
-            variable = variableTable.getElement(identifier);
+        for(int i=variableTables.size()-1; i>=0; i--){
+            variable = variableTables.get(i).getElement(identifier);
             if(variable != null)
                 break;
         }
         return variable;
     }
     
+    protected void saveVariable(Variable variable){
+        Table<Variable> variableTable = variableTables.get(variableTables.size()-1);
+        variableTable.addElement(variable.getIdentifier(), variable);
+    }
 }

@@ -6,9 +6,11 @@ import linter.syntax_tree.Node;
 import linter.syntax_tree.ProductionNode;
 import linter.syntax_tree.TokenNode;
 import linter.syntax_tree.production.test_productions.AtomicProduction;
+import linter.syntax_tree.production.test_productions.TestListProduction;
 import linter.token.DoubleNumberToken;
 import linter.token.IdentifierToken;
 import linter.token.IntegerNumberToken;
+import linter.token.type.BracketTokenType;
 import linter.token.type.LogicTokenType;
 import linter.token.type.NullTokenType;
 import linter.type_analysis.Function;
@@ -32,10 +34,17 @@ public class AtomicAnaliser extends TypeAnaliser {
         while((child = node.getChildAtPosition(position++)) != null)
             if (child instanceof TokenNode)
                 child.accept(this);
+            else if (child.isType(TestListProduction.class))
+                processTestListProduction(child);
         return true;
     }
 
-    public String getIdentifier(){
+    private void processTestListProduction(Node node) {
+        TestListAnalizer analizer = new TestListAnalizer(variableTables, functionTables);
+        node.accept(analizer);
+    }
+
+    public String getIdentifier() {
         return identifier;
     }
 
@@ -51,6 +60,10 @@ public class AtomicAnaliser extends TypeAnaliser {
             type = Type.INT;
         else if(node.getToken() instanceof DoubleNumberToken)
             type = Type.FLOAT;
+        else if(node.getToken().getTokenType() == BracketTokenType.ROUNDED_BEGIN)
+            type = Type.TUPLE;
+        else if(node.getToken().getTokenType() == BracketTokenType.SQUARED_BEGIN)
+            type = Type.LIST;
     }
 }
 

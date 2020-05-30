@@ -16,7 +16,7 @@ import linter.type_analysis.Variable;
 
 public class AtomicExpressionAnaliser extends TypeAnaliser {
 
-    protected AtomicExpressionAnaliser(List<Table<Variable>> variableTables, List<Table<Function>> functionTables) {
+    public AtomicExpressionAnaliser(List<Table<Variable>> variableTables, List<Table<Function>> functionTables) {
         super(variableTables, functionTables);
     }
 

@@ -2,7 +2,7 @@ package linter.type_analysis;
 
 
 public enum Type {
-    INT("int"), FLOAT("float"), STR("str"), BOOL("bool"), NONE("None"), CLASS_OBJECT(null);
+    INT("int"), FLOAT("float"), STR("str"), BOOL("bool"), NONE("None"), CLASS_OBJECT(null), LIST("list"), TUPLE("tuple"), UNSPECIFIED(null);
     
     private String typeLabel;
     

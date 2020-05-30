@@ -1,5 +1,6 @@
 package linter.type_analysis;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Variable implements TableElement<Variable> {
@@ -9,6 +10,12 @@ public class Variable implements TableElement<Variable> {
 
     public Variable(List<String> identifier){
         this.identifier = identifier;
+    }
+
+    public Variable(String identifier){
+        List<String> identifierList = new ArrayList<String>();
+        identifierList.add(identifier);
+        this.identifier = identifierList;
     }
 
     @Override

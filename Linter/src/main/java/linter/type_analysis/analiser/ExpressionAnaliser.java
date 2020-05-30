@@ -61,7 +61,7 @@ public class ExpressionAnaliser extends TypeAnaliser {
             throw new RuntimeException("Nothing received from analyzer"); //Programmer side error
         if(type == Type.CLASS_OBJECT || typeToCompare == Type.CLASS_OBJECT)
             throw new SemanticsException("Impossible to operate on class object. " + type + ", " + typeToCompare, node.getParent().getSubtreeFirstToken());
-        if(type != typeToCompare)
+        if(type != Type.UNSPECIFIED && typeToCompare != Type.UNSPECIFIED && type != typeToCompare)
             throw new SemanticsException("Cannot operate on incompatible types. " + type + ", " + typeToCompare, node.getParent().getSubtreeFirstToken());
     }
 

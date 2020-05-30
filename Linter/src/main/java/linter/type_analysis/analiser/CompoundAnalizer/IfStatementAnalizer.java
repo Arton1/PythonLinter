@@ -8,6 +8,7 @@ import linter.syntax_tree.production.compound_productions.IfStatementProduction;
 import linter.syntax_tree.production.compound_productions.OptionalElifsProduction;
 import linter.syntax_tree.production.compound_productions.OptionalElseProduction;
 import linter.syntax_tree.production.compound_productions.SuiteProduction;
+import linter.syntax_tree.production.test_productions.TestProduction;
 import linter.type_analysis.Function;
 import linter.type_analysis.Table;
 import linter.type_analysis.Type;
@@ -26,8 +27,10 @@ public class IfStatementAnalizer extends CompoundAnalizer {
             return true;
         int position = 0;
         Node child;
+        variableTables.add(new Table<Variable>());
+        functionTables.add(new Table<Function>());
         while((child = node.getChildAtPosition(position++)) != null){
-            if(child.isType(IfStatementProduction.class))
+            if(child.isType(TestProduction.class))
                 processTestProduction(child);
             else if (child.isType(SuiteProduction.class))
                 processSuiteProduction(child);
@@ -41,6 +44,7 @@ public class IfStatementAnalizer extends CompoundAnalizer {
 
     private void processTestProduction(Node node) {
         TestAnaliser analiser = new TestAnaliser(variableTables, functionTables);
+        node.accept(analiser);
         Type returnedType = null;
         if(analiser.getVariable() != null){
             returnedType = analiser.getVariable().getType();
