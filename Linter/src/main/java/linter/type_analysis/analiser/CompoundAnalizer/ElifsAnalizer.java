@@ -4,9 +4,7 @@ import java.util.List;
 
 import linter.syntax_tree.Node;
 import linter.syntax_tree.ProductionNode;
-import linter.syntax_tree.production.compound_productions.IfStatementProduction;
 import linter.syntax_tree.production.compound_productions.OptionalElifsProduction;
-import linter.syntax_tree.production.compound_productions.OptionalElseProduction;
 import linter.syntax_tree.production.compound_productions.SuiteProduction;
 import linter.syntax_tree.production.test_productions.TestProduction;
 import linter.type_analysis.Function;
@@ -15,15 +13,16 @@ import linter.type_analysis.Type;
 import linter.type_analysis.Variable;
 import linter.type_analysis.analiser.TestAnaliser;
 
-public class IfStatementAnalizer extends CompoundAnalizer {
+public class ElifsAnalizer extends CompoundAnalizer {
 
-    public IfStatementAnalizer(List<Table<Variable>> variableTables, List<Table<Function>> functionTables, List<Table<Variable>> retiredVariableTables, List<Table<Function>> retiredFunctionTables) {
+    protected ElifsAnalizer(List<Table<Variable>> variableTables, List<Table<Function>> functionTables,
+            List<Table<Variable>> retiredVariableTables, List<Table<Function>> retiredFunctionTables) {
         super(variableTables, functionTables, retiredVariableTables, retiredFunctionTables);
     }
 
     @Override
     public boolean visit(ProductionNode node) {
-        if(!node.isType(IfStatementProduction.class))
+        if(!node.isType(OptionalElifsProduction.class))
             return true;
         int position = 0;
         Node child;
@@ -34,10 +33,6 @@ public class IfStatementAnalizer extends CompoundAnalizer {
                 processTestProduction(child);
             else if (child.isType(SuiteProduction.class))
                 processSuiteProduction(child);
-            else if (child.isType(OptionalElifsProduction.class))
-                processElifProduction(child);
-            else if (child.isType(OptionalElseProduction.class))
-                processElseProduction(child);
         }
         return true;
     }
@@ -59,16 +54,5 @@ public class IfStatementAnalizer extends CompoundAnalizer {
         SuiteAnalizer analizer = new SuiteAnalizer(variableTables, functionTables, retiredVariableTables, retiredFunctionTables);
         node.accept(analizer);
     }
-
-    private void processElifProduction(Node node) {
-        ElifsAnalizer analizer = new ElifsAnalizer(variableTables, functionTables, retiredVariableTables, retiredFunctionTables);
-        node.accept(analizer);
-    }
-
-    private void processElseProduction(Node node) {
-        ElseAnalizer analizer = new ElseAnalizer(variableTables, functionTables, retiredVariableTables, retiredFunctionTables);
-        node.accept(analizer);
-    }
-
     
 }

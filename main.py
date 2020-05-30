@@ -1,4 +1,9 @@
 x = 1
-y = [1, 2]
-for x in y:
-	z = x
+y = 2
+z = 2
+if x == y:
+	pass
+elif y == t:
+	pass
+else:
+	pass
