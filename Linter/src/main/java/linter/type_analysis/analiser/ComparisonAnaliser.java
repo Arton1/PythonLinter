@@ -2,6 +2,7 @@ package linter.type_analysis.analiser;
 
 import java.util.List;
 
+import linter.exception.SemanticsException;
 import linter.syntax_tree.Node;
 import linter.syntax_tree.ProductionNode;
 import linter.syntax_tree.production.test_productions.ComparisonProduction;
@@ -48,22 +49,25 @@ public class ComparisonAnaliser extends TypeAnaliser {
         }
         else if(variable != null){
             if(variable.getType() == null)
-                throw new RuntimeException("No variable type");
+                throw new SemanticsException("Uninitialized variable", node.getParent().getSubtreeFirstToken());
             type = variable.getType();
             variable = null;
         }
         Type typeToCompare = null;
-        if(analiser.getVariable() != null)
+        if(analiser.getVariable() != null){
             typeToCompare = analiser.getVariable().getType();
+            if(typeToCompare == null)
+                throw new SemanticsException("Uninitialized variable", node.getParent().getSubtreeFirstToken());
+        }
         else if(analiser.getType() != null)
             typeToCompare = analiser.getType();
         if(type != typeToCompare || !type.getLabel().equals(typeToCompare.getLabel())){
             if(typeToCompare == Type.FLOAT || typeToCompare == Type.INT || typeToCompare == Type.BOOL){
                 if(!(type == Type.FLOAT || type == Type.INT || type == Type.BOOL))
-                    throw new RuntimeException("Impossible to compare");
+                    throw new SemanticsException("Impossible to compare, incompatible types. " + type + ", " + typeToCompare, node.getParent().getSubtreeFirstToken());
             }
             else
-                throw new RuntimeException("Impossible to compare");
+                throw new SemanticsException("Impossible to compare, incompatible types. " + type + ", " + typeToCompare, node.getParent().getSubtreeFirstToken());
         }
         comparisonAppeared = true;
     }

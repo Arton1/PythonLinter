@@ -3,6 +3,7 @@ package linter.type_analysis.analiser;
 import java.util.ArrayList;
 import java.util.List;
 
+import linter.exception.SemanticsException;
 import linter.syntax_tree.Node;
 import linter.syntax_tree.ProductionNode;
 import linter.syntax_tree.production.test_productions.AtomicExpressionProduction;
@@ -36,7 +37,7 @@ public class AtomicExpressionAnaliser extends TypeAnaliser {
         if(type != null){
             if(type.getLabel() != null){ //is not a class object
                 if(identifier.size() != 0)
-                    throw new RuntimeException("Cannot get a variable from a type different from class");
+                    throw new SemanticsException("Cannot get a variable from a type different than class, " + type , node.getParent().getSubtreeFirstToken());
             }
             else{
                 throw new RuntimeException("Unimplemented!");
@@ -68,7 +69,7 @@ public class AtomicExpressionAnaliser extends TypeAnaliser {
         TrailerAnaliser analiser = new TrailerAnaliser(variableTables, functionTables);
         node.accept(analiser);
         if(analiser.getArguments() != null){
-           processFunctionCall(identifier, analiser.getArguments());
+           processFunctionCall(node, identifier, analiser.getArguments());
            return;
         }
         if(analiser.getIdentifier() != null){
@@ -79,10 +80,10 @@ public class AtomicExpressionAnaliser extends TypeAnaliser {
         
     }
 
-    public void processFunctionCall(List<String> identifier, List<Type> arguments){
+    public void processFunctionCall(Node node, List<String> identifier, List<Type> arguments){
         Function function = findFunction(identifier);
         if(!function.compareArgumentTypes(arguments))
-            throw new RuntimeException("Bad argument types for function call"); //TODO: Should be thrown by error handler
+            throw new SemanticsException("Arguments dont match for function call", node.getParent().getSubtreeFirstToken());
         type = function.getReturnType();
     }
 

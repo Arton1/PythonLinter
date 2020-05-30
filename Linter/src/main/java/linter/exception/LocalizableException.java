@@ -1,5 +1,7 @@
 package linter.exception;
 
+import linter.token.Token;
+
 public abstract class LocalizableException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
@@ -10,6 +12,11 @@ public abstract class LocalizableException extends RuntimeException {
     protected LocalizableException(int line, int column){
         this.line = line;
         this.column = column;
+    }
+
+    protected LocalizableException(Token token){
+        line = token.getLine();
+        column = token.getColumn();
     }
 
     protected LocalizableException(){

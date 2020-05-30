@@ -2,6 +2,8 @@ package linter;
 
 import java.io.FileNotFoundException;
 
+import linter.exception.SemanticsException;
+
 class Linter {
     public static void main(String args[]){
         StreamHandler stream = null;
@@ -22,6 +24,11 @@ class Linter {
         Lexer lexer = new Lexer(stream);
         Parser parser = new Parser(lexer);
         SemanticsAnalizer analizer = new SemanticsAnalizer(parser);
-        while(analizer.getNextIdentifierTree() != null);
+        try{
+            while(analizer.getNextIdentifierTree() != null);
+        }
+        catch(SemanticsException e){
+            ErrorHandler.handleSemanticsException(e);
+        }
     }
 }

@@ -1,2 +1,3 @@
-x = 1
-x == 1
+if True:
+	if True:
+		pass

@@ -2,6 +2,7 @@ package linter.type_analysis.analiser;
 
 import java.util.List;
 
+import linter.exception.SemanticsException;
 import linter.syntax_tree.Node;
 import linter.syntax_tree.ProductionNode;
 import linter.syntax_tree.production.test_productions.AndTestProduction;
@@ -35,7 +36,7 @@ public class AndTestAnaliser extends TypeAnaliser {
         node.accept(analiser);
         if(variable != null || type != null){
             if(variable != null && variable.getType() == null)
-                throw new RuntimeException("No variable type");
+                throw new SemanticsException("Uninitialized variable", node.getParent().getSubtreeFirstToken());
             variable = null;
             type = Type.BOOL;
             return;
@@ -48,6 +49,6 @@ public class AndTestAnaliser extends TypeAnaliser {
             type = analiser.getType();
             return;
         }
-        throw new RuntimeException("Nothing received from analyzer");
+        throw new RuntimeException("Nothing received from analyzer"); //Programmer side error
     }
 }

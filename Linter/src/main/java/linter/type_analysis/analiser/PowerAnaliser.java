@@ -2,6 +2,7 @@ package linter.type_analysis.analiser;
 
 import java.util.List;
 
+import linter.exception.SemanticsException;
 import linter.syntax_tree.Node;
 import linter.syntax_tree.ProductionNode;
 import linter.syntax_tree.production.test_productions.AtomicExpressionProduction;
@@ -53,18 +54,21 @@ public class PowerAnaliser extends TypeAnaliser {
         node.accept(analiser);
          if(variable != null){
             if(variable.getType() == null)
-                throw new RuntimeException("No variable type");
+                throw new SemanticsException("Uninitialized variable", node.getParent().getSubtreeFirstToken());;
             type = variable.getType();
         }
         Type typeToCompare = null;
-        if(analiser.getVariable() != null)
+        if(analiser.getVariable() != null){
             typeToCompare = analiser.getVariable().getType();
+            if(typeToCompare == null)
+                throw new SemanticsException("Uninitialized variable", node.getParent().getSubtreeFirstToken());
+        }
         else if(analiser.getType() != null)
             typeToCompare = analiser.getType();
         else
-            throw new RuntimeException("Nothing received from analyzer");
+            throw new RuntimeException("Nothing received from analyzer"); //Programmer side error
         if(type != Type.FLOAT && type != Type.INT && typeToCompare != Type.FLOAT && typeToCompare != Type.INT)
-            throw new RuntimeException("Bad type for operation");
+            throw new SemanticsException("Cannot operate on incompatible types. " + type + ", " + typeToCompare, node.getParent().getSubtreeFirstToken());;
         if(typeToCompare == Type.INT && type == Type.INT)
             type = Type.INT;
         else

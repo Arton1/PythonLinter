@@ -13,7 +13,7 @@ public class Table<T extends TableElement<T>> implements TableElement<T> {
             String className = identifier.remove(0);
             TableElement<T> classSpace = elementMap.get(className);
             if(classSpace == null)
-                throw new RuntimeException("Undefined class"); //TODO: Should be printed by ErrorHandler
+                throw new RuntimeException("Undefined class"); //!!!
             classSpace.addElement(identifier, element);
         }
         else

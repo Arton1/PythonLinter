@@ -19,6 +19,12 @@ public abstract class Node {
     abstract public void accept(SemanticsAnalizer analizer);
     abstract public void accept(NodeVisitor visitor);
     abstract public boolean isType(Class<? extends Production> className);
+    abstract public Token getSubtreeFirstToken();
+    abstract public void checkSubtreeViability(); //check if there are no productions as leafs and no TokenTypeNodes
+    
+    public boolean isRoot(){
+        return false;
+    }
     
     public void reset(){ }
 
@@ -49,4 +55,5 @@ public abstract class Node {
 		return 0; //TODO: Should throw cannot get level error
 	}
     
+
 }

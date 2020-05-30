@@ -70,4 +70,15 @@ public class TokenNode extends Node {
     public boolean isType(Class<? extends Production> className) {
         return false;
     }
+
+    @Override
+    public Token getSubtreeFirstToken() {
+        return token;
+    }
+
+    @Override
+    public void checkSubtreeViability() {
+        return; //nothing to do, nothing to throw
+    }
+
 }

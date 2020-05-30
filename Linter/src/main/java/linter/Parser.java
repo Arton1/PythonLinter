@@ -15,7 +15,7 @@ public class Parser {
 
     SyntaxTree getNextSyntaxTree(){
         Token token = null, peek = null;
-        try{
+        try {
             token = lexer.getToken();
             peek = lexer.peek();
         }

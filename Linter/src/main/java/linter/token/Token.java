@@ -13,6 +13,12 @@ public class Token implements TreeElement {
         this.tokenType = tokenType;
     }
 
+    public Token(TokenType tokenType, int line, int column) {
+        this.tokenType = tokenType;
+        this.line = line;
+        this.column = column;
+    }
+
     public int getLine() {
         return line;
     }

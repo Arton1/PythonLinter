@@ -3,6 +3,7 @@ package linter.type_analysis.analiser;
 import java.util.ArrayList;
 import java.util.List;
 
+import linter.exception.SemanticsException;
 import linter.syntax_tree.Node;
 import linter.syntax_tree.ProductionNode;
 import linter.syntax_tree.production.AnnualAssignmentStatementProduction;
@@ -34,7 +35,7 @@ public class AnnualAssignmentAnaliser extends TypeAnaliser {
         if(typeToAssign == null){
             Variable assignedVariable = variablesToAssignTo.get(variablesToAssignTo.size()-1);
             if(assignedVariable.getType() == null)
-                throw new RuntimeException("Non initialized variable"); //TODO: Error Handler
+                throw new SemanticsException("Non initialized variable", node.getParent().getParent().getSubtreeFirstToken());
             typeToAssign = assignedVariable.getType();
         }
         for(Variable variable : variablesToAssignTo){
@@ -47,7 +48,7 @@ public class AnnualAssignmentAnaliser extends TypeAnaliser {
 
     private void processExpressionProduction(Node node){
         if(typeToAssign != null)
-            throw new RuntimeException("Cannot assign to non-variable");
+            throw new SemanticsException("Cannot assign to non-variable", node.getParent().getParent().getSubtreeFirstToken());
         ExpressionAnaliser analiser = new ExpressionAnaliser(variableTables, functionTables);
         node.accept(analiser);
         if(analiser.getType() != null){

@@ -2,6 +2,7 @@ package linter.type_analysis.analiser;
 
 import java.util.List;
 
+import linter.exception.SemanticsException;
 import linter.syntax_tree.Node;
 import linter.syntax_tree.ProductionNode;
 import linter.syntax_tree.production.test_productions.FactorProduction;
@@ -51,10 +52,10 @@ public class FactorAnaliser extends TypeAnaliser {
         node.accept(this);
         if(variable != null){
             if(variable.getType() == null)
-                throw new RuntimeException("No variable type");
+                throw new SemanticsException("Uninitialized variable", node.getParent().getSubtreeFirstToken());
             type = variable.getType();
         }
         if(type != Type.FLOAT && type != Type.INT)
-            throw new RuntimeException("Bad type for unary operation");
+            throw new SemanticsException("Bad type for unary operation, " + type, node.getParent().getSubtreeFirstToken());
     }
 }

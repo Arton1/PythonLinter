@@ -50,28 +50,36 @@ public class TokenTypeNode extends Node {
 
     @Override
     public void processTokenWhenBacking(Token token, Token peek, int currentIndentLevel) throws BadSyntaxException {
-        // no processing
+        throw new RuntimeException("Bad syntax tree");
     }
 
     @Override
     public void accept(SemanticsAnalizer analizer) {
-        // TODO: Throw bad syntax tree error
+        throw new RuntimeException("Bad syntax tree");
     }
 
     @Override
     public Token getToken() {
-        // TODO: Throw bad syntax tree error
-        return null;
+        throw new RuntimeException("Bad syntax tree");
     }
 
     @Override
     public void accept(NodeVisitor visitor) {
-        // TODO Auto-generated method stub
+        throw new RuntimeException("Bad syntax tree");
     }
 
     @Override
     public boolean isType(Class<? extends Production> className) {
-        // TODO Auto-generated method stub
-        return false;
+        throw new RuntimeException("Bad syntax tree");
+    }
+
+    @Override
+    public Token getSubtreeFirstToken() {
+        throw new RuntimeException("Bad syntax tree");
+    }
+
+    @Override
+    public void checkSubtreeViability() {
+        throw new BadSyntaxException();
     }
 }

@@ -121,10 +121,10 @@ public class Lexer {
         currentTokenLinePosition = stream.getCurrentLinePosition();
         currentTokenColumnPosition = stream.getCurrentColumnPosition();
         if(c == StreamHandler.EOF_CHARACTER) //no more stream
-            return new Token(BlockTokenType.EOF);
+            return new Token(BlockTokenType.EOF, currentTokenLinePosition, currentTokenColumnPosition);
         Token token;
         if(c == StreamHandler.EOL_CHARACTER) //explicit, because too important
-            token = new Token(BlockTokenType.NEWLINE);
+            token = new Token(BlockTokenType.NEWLINE, currentTokenLinePosition, currentTokenColumnPosition);
         else
             if((token = checkSingletonToken(c)) == null)
                 if((token = checkLetterToken(c)) == null)

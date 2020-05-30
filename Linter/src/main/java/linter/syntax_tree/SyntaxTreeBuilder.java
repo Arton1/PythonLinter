@@ -2,6 +2,7 @@ package linter.syntax_tree;
 
 import linter.exception.BadSyntaxException;
 import linter.exception.IndentationException;
+import linter.syntax_tree.production.SingleInputProduction;
 import linter.token.Token;
 import linter.token.type.BlockTokenType;
 import linter.token.type.CompoundStatementTokenType;
@@ -9,13 +10,10 @@ import linter.token.type.CompoundStatementTokenType;
 import java.util.ArrayList;
 import java.util.List;
 
-import linter.ErrorHandler;
-
 public class SyntaxTreeBuilder extends SyntaxTree {
     int currentIndentLevel = 0;
     boolean beginingOfStatement = false;
     boolean finished = false;
-    boolean isCompoundTree = false;
     boolean shouldCheckOptional;
 
     public SyntaxTreeBuilder() {
@@ -34,54 +32,75 @@ public class SyntaxTreeBuilder extends SyntaxTree {
             }
             else
                 beginingOfStatement = false;
-        checkIfCompoundTree(token);
         try {
             if(shouldCheckOptional){
                 currentNode.processTokenWhenBacking(token, peek, currentIndentLevel); //add optional nodes
-                setNextProcessedNodeOrGoBack(token, peek); //go to next node
+                setPositionToNextProcessedNodeOrGoBack(token, peek); // go to next node
                 shouldCheckOptional = false;
+                if(finished){
+                    checkTreeIntegrity();
+                    return;
+                }
             }
             while (!currentNode.processToken(token, peek, currentIndentLevel)){ //process token until consumed
                 while(currentNode.isEpsilon()) //while, because parent could be empty after detaching
                     processEpsilon();
-                setNextProcessedNodeOrGoBack(token, peek);
+                setPositionToNextProcessedNodeOrGoBack(token, peek);
+                if(finished){
+                    checkTreeIntegrity();
+                    return;
+                }
             }
-            checkIfFinished(token, peek);
-            prepareForNewToken();
+            setPositionForNewToken();
+            if(finished){
+                checkTreeIntegrity();
+                return;
+            }
+            checkBeginningOfStatement(token, peek);
         }
         catch(BadSyntaxException e){
             e.setLine(token.getLine());
             e.setColumn(token.getColumn());
-            ErrorHandler.handleBadSyntaxException(e);
+            throw e;
+            
         }
         catch(IndentationException e){
             e.setLine(token.getLine());
             e.setColumn(0);
-            ErrorHandler.handleIndentationException(e);
+            throw e;
         }
     }
 
-    private void prepareForNewToken() {
+    private void setPositionForNewToken() {
         Node nextNode = currentNode.getNextChildNode();
         while(nextNode == null){
-            currentNode = currentNode.getParent();
-            if(currentNode == null)
-                throw new BadSyntaxException();
+            nextNode = currentNode.getParent();
+            if(nextNode == null){
+                finished = true; //Went back to root
+                return; //stay on the current node
+            }
+            currentNode = nextNode;
             nextNode = currentNode.getNextChildNode();
             if(nextNode == null){
-                shouldCheckOptional = true; //check some optionals in productions at next improve call
+                if(currentNode.isRoot())
+                    finished = true;
+                else
+                    shouldCheckOptional = true; //check some optionals in productions at next improve call
                 return;
             }
         }
         currentNode = nextNode;
     }
 
-    private void setNextProcessedNodeOrGoBack(Token token, Token peek) {
+    private void setPositionToNextProcessedNodeOrGoBack(Token token, Token peek) {
         Node nextNode = currentNode.getNextChildNode();
         while(nextNode == null){
-            currentNode = currentNode.getParent();
-            if(currentNode == null)
-                throw new BadSyntaxException();
+            nextNode = currentNode.getParent();
+            if(nextNode == null){
+                finished = true; //Went back to root
+                return; //stay on the current node
+            }
+            currentNode = nextNode;
             nextNode = currentNode.getNextChildNode();
             if(nextNode == null){
                 currentNode.processTokenWhenBacking(token, peek, currentIndentLevel); //check some optional productions
@@ -91,30 +110,18 @@ public class SyntaxTreeBuilder extends SyntaxTree {
         currentNode = nextNode;
     }
 
-    private void checkIfCompoundTree(Token token){
-        if(token.getTokenType() == BlockTokenType.TWO_DOTS)
-            isCompoundTree = true;
+    private void checkBeginningOfStatement(Token token, Token peek){
+        if(token.getTokenType() == BlockTokenType.NEWLINE ||
+            peek.getTokenType() == BlockTokenType.INDENT || 
+            peek.getTokenType() == CompoundStatementTokenType.ELSE ||
+            peek.getTokenType() == CompoundStatementTokenType.ELIF){
+                currentIndentLevel = 0;
+                beginingOfStatement = true;
+            }
     }
 
-    public void checkIfFinished(Token token, Token peek){
-        if(!isCompoundTree){
-            if(token.getTokenType() == BlockTokenType.NEWLINE)
-                finished = true;
-        }
-        else {
-            if(token.getTokenType() == BlockTokenType.NEWLINE){
-                if(peek.getTokenType() == BlockTokenType.INDENT || 
-                    peek.getTokenType() == CompoundStatementTokenType.ELSE ||
-                    peek.getTokenType() == CompoundStatementTokenType.ELIF)
-                {
-                    currentIndentLevel = 0;
-                    beginingOfStatement = true;
-                }
-                else {
-                    finished = true;
-                }
-            }
-        }
+    private void checkTreeIntegrity(){
+        currentNode.checkSubtreeViability(); //Current node is SingleInputProduction
     }
 
     public void processEpsilon(){

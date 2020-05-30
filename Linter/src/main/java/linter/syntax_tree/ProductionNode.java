@@ -143,7 +143,7 @@ public class ProductionNode extends Node {
         if(visitor.visit(this)) //should finish? If false, visitor wishes to go to children.
             return;
         for(Node node : nodes)
-            node.accept(visitor); //TODO: accept should be bool
+            node.accept(visitor);
     }
 
     @Override
@@ -157,5 +157,25 @@ public class ProductionNode extends Node {
         if(position < nodes.size())
             return nodes.get(position);
         return null;
+    }
+
+    @Override
+    public Token getSubtreeFirstToken() {
+        return nodes.get(0).getSubtreeFirstToken();
+    }
+
+    @Override
+    public void checkSubtreeViability() {
+        if(nodes.size() == 0)
+            throw new BadSyntaxException();
+        for(Node node : nodes)
+            node.checkSubtreeViability();
+    }
+
+    @Override
+    public boolean isRoot() {
+        if(production instanceof SingleInputProduction)
+            return true;
+        return false;
     }
 }
