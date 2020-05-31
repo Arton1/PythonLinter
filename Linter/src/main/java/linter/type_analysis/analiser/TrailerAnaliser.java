@@ -10,18 +10,16 @@ import linter.syntax_tree.production.test_productions.OptionalTrailerProduction;
 import linter.syntax_tree.production.test_productions.PassedArgumentsProduction;
 import linter.token.IdentifierToken;
 import linter.token.type.BracketTokenType;
-import linter.type_analysis.Function;
-import linter.type_analysis.Table;
+import linter.type_analysis.NameSpace;
 import linter.type_analysis.Type;
-import linter.type_analysis.Variable;
 
 public class TrailerAnaliser extends TypeAnaliser {
 
     List<Type> arguments = null;
     String identifier = null;
 
-    protected TrailerAnaliser(List<Table<Variable>> variableTables, List<Table<Function>> functionTables) {
-        super(variableTables, functionTables);
+    protected TrailerAnaliser(List<NameSpace> nameSpaceStack) {
+        super(nameSpaceStack);
     }
 
     @Override
@@ -40,7 +38,7 @@ public class TrailerAnaliser extends TypeAnaliser {
     }
 
     private void processPassedArguments(Node node){
-        ArgumentsAnaliser analiser = new ArgumentsAnaliser(variableTables, functionTables);
+        ArgumentsAnaliser analiser = new ArgumentsAnaliser(nameSpaceStack);
         node.accept(analiser);
         arguments = analiser.getArguments();
     }

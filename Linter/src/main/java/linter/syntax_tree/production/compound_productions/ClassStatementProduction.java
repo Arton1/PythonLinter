@@ -9,7 +9,6 @@ import linter.token.type.CompoundStatementTokenType;
 import linter.token.type.IdentifierTokenType;
 
 public class ClassStatementProduction extends CompoundStatementProduction {
-
     public ClassStatementProduction(int level) {
         super(level);
     }

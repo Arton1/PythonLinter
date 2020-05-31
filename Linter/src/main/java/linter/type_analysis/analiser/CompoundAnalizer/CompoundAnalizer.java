@@ -1,24 +1,29 @@
 package linter.type_analysis.analiser.CompoundAnalizer;
 
-import java.util.LinkedList;
 import java.util.List;
 
-import linter.syntax_tree.ProductionNode;
-import linter.type_analysis.Function;
-import linter.type_analysis.Table;
-import linter.type_analysis.Variable;
-import linter.type_analysis.analiser.TypeAnaliser;
+import linter.type_analysis.NameSpace;
+import linter.type_analysis.Type;
+import linter.type_analysis.analiser.ObjectCreatorAnalizer;
 
-public abstract class CompoundAnalizer extends TypeAnaliser {
+public abstract class CompoundAnalizer extends ObjectCreatorAnalizer {
 
-    protected List<Table<Variable>> retiredVariableTables = new LinkedList<Table<Variable>>();
-    protected List<Table<Function>> retiredFunctionTables = new LinkedList<Table<Function>>();
+    protected List<NameSpace> retiredNameSpaces;
+    Type functionReturnType;
 
-    protected CompoundAnalizer(List<Table<Variable>> variableTables, List<Table<Function>> functionTables, List<Table<Variable>> retiredVariableTables, List<Table<Function>> retiredFunctionTables){
-        super(variableTables, functionTables);
-        this.retiredVariableTables = retiredVariableTables;
-        this.retiredFunctionTables = retiredFunctionTables;
+    protected CompoundAnalizer(List<NameSpace> nameSpaces, List<NameSpace> retiredNameSpaces, NameSpace currentContextNameSpace, Type functionReturnType){
+        super(nameSpaces, currentContextNameSpace);
+        this.retiredNameSpaces = retiredNameSpaces;
+        this.functionReturnType = functionReturnType;
     }
 
-    public abstract boolean visit(ProductionNode node);
+    protected void addNewNameSpace(){
+        NameSpace newNameSpace = new NameSpace();
+        nameSpaceStack.add(newNameSpace);
+        currentContextNameSpace = newNameSpace;
+    }
+
+    protected void removeCurrentNameSpace(){
+        retiredNameSpaces.add(nameSpaceStack.remove(nameSpaceStack.size()-1));
+    }
 }

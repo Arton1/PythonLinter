@@ -7,8 +7,7 @@ import linter.syntax_tree.ProductionNode;
 import linter.syntax_tree.TokenNode;
 import linter.syntax_tree.production.compound_productions.FunctionArgumentProduction;
 import linter.token.IdentifierToken;
-import linter.type_analysis.Function;
-import linter.type_analysis.Table;
+import linter.type_analysis.NameSpace;
 import linter.type_analysis.Type;
 import linter.type_analysis.Variable;
 import linter.type_analysis.analiser.TypeAnaliser;
@@ -17,9 +16,10 @@ public class FunctionArgumentAnalizer extends TypeAnaliser {
     private String identifier = null;
     private Type type = null;
     private Variable variable;
+    private int line, column;
 
-    protected FunctionArgumentAnalizer(List<Table<Variable>> variableTables, List<Table<Function>> functionTables) {
-        super(variableTables, functionTables);
+    protected FunctionArgumentAnalizer(List<NameSpace> nameSpaceStack) {
+        super(nameSpaceStack);
     }
 
     @Override
@@ -32,7 +32,7 @@ public class FunctionArgumentAnalizer extends TypeAnaliser {
             if (child instanceof TokenNode)
                 child.accept(this);
         }
-        Variable variable = new Variable(identifier);
+        Variable variable = new Variable(identifier, null, line, column); //function argument doesnt belong to a class
         if(type == null)
             variable.setType(Type.UNSPECIFIED);
         else
@@ -44,7 +44,10 @@ public class FunctionArgumentAnalizer extends TypeAnaliser {
     @Override
     public void visit(TokenNode node){
         if(node.getToken() instanceof IdentifierToken){
-            String string = ((IdentifierToken)node.getToken()).getIdentifier();
+            IdentifierToken token = (IdentifierToken)node.getToken();
+            String string = token.getIdentifier();
+            line = token.getLine();
+            column = token.getColumn();
             if(identifier == null)
                 identifier = string;
             else

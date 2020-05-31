@@ -7,16 +7,15 @@ import linter.syntax_tree.ProductionNode;
 import linter.syntax_tree.production.AnnualAssignmentStatementProduction;
 import linter.syntax_tree.production.OptionalAssignmentStatementProduction;
 import linter.syntax_tree.production.test_productions.ExpressionProduction;
-import linter.type_analysis.Function;
-import linter.type_analysis.Table;
+import linter.type_analysis.NameSpace;
 import linter.type_analysis.Variable;
 
-public class OptionalAssignmentAnaliser extends TypeAnaliser {
+public class OptionalAssignmentAnaliser extends ObjectCreatorAnalizer {
 
     boolean shouldCheckVariableType = false;
 
-    protected OptionalAssignmentAnaliser(List<Table<Variable>> variableTables, List<Table<Function>> functionTables) {
-        super(variableTables, functionTables);
+    protected OptionalAssignmentAnaliser(List<NameSpace> nameSpaceStack, NameSpace currentContextNameSpace) {
+        super(nameSpaceStack, currentContextNameSpace);
     }
 
     @Override
@@ -35,7 +34,7 @@ public class OptionalAssignmentAnaliser extends TypeAnaliser {
     }
 
     private void processAnnualAssignment(Node node){
-        AnnualAssignmentAnaliser analiser = new AnnualAssignmentAnaliser(variableTables, functionTables);
+        AnnualAssignmentAnaliser analiser = new AnnualAssignmentAnaliser(nameSpaceStack, currentContextNameSpace);
         node.accept(analiser);
         if(analiser.getType() != null){
             type = analiser.getType();
@@ -48,7 +47,7 @@ public class OptionalAssignmentAnaliser extends TypeAnaliser {
     }
 
     private void processExpressionProduction(Node node){
-        ExpressionAnaliser analiser = new ExpressionAnaliser(variableTables, functionTables);
+        ExpressionAnaliser analiser = new ExpressionAnaliser(nameSpaceStack);
         node.accept(analiser);
         if(analiser.getType() != null){
             type = analiser.getType();

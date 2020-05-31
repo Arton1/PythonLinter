@@ -5,8 +5,6 @@ import linter.exception.IndentationException;
 import linter.token.Token;
 import linter.token.type.BlockTokenType;
 import linter.token.type.CompoundStatementTokenType;
-import linter.token.type.IdentifierTokenType;
-import linter.token.type.TokenType;
 
 import java.util.ArrayList;
 import java.util.List;

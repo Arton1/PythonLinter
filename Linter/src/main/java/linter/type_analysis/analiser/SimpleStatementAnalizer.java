@@ -5,18 +5,22 @@ import java.util.List;
 import linter.exception.SemanticsException;
 import linter.syntax_tree.Node;
 import linter.syntax_tree.ProductionNode;
-import linter.type_analysis.Function;
-import linter.type_analysis.Table;
+import linter.type_analysis.NameSpace;
 import linter.type_analysis.Type;
 import linter.type_analysis.Variable;
 import linter.syntax_tree.production.OptionalAssignmentStatementProduction;
+import linter.syntax_tree.production.ReturnStatementProduction;
 import linter.syntax_tree.production.SimpleStatementProduction;
 import linter.syntax_tree.production.test_productions.TestProduction;
+import linter.token.Token;
 
-public class SimpleStatementAnalizer extends TypeAnaliser {
+public class SimpleStatementAnalizer extends ObjectCreatorAnalizer {
 
-    public SimpleStatementAnalizer(List<Table<Variable>> variableTables, List<Table<Function>> functionTables) {
-        super(variableTables, functionTables);
+    Type functionReturnType;
+
+    public SimpleStatementAnalizer(List<NameSpace> nameSpaceStack, NameSpace currentContextNameSpace, Type functionReturnType) {
+        super(nameSpaceStack, currentContextNameSpace);
+        this.functionReturnType = functionReturnType;
     }
 
     @Override
@@ -30,12 +34,14 @@ public class SimpleStatementAnalizer extends TypeAnaliser {
                 procesTestProduction(child);
             else if(child.isType(OptionalAssignmentStatementProduction.class))
                 processAssignmentProduction(child);
+            else if(child.isType(ReturnStatementProduction.class))
+                processReturnStatementProduction(child);
         }
         return true;
     }
 
     private void procesTestProduction(Node node){
-        TestAnaliser analiser = new TestAnaliser(variableTables, functionTables);
+        TestAnaliser analiser = new TestAnaliser(nameSpaceStack);
         node.accept(analiser);
         if(analiser.getType() != null){
             type = analiser.getType();
@@ -48,13 +54,18 @@ public class SimpleStatementAnalizer extends TypeAnaliser {
         throw new RuntimeException("Nothing received from analyzer");
     }
 
+    private void processReturnStatementProduction(Node node){
+        ReturnAnaliser analiser = new ReturnAnaliser(nameSpaceStack, functionReturnType);
+        node.accept(analiser);
+    }
+
     private void processAssignmentProduction(Node node){
-        OptionalAssignmentAnaliser analiser = new OptionalAssignmentAnaliser(variableTables, functionTables);
+        OptionalAssignmentAnaliser analiser = new OptionalAssignmentAnaliser(nameSpaceStack, currentContextNameSpace);
         node.accept(analiser);
         if(variable == null)
             throw new SemanticsException("No variable to assign to", node.getParent().getSubtreeFirstToken());
         Type type = analiser.getType();
-        if(analiser.shouldCheckVariableType()){ 
+        if(analiser.shouldCheckVariableType()){ //Augmented assignment
             if(variable.getType() == null)
                 throw new SemanticsException("Uninitialized variable", node.getParent().getSubtreeFirstToken());
             if(variable.getType() != Type.UNSPECIFIED &&
@@ -80,6 +91,11 @@ public class SimpleStatementAnalizer extends TypeAnaliser {
             }
         }
         else {
+            if(nameSpaceStack.size() > 1 && variable.getPossessingClass() == null){ //not in global name space and variable is from global name space
+                variable.decrementNumberOfReferences(); //"mistakely" took the variable
+                Token token = node.getParent().getSubtreeFirstToken();
+                variable = new Variable(variable.getIdentifier(), null, token.getLine(), token.getColumn());
+            }
             variable.setType(type);
             saveVariable(variable);
         }

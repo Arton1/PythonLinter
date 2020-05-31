@@ -7,15 +7,13 @@ import linter.syntax_tree.Node;
 import linter.syntax_tree.ProductionNode;
 import linter.syntax_tree.production.test_productions.ComparisonProduction;
 import linter.syntax_tree.production.test_productions.NotTestProduction;
-import linter.type_analysis.Function;
-import linter.type_analysis.Table;
+import linter.type_analysis.NameSpace;
 import linter.type_analysis.Type;
-import linter.type_analysis.Variable;
 
 public class NotTestAnaliser extends TypeAnaliser {
 
-    protected NotTestAnaliser(List<Table<Variable>> variableTables, List<Table<Function>> functionTables) {
-        super(variableTables, functionTables);
+    protected NotTestAnaliser(List<NameSpace> nameSpaceStack) {
+        super(nameSpaceStack);
     }
 
     @Override
@@ -35,7 +33,7 @@ public class NotTestAnaliser extends TypeAnaliser {
     }
 
     private void processComparisonProduction(Node node){
-        ComparisonAnaliser analiser = new ComparisonAnaliser(variableTables, functionTables);
+        ComparisonAnaliser analiser = new ComparisonAnaliser(nameSpaceStack);
         node.accept(analiser);
         if(analiser.getType() != null){
             type = analiser.getType();

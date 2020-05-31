@@ -8,15 +8,13 @@ import linter.syntax_tree.ProductionNode;
 import linter.syntax_tree.production.test_productions.AtomicExpressionProduction;
 import linter.syntax_tree.production.test_productions.FactorProduction;
 import linter.syntax_tree.production.test_productions.PowerProduction;
-import linter.type_analysis.Function;
-import linter.type_analysis.Table;
+import linter.type_analysis.NameSpace;
 import linter.type_analysis.Type;
-import linter.type_analysis.Variable;
 
 public class PowerAnaliser extends TypeAnaliser {
 
-    protected PowerAnaliser(List<Table<Variable>> variableTables, List<Table<Function>> functionTables) {
-        super(variableTables, functionTables);
+    protected PowerAnaliser(List<NameSpace> nameSpaceStack) {
+        super(nameSpaceStack);
     }
 
     @Override
@@ -36,7 +34,7 @@ public class PowerAnaliser extends TypeAnaliser {
     }
 
     public void processAtomicExpressionProduction(Node node){
-        AtomicExpressionAnaliser analiser = new AtomicExpressionAnaliser(variableTables, functionTables);
+        AtomicExpressionAnaliser analiser = new AtomicExpressionAnaliser(nameSpaceStack);
         node.accept(analiser);
         if(analiser.getType() != null){
             type = analiser.getType();
@@ -50,7 +48,7 @@ public class PowerAnaliser extends TypeAnaliser {
     }
 
     public void processFactorProduction(Node node){
-        FactorAnaliser analiser = new FactorAnaliser(variableTables, functionTables);
+        FactorAnaliser analiser = new FactorAnaliser(nameSpaceStack);
         node.accept(analiser);
          if(variable != null){
             if(variable.getType() == null)

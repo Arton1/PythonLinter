@@ -6,15 +6,13 @@ import linter.syntax_tree.Node;
 import linter.syntax_tree.ProductionNode;
 import linter.syntax_tree.production.compound_productions.OptionalElseProduction;
 import linter.syntax_tree.production.compound_productions.SuiteProduction;
-import linter.type_analysis.Function;
-import linter.type_analysis.Table;
-import linter.type_analysis.Variable;
+import linter.type_analysis.NameSpace;
+import linter.type_analysis.Type;
 
 public class ElseAnalizer extends CompoundAnalizer {
 
-    protected ElseAnalizer(List<Table<Variable>> variableTables, List<Table<Function>> functionTables,
-            List<Table<Variable>> retiredVariableTables, List<Table<Function>> retiredFunctionTables) {
-        super(variableTables, functionTables, retiredVariableTables, retiredFunctionTables);
+    protected ElseAnalizer(List<NameSpace> nameSpaceStack, List<NameSpace> retiredNameSpaces, NameSpace currentContextNameSpace, Type functionReturnType) {
+        super(nameSpaceStack, retiredNameSpaces, currentContextNameSpace, functionReturnType);
     }
 
     @Override
@@ -23,17 +21,17 @@ public class ElseAnalizer extends CompoundAnalizer {
             return true;
         int position = 0;
         Node child;
-        variableTables.add(new Table<Variable>());
-        functionTables.add(new Table<Function>());
+        addNewNameSpace();
         while((child = node.getChildAtPosition(position++)) != null){
             if (child.isType(SuiteProduction.class))
                 processSuiteProduction(child);
         }
+        removeCurrentNameSpace();
         return true;
     }
 
     private void processSuiteProduction(Node node) {
-        SuiteAnalizer analizer = new SuiteAnalizer(variableTables, functionTables, retiredVariableTables, retiredFunctionTables);
+        SuiteAnalizer analizer = new SuiteAnalizer(nameSpaceStack, retiredNameSpaces, currentContextNameSpace, functionReturnType);
         node.accept(analizer);
     }
 }

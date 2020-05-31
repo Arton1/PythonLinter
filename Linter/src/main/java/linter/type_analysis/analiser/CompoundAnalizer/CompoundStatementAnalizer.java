@@ -10,15 +10,13 @@ import linter.syntax_tree.production.compound_productions.ForStatementProduction
 import linter.syntax_tree.production.compound_productions.FunctionStatementProduction;
 import linter.syntax_tree.production.compound_productions.IfStatementProduction;
 import linter.syntax_tree.production.compound_productions.WhileStatementProduction;
-import linter.type_analysis.Function;
-import linter.type_analysis.Table;
-import linter.type_analysis.Variable;
-import linter.type_analysis.analiser.TypeAnaliser;
+import linter.type_analysis.NameSpace;
+import linter.type_analysis.Type;
 
 public class CompoundStatementAnalizer extends CompoundAnalizer {
 
-    public CompoundStatementAnalizer(List<Table<Variable>> variableTables, List<Table<Function>> functionTables, List<Table<Variable>> retiredVariableTables, List<Table<Function>> retiredFunctionTables) {
-        super(variableTables, functionTables, retiredVariableTables, retiredFunctionTables);
+    public CompoundStatementAnalizer(List<NameSpace> nameSpaceStack, List<NameSpace> retiredNameSpaces, NameSpace currentContextNameSpace, Type functionReturnType) {
+        super(nameSpaceStack, retiredNameSpaces, currentContextNameSpace, functionReturnType);
     }
 
     @Override
@@ -43,27 +41,27 @@ public class CompoundStatementAnalizer extends CompoundAnalizer {
     }
     
     private void processIfStatementProduction(Node node){
-        IfStatementAnalizer analizer = new IfStatementAnalizer(variableTables, functionTables, retiredVariableTables, retiredFunctionTables);
+        IfStatementAnalizer analizer = new IfStatementAnalizer(nameSpaceStack, retiredNameSpaces, currentContextNameSpace, functionReturnType);
         node.accept(analizer);
     }
 
     private void processWhileStatementProduction(Node node){
-        WhileStatementAnalizer analizer = new WhileStatementAnalizer(variableTables, functionTables, retiredVariableTables, retiredFunctionTables);
+        WhileStatementAnalizer analizer = new WhileStatementAnalizer(nameSpaceStack, retiredNameSpaces, currentContextNameSpace, functionReturnType);
         node.accept(analizer);
     }
 
     private void processForStatementProduction(Node node){
-        ForStatementAnalizer analizer = new ForStatementAnalizer(variableTables, functionTables, retiredVariableTables, retiredFunctionTables);
+        ForStatementAnalizer analizer = new ForStatementAnalizer(nameSpaceStack, retiredNameSpaces, currentContextNameSpace, functionReturnType);
         node.accept(analizer);
     }
 
     private void processClassStatementProduction(Node node){
-        ClassStatementAnalizer analizer = new ClassStatementAnalizer(variableTables, functionTables, retiredVariableTables, retiredFunctionTables);
+        ClassStatementAnalizer analizer = new ClassStatementAnalizer(nameSpaceStack, retiredNameSpaces, currentContextNameSpace, functionReturnType);
         node.accept(analizer);
     }
 
     private void processFunctionStatementProduction(Node node){
-        FunctionStatementAnalizer analizer = new FunctionStatementAnalizer(variableTables, functionTables, retiredVariableTables, retiredFunctionTables);
+        FunctionStatementAnalizer analizer = new FunctionStatementAnalizer(nameSpaceStack, retiredNameSpaces, currentContextNameSpace);
         node.accept(analizer);
     }
 

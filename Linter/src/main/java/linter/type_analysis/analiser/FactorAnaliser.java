@@ -7,15 +7,13 @@ import linter.syntax_tree.Node;
 import linter.syntax_tree.ProductionNode;
 import linter.syntax_tree.production.test_productions.FactorProduction;
 import linter.syntax_tree.production.test_productions.PowerProduction;
-import linter.type_analysis.Function;
-import linter.type_analysis.Table;
+import linter.type_analysis.NameSpace;
 import linter.type_analysis.Type;
-import linter.type_analysis.Variable;
 
 public class FactorAnaliser extends TypeAnaliser {
 
-    protected FactorAnaliser(List<Table<Variable>> variableTables, List<Table<Function>> functionTables) {
-        super(variableTables, functionTables);
+    protected FactorAnaliser(List<NameSpace> nameSpaceStack) {
+        super(nameSpaceStack);
     }
 
     @Override
@@ -35,7 +33,7 @@ public class FactorAnaliser extends TypeAnaliser {
     }
 
     private void processPowerProduction(Node node){
-        PowerAnaliser analiser = new PowerAnaliser(variableTables, functionTables);
+        PowerAnaliser analiser = new PowerAnaliser(nameSpaceStack);
         node.accept(analiser);
         if(analiser.getType() != null){
             type = analiser.getType();

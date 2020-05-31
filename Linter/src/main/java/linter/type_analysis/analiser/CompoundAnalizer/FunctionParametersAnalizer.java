@@ -7,8 +7,7 @@ import linter.syntax_tree.Node;
 import linter.syntax_tree.ProductionNode;
 import linter.syntax_tree.production.compound_productions.FunctionArgumentsProdution;
 import linter.syntax_tree.production.compound_productions.FunctionParametersProduction;
-import linter.type_analysis.Function;
-import linter.type_analysis.Table;
+import linter.type_analysis.NameSpace;
 import linter.type_analysis.Variable;
 import linter.type_analysis.analiser.TypeAnaliser;
 
@@ -16,8 +15,8 @@ public class FunctionParametersAnalizer extends TypeAnaliser {
 
     private List<Variable> arguments = new ArrayList<Variable>();
 
-    protected FunctionParametersAnalizer(List<Table<Variable>> variableTables, List<Table<Function>> functionTables) {
-        super(variableTables, functionTables);
+    protected FunctionParametersAnalizer(List<NameSpace> nameSpaceStack) {
+        super(nameSpaceStack);
     }
 
     @Override
@@ -34,7 +33,7 @@ public class FunctionParametersAnalizer extends TypeAnaliser {
     }
 
     private void processFunctionArguments(Node child) {
-        FunctionArgumentsAnalizer analiser = new FunctionArgumentsAnalizer(variableTables, functionTables);
+        FunctionArgumentsAnalizer analiser = new FunctionArgumentsAnalizer(nameSpaceStack);
         child.accept(analiser);
         arguments = analiser.getArguments();
     }

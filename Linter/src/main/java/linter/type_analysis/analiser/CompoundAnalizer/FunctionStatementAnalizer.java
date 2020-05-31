@@ -1,6 +1,5 @@
 package linter.type_analysis.analiser.CompoundAnalizer;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import linter.syntax_tree.Node;
@@ -9,21 +8,22 @@ import linter.syntax_tree.TokenNode;
 import linter.syntax_tree.production.compound_productions.FunctionParametersProduction;
 import linter.syntax_tree.production.compound_productions.FunctionStatementProduction;
 import linter.syntax_tree.production.compound_productions.OptionalReturnHintProduction;
-import linter.syntax_tree.production.compound_productions.ReturnHintAnalizer;
 import linter.syntax_tree.production.compound_productions.SuiteProduction;
 import linter.token.IdentifierToken;
 import linter.type_analysis.Function;
-import linter.type_analysis.Table;
+import linter.type_analysis.NameSpace;
 import linter.type_analysis.Type;
 import linter.type_analysis.Variable;
 
 public class FunctionStatementAnalizer extends CompoundAnalizer {
     String functionIdentifier;
-    Type returnType = null;
+    Type returnType = Type.UNSPECIFIED;
     List<Variable> arguments = null;
+    int line;
+    int column;
 
-    public FunctionStatementAnalizer(List<Table<Variable>> variableTables, List<Table<Function>> functionTables, List<Table<Variable>> retiredVariableTables, List<Table<Function>> retiredFunctionTables) {
-        super(variableTables, functionTables, retiredVariableTables, retiredFunctionTables);
+    public FunctionStatementAnalizer(List<NameSpace> nameSpaceStack, List<NameSpace> retiredNameSpaces, NameSpace currentContextNameSpace) {
+        super(nameSpaceStack, retiredNameSpaces, currentContextNameSpace, null);
     }
 
     @Override
@@ -47,40 +47,39 @@ public class FunctionStatementAnalizer extends CompoundAnalizer {
 
     @Override
     public void visit(TokenNode node){
-        if(node.getToken() instanceof IdentifierToken)
-            functionIdentifier = ((IdentifierToken)node.getToken()).getIdentifier();
+        if(node.getToken() instanceof IdentifierToken){
+            IdentifierToken token = (IdentifierToken)node.getToken();
+            functionIdentifier = token.getIdentifier();
+            line = token.getLine();
+            column = token.getColumn();
+        }
     }
 
     private void processFunctionParameters(Node node) {
-        FunctionParametersAnalizer analizer = new FunctionParametersAnalizer(variableTables, functionTables);
+        FunctionParametersAnalizer analizer = new FunctionParametersAnalizer(nameSpaceStack);
         node.accept(analizer);
         arguments = analizer.getArguments();
     }
 
     private void processReturnType(Node node) {
-        ReturnHintAnalizer analizer = new ReturnHintAnalizer(variableTables, functionTables);
+        ReturnHintAnalizer analizer = new ReturnHintAnalizer(nameSpaceStack);
         node.accept(analizer);
         returnType = analizer.getReturnType();
     }
 
     private void processSuiteProduction(Node node) {
-        variableTables.add(new Table<Variable>());
         createFunctionObject(); //add function to previous space, add variables to new space
-        functionTables.add(new Table<Function>());
-        SuiteAnalizer analizer = new SuiteAnalizer(variableTables, functionTables, retiredVariableTables, retiredFunctionTables);
+        SuiteAnalizer analizer = new SuiteAnalizer(nameSpaceStack, retiredNameSpaces, currentContextNameSpace, returnType);
         node.accept(analizer);
+        removeCurrentNameSpace();
     }
 
     private void createFunctionObject(){
-        List<Type> argumentTypes = new ArrayList<Type>();
-        for(Variable argument : arguments){
-            saveVariable(argument);
-            argumentTypes.add(argument.getType());
-        }
-        if(returnType == null)
-            returnType = Type.UNSPECIFIED;
-        Function function = new Function(functionIdentifier, returnType, argumentTypes);
-        saveFunction(function);
+        Function function = new Function(functionIdentifier, returnType, arguments, line, column);
+        saveFunction(function); //add to old name space
+        addNewNameSpace();
+        for(Variable argument : arguments)
+            saveVariable(argument); //add to new name space
     }
     
 }

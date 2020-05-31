@@ -3,28 +3,16 @@ package linter.type_analysis;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Function implements TableElement<Function> {
-    List<String> identifier;
+public class Function extends LanguageObject {
+    
     private Type returnType;
     private List<Type> arguments = new ArrayList<Type>();
-    int numberOfReferences = 0;
 
-    public Function(List<String> identifier, Type returnType, List<Type> arguments){
-        this.identifier = identifier;
+    public Function(String identifier, Type returnType, List<Variable> arguments, int line, int column){
+        super(identifier, line, column);
         this.returnType = returnType;
-        this.arguments = arguments;
-    }
-
-    public Function(String identifier, Type returnType, List<Type> arguments){
-        List<String> identifierList = new ArrayList<String>();
-        identifierList.add(identifier);
-        this.identifier = identifierList;
-        this.returnType = returnType;
-        this.arguments = arguments;
-    }
-
-    public List<String> getIdentifier(){
-        return identifier;
+        for(Variable argument : arguments)
+            this.arguments.add(argument.getType());
     }
 
     public Type getReturnType(){
@@ -33,14 +21,6 @@ public class Function implements TableElement<Function> {
 
     public List<Type> getArguments(){
         return arguments;
-    }
-
-    public int getNumberOfReferences(){
-        return numberOfReferences;
-    }
-
-    public void incrementNumberOfReferences(){
-        numberOfReferences++;
     }
 
     public boolean compareArgumentTypes(List<Type> arguments){
@@ -56,17 +36,5 @@ public class Function implements TableElement<Function> {
                         return false;
         }
         return true;
-    }
-
-    @Override
-    public Function getElement(List<String> identifier) {
-        if(identifier.size() == 0)
-            return this;
-        throw new RuntimeException("Bad function identifier"); //Programmer side error
-    }
-
-    @Override
-    public void addElement(List<String> subList, Function element) {
-        throw new RuntimeException("Cannot add function to a function"); //Programmer side error
     }
 }

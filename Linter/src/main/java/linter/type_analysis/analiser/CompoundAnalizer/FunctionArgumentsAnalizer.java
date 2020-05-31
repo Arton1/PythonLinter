@@ -8,8 +8,7 @@ import linter.syntax_tree.Node;
 import linter.syntax_tree.ProductionNode;
 import linter.syntax_tree.production.compound_productions.FunctionArgumentProduction;
 import linter.syntax_tree.production.compound_productions.FunctionArgumentsProdution;
-import linter.type_analysis.Function;
-import linter.type_analysis.Table;
+import linter.type_analysis.NameSpace;
 import linter.type_analysis.Variable;
 import linter.type_analysis.analiser.TypeAnaliser;
 
@@ -17,8 +16,8 @@ public class FunctionArgumentsAnalizer extends TypeAnaliser {
 
     private List<Variable> arguments = new ArrayList<Variable>();
 
-    protected FunctionArgumentsAnalizer(List<Table<Variable>> variableTables, List<Table<Function>> functionTables) {
-        super(variableTables, functionTables);
+    protected FunctionArgumentsAnalizer(List<NameSpace> nameSpaceStack) {
+        super(nameSpaceStack);
     }
 
     @Override
@@ -35,11 +34,11 @@ public class FunctionArgumentsAnalizer extends TypeAnaliser {
     }
 
     private void processFunctionArgument(Node child) {
-        FunctionArgumentAnalizer analizer = new FunctionArgumentAnalizer(variableTables, functionTables);
+        FunctionArgumentAnalizer analizer = new FunctionArgumentAnalizer(nameSpaceStack);
         child.accept(analizer);
         Variable variable = analizer.getVariable();
         for(Variable argument : arguments)
-            if(variable.compareIdentifier(argument.getIdentifier()))
+            if(variable.compareIdentifier(argument))
                 throw new SemanticsException("Function already has an argument of the same name", child.getSubtreeFirstToken());
         arguments.add(analizer.getVariable());
     }

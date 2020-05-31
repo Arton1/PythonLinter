@@ -1,13 +1,15 @@
 from abc import ABC
 import math
 
+def print(x):
+	pass
+
 y = 3
 
-class Klasa(ABC):
+class Klasa:
 
 	def __init__(self):
 		xIsFive = 5
-		self.print(self.value)
 
 	def funkcja(self, x: int) -> bool:
 		if x == 1:
@@ -19,4 +21,4 @@ class Klasa(ABC):
 		return True
 
 	def wywolanie0123(self) -> float:
-		self.funkcja(1)
+		funkcja(1, 2)

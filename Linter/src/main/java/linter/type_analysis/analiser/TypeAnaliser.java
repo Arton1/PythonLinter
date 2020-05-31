@@ -1,19 +1,20 @@
 package linter.type_analysis.analiser;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import linter.syntax_tree.NodeVisitor;
 import linter.syntax_tree.ProductionNode;
 import linter.syntax_tree.TokenNode;
 import linter.type_analysis.Function;
-import linter.type_analysis.Table;
+import linter.type_analysis.NameSpace;
 import linter.type_analysis.Type;
 import linter.type_analysis.Variable;
+import linter.type_analysis.Class;
 
 public abstract class TypeAnaliser implements NodeVisitor {
 
-    protected List<Table<Variable>> variableTables;
-    protected List<Table<Function>> functionTables;
+    protected List<NameSpace> nameSpaceStack;
 
     protected Function function = null;
     protected Variable variable = null;
@@ -21,9 +22,8 @@ public abstract class TypeAnaliser implements NodeVisitor {
 
     public abstract boolean visit(ProductionNode node);
 
-    protected TypeAnaliser(List<Table<Variable>> variableTables, List<Table<Function>> functionTables){
-        this.variableTables = variableTables;
-        this.functionTables = functionTables;
+    protected TypeAnaliser(List<NameSpace> nameSpaceStack){
+        this.nameSpaceStack = nameSpaceStack;
     }
 
     public Type getType(){
@@ -45,31 +45,37 @@ public abstract class TypeAnaliser implements NodeVisitor {
 
     protected Variable findVariable(List<String> identifier){
         Variable variable = null;
-        for(int i=variableTables.size()-1; i>=0; i--){
-            variable = variableTables.get(i).getElement(identifier);
+        for(int i=nameSpaceStack.size()-1; i>=0; i--){
+            variable = nameSpaceStack.get(i).getVariable(identifier);
             if(variable != null)
                 break;
         }
         return variable;
     }
-    
-    protected void saveVariable(Variable variable){
-        Table<Variable> variableTable = variableTables.get(variableTables.size()-1);
-        variableTable.addElement(variable.getIdentifier(), variable);
-    }
 
     protected Function findFunction(List<String> identifier){
         Function function = null;
-        for(int i=variableTables.size()-1; i>=0; i--){
-            function = functionTables.get(i).getElement(identifier);
+        for(int i=nameSpaceStack.size()-1; i>=0; i--){
+            function = nameSpaceStack.get(i).getFunction(identifier);
             if(function != null)
                 break;
         }
         return function;
     }
-    
-    protected void saveFunction(Function function){
-        Table<Function> functionTable = functionTables.get(functionTables.size()-1);
-        functionTable.addElement(function.getIdentifier(), function);
+
+    protected Class findClass(String identifier){
+        List<String> identifierList = new ArrayList<String>();
+        identifierList.add(identifier);
+        return findClass(identifierList);
+    }
+
+    protected Class findClass(List<String> identifier){
+        Class _class = null;
+        for(int i=nameSpaceStack.size()-1; i>=0; i--){
+            _class = nameSpaceStack.get(i).getClass(identifier);
+            if(function != null)
+                break;
+        }
+        return _class;
     }
 }

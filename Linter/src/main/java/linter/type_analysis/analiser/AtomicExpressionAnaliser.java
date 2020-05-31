@@ -9,15 +9,17 @@ import linter.syntax_tree.ProductionNode;
 import linter.syntax_tree.production.test_productions.AtomicExpressionProduction;
 import linter.syntax_tree.production.test_productions.AtomicProduction;
 import linter.syntax_tree.production.test_productions.OptionalTrailerProduction;
+import linter.token.Token;
 import linter.type_analysis.Function;
-import linter.type_analysis.Table;
+import linter.type_analysis.NameSpace;
 import linter.type_analysis.Type;
 import linter.type_analysis.Variable;
+import linter.type_analysis.Class;
 
 public class AtomicExpressionAnaliser extends TypeAnaliser {
 
-    public AtomicExpressionAnaliser(List<Table<Variable>> variableTables, List<Table<Function>> functionTables) {
-        super(variableTables, functionTables);
+    public AtomicExpressionAnaliser(List<NameSpace> nameSpaceStack) {
+        super(nameSpaceStack);
     }
 
     @Override
@@ -34,28 +36,12 @@ public class AtomicExpressionAnaliser extends TypeAnaliser {
                 if(child.isType(OptionalTrailerProduction.class))
                     processTrailerProduction(child, identifier);
         }
-        if(type != null){
-            if(type != Type.CLASS_OBJECT){ //is not a class object
-                if(identifier.size() > 1)
-                    throw new SemanticsException("Cannot get a variable from a type different than class, " + type , node.getParent().getSubtreeFirstToken());
-            }
-            else{
-                throw new RuntimeException("Unimplemented!");
-            }
-        }
-        else {
-            variable = findVariable(identifier);
-            if(variable == null)
-                variable = new Variable(identifier);
-            else {
-                variable.incrementNumberOfReferences();
-            }
-        }
+        processData(node, identifier);
         return true;
     }
 
     private void processAtomicProduction(Node node, List<String> identifier){
-        AtomicAnaliser analiser = new AtomicAnaliser(variableTables, functionTables);
+        AtomicAnaliser analiser = new AtomicAnaliser(nameSpaceStack);
         node.accept(analiser);
         if(analiser.getType() != null)
             type = analiser.getType();
@@ -66,7 +52,7 @@ public class AtomicExpressionAnaliser extends TypeAnaliser {
     }
 
     private void processTrailerProduction(Node node, List<String> identifier){
-        TrailerAnaliser analiser = new TrailerAnaliser(variableTables, functionTables);
+        TrailerAnaliser analiser = new TrailerAnaliser(nameSpaceStack);
         node.accept(analiser);
         if(analiser.getArguments() != null){
            processFunctionCall(node, identifier, analiser.getArguments());
@@ -88,6 +74,34 @@ public class AtomicExpressionAnaliser extends TypeAnaliser {
             throw new SemanticsException("Arguments dont match function call", node.getParent().getSubtreeFirstToken());
         function.incrementNumberOfReferences();
         type = function.getReturnType();
+    }
+
+    public void processData(Node node, List<String> identifier){
+        if(type != null){
+            if(type != Type.CLASS_OBJECT){ //is not a class object
+                if(identifier.size() > 1)
+                    throw new SemanticsException("Cannot get a variable from a type different than class, " + type , node.getParent().getSubtreeFirstToken());
+            }
+            else{
+                throw new RuntimeException("Unimplemented!");
+            }
+        }
+        else {
+            variable = findVariable(identifier);
+            if(variable == null){
+                String variableIdentifier = identifier.remove(identifier.size()-1);
+                Class classPossesingTheVariable = null;
+                if(identifier.size() > 0){
+                    classPossesingTheVariable = findClass(identifier);
+                    if(classPossesingTheVariable == null)
+                        throw new SemanticsException("Cannot find class", node.getParent().getSubtreeFirstToken());
+                }
+                Token firstToken = node.getSubtreeFirstToken();
+                variable = new Variable(variableIdentifier, classPossesingTheVariable, firstToken.getLine(), firstToken.getColumn());
+            }
+            else 
+                variable.incrementNumberOfReferences();
+        }
     }
 
 }

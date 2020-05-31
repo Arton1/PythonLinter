@@ -13,16 +13,14 @@ import linter.token.IntegerNumberToken;
 import linter.token.type.BracketTokenType;
 import linter.token.type.LogicTokenType;
 import linter.token.type.NullTokenType;
-import linter.type_analysis.Function;
-import linter.type_analysis.Table;
+import linter.type_analysis.NameSpace;
 import linter.type_analysis.Type;
-import linter.type_analysis.Variable;
 
 public class AtomicAnaliser extends TypeAnaliser {
     private String identifier;
 
-    protected AtomicAnaliser(List<Table<Variable>> variableTables, List<Table<Function>> functionTables) {
-        super(variableTables, functionTables);
+    protected AtomicAnaliser(List<NameSpace> nameSpaceStack) {
+        super(nameSpaceStack);
     }
 
     @Override
@@ -40,7 +38,7 @@ public class AtomicAnaliser extends TypeAnaliser {
     }
 
     private void processTestListProduction(Node node) {
-        TestListAnalizer analizer = new TestListAnalizer(variableTables, functionTables);
+        TestListAnalizer analizer = new TestListAnalizer(nameSpaceStack);
         node.accept(analizer);
     }
 

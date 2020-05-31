@@ -8,7 +8,7 @@ import linter.syntax_tree.ProductionNode;
 import linter.syntax_tree.production.test_productions.PassedArgumentsProduction;
 import linter.syntax_tree.production.test_productions.TestProduction;
 import linter.type_analysis.Function;
-import linter.type_analysis.Table;
+import linter.type_analysis.NameSpace;
 import linter.type_analysis.Type;
 import linter.type_analysis.Variable;
 
@@ -16,8 +16,8 @@ public class ArgumentsAnaliser extends TypeAnaliser {
     
     List<Type> argumentTypes = new ArrayList<Type>();
 
-    protected ArgumentsAnaliser(List<Table<Variable>> variableTables, List<Table<Function>> functionTables) {
-        super(variableTables, functionTables);
+    protected ArgumentsAnaliser(List<NameSpace> nameSpaceStack) {
+        super(nameSpaceStack);
     }
 
     @Override
@@ -28,7 +28,7 @@ public class ArgumentsAnaliser extends TypeAnaliser {
         Node child;
         while((child = node.getChildAtPosition(position++)) != null){
             if(child.isType(TestProduction.class)){
-                TestAnaliser analiser = new TestAnaliser(variableTables, functionTables);
+                TestAnaliser analiser = new TestAnaliser(nameSpaceStack);
                 child.accept(analiser);
                 if(analiser.getType() != null)
                     argumentTypes.add(analiser.getType());

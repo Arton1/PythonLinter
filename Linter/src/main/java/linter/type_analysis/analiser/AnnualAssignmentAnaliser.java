@@ -8,18 +8,17 @@ import linter.syntax_tree.Node;
 import linter.syntax_tree.ProductionNode;
 import linter.syntax_tree.production.AnnualAssignmentStatementProduction;
 import linter.syntax_tree.production.test_productions.ExpressionProduction;
-import linter.type_analysis.Function;
-import linter.type_analysis.Table;
+import linter.type_analysis.NameSpace;
 import linter.type_analysis.Type;
 import linter.type_analysis.Variable;
 
-public class AnnualAssignmentAnaliser extends TypeAnaliser {
+public class AnnualAssignmentAnaliser extends ObjectCreatorAnalizer {
 
     List<Variable> variablesToAssignTo = new ArrayList<Variable>();
     Type typeToAssign = null;
 
-    protected AnnualAssignmentAnaliser(List<Table<Variable>> variableTables, List<Table<Function>> functionTables) {
-        super(variableTables, functionTables);
+    protected AnnualAssignmentAnaliser(List<NameSpace> nameSpaceStack, NameSpace currentContextNameSpace) {
+        super(nameSpaceStack, currentContextNameSpace);
     }
 
     @Override
@@ -49,7 +48,7 @@ public class AnnualAssignmentAnaliser extends TypeAnaliser {
     private void processExpressionProduction(Node node){
         if(typeToAssign != null)
             throw new SemanticsException("Cannot assign to non-variable", node.getParent().getParent().getSubtreeFirstToken());
-        ExpressionAnaliser analiser = new ExpressionAnaliser(variableTables, functionTables);
+        ExpressionAnaliser analiser = new ExpressionAnaliser(nameSpaceStack);
         node.accept(analiser);
         if(analiser.getType() != null){
             typeToAssign = analiser.getType();

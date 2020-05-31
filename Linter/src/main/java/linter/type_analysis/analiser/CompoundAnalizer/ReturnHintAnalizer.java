@@ -1,23 +1,22 @@
-package linter.syntax_tree.production.compound_productions;
+package linter.type_analysis.analiser.CompoundAnalizer;
 
 import java.util.List;
 
 import linter.syntax_tree.Node;
 import linter.syntax_tree.ProductionNode;
 import linter.syntax_tree.TokenNode;
+import linter.syntax_tree.production.compound_productions.OptionalReturnHintProduction;
 import linter.token.IdentifierToken;
-import linter.type_analysis.Function;
-import linter.type_analysis.Table;
+import linter.type_analysis.NameSpace;
 import linter.type_analysis.Type;
-import linter.type_analysis.Variable;
 import linter.type_analysis.analiser.TypeAnaliser;
 
 public class ReturnHintAnalizer extends TypeAnaliser {
 
-    Type returnType = null;
+    Type returnType = Type.UNSPECIFIED;
 
-    public ReturnHintAnalizer(List<Table<Variable>> variableTables, List<Table<Function>> functionTables) {
-        super(variableTables, functionTables);
+    public ReturnHintAnalizer(List<NameSpace> nameSpaceStack) {
+        super(nameSpaceStack);
     }
 
     @Override

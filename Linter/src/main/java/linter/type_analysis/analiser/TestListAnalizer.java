@@ -6,14 +6,12 @@ import linter.syntax_tree.Node;
 import linter.syntax_tree.ProductionNode;
 import linter.syntax_tree.production.test_productions.TestListProduction;
 import linter.syntax_tree.production.test_productions.TestProduction;
-import linter.type_analysis.Function;
-import linter.type_analysis.Table;
-import linter.type_analysis.Variable;
+import linter.type_analysis.NameSpace;
 
 public class TestListAnalizer extends TypeAnaliser {
 
-    protected TestListAnalizer(List<Table<Variable>> variableTables, List<Table<Function>> functionTables) {
-        super(variableTables, functionTables);
+    protected TestListAnalizer(List<NameSpace> nameSpaceStack) {
+        super(nameSpaceStack);
     }
 
     @Override
@@ -29,7 +27,7 @@ public class TestListAnalizer extends TypeAnaliser {
     }
 
     private void processTestProduction(Node child) {
-        TestAnaliser analiser = new TestAnaliser(variableTables, functionTables);
+        TestAnaliser analiser = new TestAnaliser(nameSpaceStack);
         child.accept(analiser);
         if(analiser.getType() != null)
             return;
