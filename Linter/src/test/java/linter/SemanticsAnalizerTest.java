@@ -8,7 +8,6 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import linter.exception.SemanticsException;
-import linter.type_analysis.Function;
 import linter.type_analysis.NameSpace;
 import linter.type_analysis.Type;
 import linter.type_analysis.Variable;
@@ -104,13 +103,6 @@ public class SemanticsAnalizerTest {
     @Test
     public void getNextSyntaxTree_ReturnInGlobalScopeIf_ExpectedSemanticsException(){
         String input = "if True: \n\t return";
-        SemanticsAnalizer analizer = createSemanticsAnalizer(input);
-        assertThrows(SemanticsException.class, () -> analizer.processInput());
-    }
-
-    @Test
-    public void getNextSyntaxTree_FunctionWithoutReturnWithReturnHint_ExpectedSemanticsException(){
-        String input = "def fun() -> int:\n\t pass";
         SemanticsAnalizer analizer = createSemanticsAnalizer(input);
         assertThrows(SemanticsException.class, () -> analizer.processInput());
     }
