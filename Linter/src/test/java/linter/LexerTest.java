@@ -24,7 +24,7 @@ public class LexerTest {
     public void getToken_Empty_ExpectedNull(){
         String input = "";
         Lexer lexer = createLexer(input);
-        assertEquals(null, lexer.getToken());
+        assertEquals(BlockTokenType.EOF, lexer.getToken().getTokenType());
     }
     
     @Test
@@ -63,7 +63,7 @@ public class LexerTest {
         String input = "iden1 iden2";
         Lexer lexer = createLexer(input);
         int numberOfTokens = 0;
-        while(lexer.getToken() != null)
+        while(lexer.getToken().getTokenType() != BlockTokenType.EOF)
             numberOfTokens++;
         assertEquals(3, numberOfTokens);
     }
@@ -80,7 +80,7 @@ public class LexerTest {
         String input = "identifier-=-4.3";
         Lexer lexer = createLexer(input);
         int numberOfTokens = 0;
-        while(lexer.getToken() != null)
+        while(lexer.getToken().getTokenType() != BlockTokenType.EOF)
             numberOfTokens++;
         assertEquals(5, numberOfTokens);
     }
@@ -92,7 +92,7 @@ public class LexerTest {
         String input = "iden1,iden2";
         Lexer lexer = createLexer(input);
         int numberOfTokens = 0;
-        while(lexer.getToken() != null)
+        while(lexer.getToken().getTokenType() != BlockTokenType.EOF)
             numberOfTokens++;
         assertEquals(4, numberOfTokens);
     }
@@ -102,7 +102,7 @@ public class LexerTest {
         String input = "identifier"+EOL+"	4.32"; //4 tokens + EOL
         Lexer lexer = createLexer(input);
         int numberOfTokens = 0;
-        while(lexer.getToken() != null)
+        while(lexer.getToken().getTokenType() != BlockTokenType.EOF)
             numberOfTokens++;
         assertEquals(5, numberOfTokens);
     }

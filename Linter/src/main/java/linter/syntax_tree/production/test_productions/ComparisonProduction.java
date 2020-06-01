@@ -16,11 +16,12 @@ public class ComparisonProduction extends Production {
     }
     
     public List<TreeElement> expandOptional(Token token, Token peek, int currentIndentLevel) {
+        if(token.getTokenType() == LogicTokenType.NOT && peek.getTokenType() == CompareTokenType.IN)
+                return createExpansion(token, CompareTokenType.IN, new ExpressionProduction());
         if(token.getTokenType() instanceof CompareTokenType)
             if(token.getTokenType() == CompareTokenType.IS && peek.getTokenType() == LogicTokenType.NOT)
                 return createExpansion(token, LogicTokenType.NOT, new ExpressionProduction());
-            else
-                return createExpansion(token, new ExpressionProduction());
+            else return createExpansion(token, new ExpressionProduction());
         return null;
 	}
     

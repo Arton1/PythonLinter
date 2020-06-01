@@ -12,5 +12,3 @@ class Klasa2:
 		return
 
 	x=2
-
-    

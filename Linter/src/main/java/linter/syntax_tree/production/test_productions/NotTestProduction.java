@@ -11,10 +11,12 @@ public class NotTestProduction extends Production {
 
     @Override
     public List<TreeElement> expand(Token token, Token peek, int currentIndentLevel) {
-        if(token.getTokenType() == LogicTokenType.NOT)
+        if(token.getTokenType() == LogicTokenType.NOT){
             return createExpansion(token, new NotTestProduction());
-        else
+        }
+        else{
             return createExpansion(new ComparisonProduction());
+        }
     }
     
 }

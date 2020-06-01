@@ -25,7 +25,7 @@ public class NameSpace {
     private Class findClass(String identifier){
         Class _class = classes.get(identifier);
         if(_class == null)
-            throw new RuntimeException("Class not created");
+            throw new RuntimeException(identifier);
         _class.incrementNumberOfReferences(); //referenced class
         return _class;
     }

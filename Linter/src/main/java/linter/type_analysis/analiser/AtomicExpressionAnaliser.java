@@ -67,6 +67,8 @@ public class AtomicExpressionAnaliser extends TypeAnaliser {
     }
 
     public void processFunctionCall(Node node, List<String> identifier, List<Type> arguments){
+        if(type != null)
+            throw new SemanticsException("Not a function identifier", node.getParent().getSubtreeFirstToken());
         Function function = findFunction(identifier);
         if(function == null)
             throw new SemanticsException("Function undefined", node.getParent().getSubtreeFirstToken());
@@ -87,7 +89,12 @@ public class AtomicExpressionAnaliser extends TypeAnaliser {
             }
         }
         else {
-            variable = findVariable(identifier);
+            try{
+                variable = findVariable(identifier);
+            }
+            catch(RuntimeException e){
+                throw new SemanticsException("Class " + e.getMessage() + " unimplemented", node.getSubtreeFirstToken());
+            }
             if(variable == null){
                 String variableIdentifier = identifier.remove(identifier.size()-1);
                 Class classPossesingTheVariable = null;

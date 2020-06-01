@@ -56,7 +56,7 @@ public class ReturnAnaliser extends TypeAnaliser {
             throw new SemanticsException("Function shouldn't return anything", returnTypeToken);
         if(returnedType != functionReturnType){
             if(functionReturnType == Type.FLOAT || functionReturnType == Type.INT){
-                if(!(type == Type.FLOAT || type == Type.INT))
+                if(!(returnedType == Type.FLOAT || returnedType == Type.INT))
                     throw new SemanticsException("Bad return type", returnTypeToken);
             }
             else
