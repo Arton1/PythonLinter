@@ -1,2 +1,0 @@
-obsługa błędów wyróżniona, kto, który moduł zwraca
-testy parsera

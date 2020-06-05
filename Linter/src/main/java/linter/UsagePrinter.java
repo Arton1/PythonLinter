@@ -22,6 +22,7 @@ public class UsagePrinter {
         }
         catch(SemanticsException e){
             ErrorHandler.handleSemanticsException(e);
+            throw e;
         }
         List<LanguageObject> unusedElementsList = new ArrayList<LanguageObject>();
         NameSpace globalNameSpace = semanticsAnalizer.getGlobalNameSpace();

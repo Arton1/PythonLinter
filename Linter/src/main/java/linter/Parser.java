@@ -21,6 +21,7 @@ public class Parser {
         }
         catch (BadTokenException e){
             ErrorHandler.handleBadTokenException(e);
+            throw e;
         }
         if(token.getTokenType() == BlockTokenType.EOF)
             return null;
@@ -35,6 +36,7 @@ public class Parser {
             }
             catch (BadTokenException e){
                 ErrorHandler.handleBadTokenException(e);
+                throw e;
             }
         }
         syntaxTreeBuilder.resetTravel();

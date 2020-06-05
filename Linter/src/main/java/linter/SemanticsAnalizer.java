@@ -36,9 +36,11 @@ public class SemanticsAnalizer {
             }
             catch(BadSyntaxException e){
                 ErrorHandler.handleBadSyntaxException(e);
+                throw e;
             }
             catch(IndentationException e){
                 ErrorHandler.handleIndentationException(e);
+                throw e;
             }
             if(syntaxTree == null)
                 break;

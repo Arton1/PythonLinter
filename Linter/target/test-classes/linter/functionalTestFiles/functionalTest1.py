@@ -20,5 +20,7 @@ class Klasa:
 			return x == 1
 		return True
 
-	def wywolanie0123(self) -> float:
-		funkcja(1, 2)
+	def wywolanie0123() -> float:
+		return 0.1
+
+z = Klasa.wywolanie0123()
